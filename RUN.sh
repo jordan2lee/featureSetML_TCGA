@@ -69,3 +69,9 @@ python scripts/corr.py \
 echo 'completed cloudforest vs subscope'
 
 # ... run corr.py for remaining combinations
+
+# Between JADBIO and SciKit_grid # KeyError: 'I:CNVR::CIRH1A:84916:'
+# Between CloudForest and SciKit_grid
+# Between AKLIMATE and SubSCOPE
+# Between AKLIMATE and SciKit_grid
+# Between SubSCOPE and SciKit_grid
