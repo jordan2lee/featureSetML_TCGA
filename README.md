@@ -8,7 +8,7 @@ bash init.sh
 # Analysis
 
 ```
-bash scripts/RUN.sh
+bash RUN.sh
 ```
 
 Then run `notebooks/gene_overlaps` (TODO update hardcoded paths to files)
