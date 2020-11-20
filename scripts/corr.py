@@ -47,21 +47,18 @@ group2 = []
 # calculate corr
 for g1 in grp1_fts:
     for g2 in grp2_fts:
-#         if 'GEXP' in g1 and 'GEXP' in g2:
-        if g1 == g2:
-            pass
-        else:
-            # correlation matrix (coor coefficients)
-            x = master_df[g1]
-            y = master_df[g2]
-            c, p = scipy.stats.spearmanr(x, y)
+        # run for all - including if same feature
+        # correlation matrix (coor coefficients)
+        x = master_df[g1]
+        y = master_df[g2]
+        c, p = scipy.stats.spearmanr(x, y)
 
-            gene1.append(g1)
-            gene2.append(g2)
-            corr.append(c)
-            pval.append(p)
-            group1.append(args.group1)
-            group2.append(args.group2)
+        gene1.append(g1)
+        gene2.append(g2)
+        corr.append(c)
+        pval.append(p)
+        group1.append(args.group1)
+        group2.append(args.group2)
 
 # save correlation result values
 res = pd.DataFrame(list(zip( corr, pval,gene1, gene2, group1, group2)), columns = cols)
