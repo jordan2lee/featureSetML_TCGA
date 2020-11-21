@@ -1,0 +1,244 @@
+---
+title: "Feature Selection List Overlaps Between TMP Groups"
+author: "Jordan Lee"
+date: "10/12/2020"
+output: html_document
+---
+
+
+8/14/20
+
+# Preprocessing 
+
+preprocessing occured in `/Users/leejor/Ellrott_Lab/02_ML/manuscript/notebooks/01A_correlation_analysis.ipynb` in the preprocessing section
+
+
+# Upset Plots
+
+```{r, message=FALSE}
+library('tidyr')
+library('ComplexHeatmap')
+
+cancer = 'BRCA'
+```
+
+```{r, echo=FALSE}
+#########
+# Main
+########
+# df <- read.csv('../data/data_for_upset.tsv', header=TRUE, sep='\t') %>% as.data.frame()
+file = paste('../data/correlation/CORR_', cancer, '_featurelist.tsv', sep='')
+df <- read.csv(file, header=TRUE, sep='\t') %>% as.data.frame()
+# df
+
+
+cforest <- df$BRCA.CF.All_Top.100[!df$BRCA.CF.All_Top.100 %in% ''] %>% as.vector()
+
+nn <- df$nn_jg_2020.03.20_top1kfreq.BRCA[!df$nn_jg_2020.03.20_top1kfreq.BRCA %in% ''] %>% as.vector()
+
+ak <- df$AKLIMATE_BRCA_reduced_model_1000_feature_set[!df$AKLIMATE_BRCA_reduced_model_1000_feature_set %in% ''] %>% as.vector()
+
+gn <- df$gnosis.BRCA.1[!df$gnosis.BRCA.1 %in% ''] %>% as.vector()
+
+skit <- df$fbedeBIC_BRCA[!df$fbedeBIC_BRCA %in% ''] %>% as.vector()
+
+
+```
+
+```{r, echo=FALSE, include=FALSE }
+# # old upset without selection of how to union
+#library(UpSetR)
+# # 1. Create upset plot of drugs (CCLE, CTRP, GDSC, G2P)
+# setwd('../figs/')
+# pdf('upset.pdf', onefile=FALSE)
+# listInput <- list(cforest = cforest, nn = nn, aklimate = ak, gnosis=gn, fbed=fbed, rfe=rfe)
+# upset(
+#     fromList(listInput), 
+#     order.by = "degree", 
+#     decreasing = F,
+#     sets.bar.color = "#0088FF",  
+#     mainbar.y.label = 'Feature Intersection', 
+#     sets.x.label = 'Feature List Size',
+#     nintersects=30
+#     
+# )
+# dev.off()
+# 
+# #with fbed 199 in at least 2 sets (1+3+3+5+13+76+98) and 12 in at least 3 sets (5+3+3+1)
+```
+
+
+# Feature selection methods often pick different "important" features
+
+Only a small number of features are found in multiple groups (ex. 5 features shared by at majority of groups)
+
+```{r, echo=FALSE}
+lt = list(CloudForest = cforest,
+          SubSCOPE = nn,
+          AKLIMATE = ak, 
+          JADBIO=gn, 
+          Scikit_grid=skit
+)
+
+m= make_comb_mat(
+  list_to_matrix(lt), 
+  mode='distinct'
+)
+
+#m<-m[comb_degree(m) >= 2] #only show two or more overlaps
+cs = comb_size(m)
+
+
+
+ht = UpSet(
+  m,
+  pt_size = unit(4, "mm"), 
+  lwd = 3,
+  top_annotation = upset_top_annotation(m, ylim = c(0, 1.1*max(cs))),
+  # comb_col = c("black","black",'black', "orange",'orange', "orange")[comb_degree(m)]
+  comb_col = c('black','orange','orange', "orange")[comb_degree(m)]
+)
+
+ht = draw(ht)
+co = column_order(ht)
+
+nc = ncol(m)
+decorate_annotation("Intersection\nsize", {
+    grid.text(cs[co], 
+        x = 1:nc, 
+        y = unit(cs[co], "native") + unit(1, "mm"), 
+        gp = gpar(fontsize = 8), 
+        just = "bottom",
+        default.units = "native")
+})
+```
+ 
+<details><summary>Further work on biological interp of upset, based on mock data</summary><p>
+
+**Biological / Molecular Context**
+
+```{r, eval=FALSE}
+# Now view matrix values
+# repeat
+m= make_comb_mat(
+  list_to_matrix(lt), 
+  mode='distinct'
+)
+
+print(comb_name(m)) # view options for below second argument
+
+length(extract_comb(m, '101011') )
+
+#####
+# the following is typed out in text below
+#####
+# in 5/6 sets
+#extract_comb(m, '101111')
+
+# in 4/6 sets
+#extract_comb(m,'101011')
+#extract_comb(m,'101110')
+#extract_comb(m,'101101')
+```
+
+In 5 out of 6 sets:
+
++ [SPOP gene](https://uswest.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000121067;r=17:49598884-49678163) (**"B:MUTA:COMP:SPOP::"**)
+    + BP: Regulation of proteolysis, protein ubiqui
+    + Pathway: Signaling by Hedgehog, signal transduction
+
+
+
+In 4 out of 6 sets:
+
++ [NT5C](https://uswest.ensembl.org/Homo_sapiens/Gene/Ontologies/biological_process?db=core;g=ENSG00000125458;r=17:75130225-75131757) (**"N:METH:cg10520594:NT5C:TssU53:Island"**)
+    + BP: Nucleotide metabolic processes, dephosphorylation
+
++ [ERG](https://uswest.ensembl.org/Homo_sapiens/Gene/Ontologies/biological_process?db=core;g=ENSG00000157554;r=21:38380027-38661780) (**"N:GEXP::ERG:2078:"**)
+    + BP: transcription regulation (RNA poly ll), cell differentiation
+
++ [MAGED4B](https://uswest.ensembl.org/Homo_sapiens/Gene/Ontologies/molecular_function?db=core;g=ENSG00000187243;r=X:52061827-52069248) (**"N:GEXP::MAGED4B:81557:"**)
+    + No BP association on ensembl
+    + [Genecards](https://www.genecards.org/cgi-bin/carddisp.pl?gene=MAGED4B) associates with melanoma and glioma
+
++ [SPOP gene](https://uswest.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000121067;r=17:49598884-49678163) REPEAT GENE different variant type (**"B:MUTA:nons:SPOP::"**)
+    + BP: Regulation of proteolysis, protein ubiqui
+    + Pathway: Signaling by Hedgehog, signal transduction
+    
+
+In 3 out of 6 sets:
+
+```{r, eval=FALSE}
+# in 3/6 sets
+#extract_comb(m,'111000')
+#extract_comb(m,'101010')
+#extract_comb(m,'101001')
+#extract_comb(m,'011001')
+#extract_comb(m,'001011')
+```
+
+
+**Exploring overlaps in python notebook** 
+
+`notebooks/gene_overlaps.ipynb`
+
+**Now upset plot of the output of python notebook**
+
+```{r, eval=FALSE}
+#########
+# Main
+########
+df <- read.csv('../data/GENE_only_data_for_upset.tsv', header=TRUE, sep='\t') %>% as.data.frame()
+# df
+
+
+cforest <- df$PRAD.CF.All_Top.100[!df$PRAD.CF.All_Top.100 %in% ''] %>% as.vector()
+nn <- df$nn_jg_2020.03.20_top1kfreq.PRAD[!df$nn_jg_2020.03.20_top1kfreq.PRAD %in% ''] %>% as.vector()
+ak <- df$AKLIMATE_PRAD_reduced_model_1500_feature_set[!df$AKLIMATE_PRAD_reduced_model_1500_feature_set %in% ''] %>% as.vector()
+gn <- df$gnosis.PRAD.9[!df$gnosis.PRAD.9 %in% ''] %>% as.vector()
+fbed <- df$fbed_combined[!df$fbed_combined %in% ''] %>% as.vector()
+rfe <- df$rfe_combined[!df$rfe_combined %in% ''] %>% as.vector()
+```
+
+```{r, eval=FALSE}
+lt = list(CloudForest = cforest,
+          SubSCOPE = nn,
+          AKLIMATE = ak, 
+          JADBIO=gn, 
+          Scikit_learn_fbed=fbed, 
+          Scikit_learn_rfe=rfe)
+m= make_comb_mat(
+  list_to_matrix(lt), 
+  mode='distinct'
+)
+
+
+#m<-m[comb_degree(m) >= 2] #only show two or more overlaps
+
+cs = comb_size(m)
+
+
+
+ht = UpSet(
+  m,
+  pt_size = unit(4, "mm"), 
+  lwd = 3,
+  top_annotation = upset_top_annotation(m, ylim = c(0, 1.1*max(cs))),
+  comb_col = c("black","black",'black', "orange",'orange', "orange")[comb_degree(m)]
+)
+
+ht = draw(ht)
+co = column_order(ht)
+
+nc = ncol(m)
+decorate_annotation("Intersection\nsize", {
+    grid.text(cs[co], 
+        x = 1:nc, 
+        y = unit(cs[co], "native") + unit(1, "mm"), 
+        gp = gpar(fontsize = 8), 
+        just = "bottom",
+        default.units = "native")
+})
+```
+
+</details>
