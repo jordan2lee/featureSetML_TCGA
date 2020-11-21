@@ -3,9 +3,9 @@
 # 11/16/20 JordanL
 # Purpose: create upset plots of the overlap of features between groups (best model)
 
-library('tidyr')
-library('ComplexHeatmap')
-library('argparse')
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(ComplexHeatmap))
+suppressPackageStartupMessages(library(argparse))
 
 parser <- ArgumentParser()
 parser$add_argument("-c", "--cancer", type='character', help='cancer type')
