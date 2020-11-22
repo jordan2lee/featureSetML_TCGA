@@ -1,0 +1,34 @@
+---
+title: "wip_distribution_corr"
+author: "Jordan Lee"
+date: "11/20/2020"
+output: html_document
+---
+
+
+
+```{r}
+# install.packages("tidyverse")
+library('tidyr')
+library('ggplot2')
+```
+
+
+```{r}
+file <- '../data/correlation_exact_match/corrMatrix_cloudforest_aklimate.tsv'
+```
+
+```{r}
+# Note some rounding seen (pval, corr)
+df <- read.csv(file, header=TRUE, sep='\t') %>% as.data.frame()
+
+ggplot(df, aes(x=corr)) +
+  geom_histogram(binwidth=0.01, color='black') +
+  ggtitle(paste(df$group1[1], 'vs', df$group2[1])) +
+  labs(x='Correlation', y='Count')
+ geom_vline(aes(xintercept=0.1), color="blue", linetype="dashed", size=1)
+
+```
+
+
+
