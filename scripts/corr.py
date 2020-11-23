@@ -17,23 +17,23 @@ def get_arguments():
     parser.add_argument("-n1", "--name1", help ="group 1 for output file name", required=True, type=str)
     parser.add_argument("-g2", "--group2", help ="group 2", required=True, type=str)
     parser.add_argument("-n2", "--name2", help ="group 2 for output file name", required=True, type=str)
+    parser.add_argument("-t", "--threshold", help ="correlation coefficient threshold - for log file only", required=True, type=float)
     return parser.parse_args()
 args = get_arguments()
 
-
 # Features for each model
-ft_df = pd.read_csv(args.features, sep = '\t')
+ft_df = pd.read_csv(args.features, sep = '\t', index_col=0)
 
 # Raw tarball - samples x [labels, feature values]
 master_df = pd.read_csv(args.master, sep='\t', index_col=0)
 
-# save venn diagram
-venn2([set(ft_df[args.group1].dropna()), set(ft_df[args.group2].dropna())], set_labels=[args.group1,args.group2])
-plt.savefig(args.outdir + '/venn_{}_{}.png'.format(args.name1, args.name2) )
-
 # Get feature lists
-grp1_fts = ft_df[args.group1].dropna()
-grp2_fts = ft_df[args.group2].dropna()
+grp1_fts = ft_df.index[ft_df[args.group1] == 1].tolist()
+grp2_fts = ft_df.index[ft_df[args.group2] == 1].tolist()
+
+# save venn diagram
+venn2([set(grp1_fts), set(grp2_fts)], set_labels=[args.group1,args.group2])
+plt.savefig(args.outdir + '/venn_{}_{}.png'.format(args.name1, args.name2) )
 
 # Dataframe prep
 cols = ['corr', 'pval', 'gene1', 'gene2', 'group1', 'group2']
@@ -43,7 +43,6 @@ corr = []
 pval = []
 group1 = []
 group2 = []
-
 # calculate corr
 for g1 in grp1_fts:
     for g2 in grp2_fts:
@@ -67,7 +66,8 @@ res.to_csv(args.outdir + '/corrMatrix_' + args.name1 + '_' + args.name2 + '.tsv'
 
 # write log file
 with open(args.outdir + '/log_{}_{}.txt'.format(args.name1, args.name2), 'w') as out:
-    n_correlated = len(res[res['corr']> 0.5]) + len(res[res['corr']< -0.5])
+    n_correlated = len(res[res['corr']> args.threshold]) + len(res[res['corr']< -0.5])
     out.write(' '.join(['#', args.group1, args.group2]) + '\n')
+    out.write(str(args.threshold) + ' correlation coefficient threshold\n')
     out.write(str(n_correlated) + ' correlated genes pairs (' + str((n_correlated/res.shape[0] )*100) + '%)\n')
     out.write('excludes instances where both groups picked same gene\n')
