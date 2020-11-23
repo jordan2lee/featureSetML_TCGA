@@ -4,19 +4,20 @@
 python scripts/get_fts.py
 echo 'completed ft list formatting'
 
-# # 1. Exact Feature Match - Overlaps
-# # Create upset plots
-# Rscript scripts/upset_exactMatch.R \
-#     -c BRCA -m distinct --indir data/correlation/CORR_ \
-#     --outdir data/exact_match --outname upsetPlot_distinct_exact.pdf
-# echo 'completed upset plot - mode distinct'
-#
-# Rscript scripts/upset_exactMatch.R \
-#     -c BRCA -m intersect --indir data/correlation/CORR_ \
-#     --outdir data/exact_match --outname upsetPlot_intersect_exact.pdf #optional
-# echo 'completed upset plot - mode intersect'
-#
-#
+# 1. Exact Feature Match - Overlaps
+# Create upset plots
+Rscript scripts/upset_exactMatch.R \
+    -c BRCA -m distinct --infile data/exact_match/best_models_BRCA.tsv \
+    --outdir data/exact_match --outname upsetPlot_distinct_exact.pdf
+echo 'completed upset plot - mode distinct'
+
+Rscript scripts/upset_exactMatch.R \
+    -c BRCA -m intersect --infile data/exact_match/best_models_BRCA.tsv \
+    --outdir data/exact_match --outname upsetPlot_intersect_exact.pdf #optional
+echo 'completed upset plot - mode intersect'
+
+
+
 # # 2. Correlations Exact Feature Match - Overlaps
 # # Options 'gnosis:BRCA:1',
 # #         'BRCA:CF|All_Top 100',
