@@ -13,19 +13,15 @@ parser$add_argument('-i', '--infile', type='character', help='input file')
 parser$add_argument('-o', '--outdir', type='character', help='output directory')
 parser$add_argument('-on', '--outname', type='character', help='output figure name')
 parser$add_argument('-m', '--mode', type='character', help='upset plot grouping mode (ex. distinct)')
+parser$add_argument('-headers', '--headers', type='character', help='Order matters, new headers')
 args <- parser$parse_args()
-
-
-########### Hardcoded
-model_names <- c('Gnosis','CloudForest', 'AKLIMATE', 'SubScope', 'SciKitGrid')
-###########
-
 
 # 1. Get group feature sets
 df <- read.csv(args$infile, header=TRUE, sep='\t', row.names=1) %>% as.data.frame()
 
 # Preprocess
 df <- df[apply(df[,-1], 1, function(x) !all(x==0)),] # rm fts never found in any models
+model_names <- as.vector(strsplit(args$headers, ",")[[1]])
 colnames(df) <- model_names # rename
 m <- df %>% as.matrix()
 
