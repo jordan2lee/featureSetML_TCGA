@@ -9,13 +9,13 @@ echo 'completed ft list formatting'
 Rscript scripts/upset_exactMatch.R \
     -c BRCA -m distinct --infile data/exact_match/best_models_BRCA.tsv \
     --outdir data/exact_match --outname upsetPlot_distinct_exact.pdf \
-    --headers Gnosis,CloudForest,AKLIMATE,SubScope,SciKitGrid
+    --headers Gnosis,CloudForest,AKLIMATE,SubSCOPE,SciKitGrid
 echo 'completed upset plot - mode distinct'
 
 Rscript scripts/upset_exactMatch.R \
     -c BRCA -m intersect --infile data/exact_match/best_models_BRCA.tsv \
     --outdir data/exact_match --outname upsetPlot_intersect_exact.pdf \
-    --headers Gnosis,CloudForest,AKLIMATE,SubScope,SciKitGrid
+    --headers Gnosis,CloudForest,AKLIMATE,SubSCOPE,SciKitGrid
 echo 'completed upset plot - mode intersect'
 
 
