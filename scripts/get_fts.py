@@ -23,12 +23,10 @@ for group in groups:
         subset = subset[subset['cohort'] == cancer]
         subset = subset[subset['performance_metric']== pmetric].reset_index(drop=True)
         ftID = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)['featureID'][0]
-        print('1. group: ', group)
     else:
         subset = performance_df[performance_df['feature_list_method'] == group]
         subset = subset[subset['cohort'] == cancer]
         subset = subset[subset['performance_metric']== pmetric].reset_index(drop=True)
-        print('2. group: ', group)
 
 
     # Grab the name of the model with highest MEAN performance metric
@@ -49,4 +47,4 @@ assert len(best) == 5, 'best model not found for all 5 groups'
 # Subset feature matrix for only best model per team
 ft_df = pd.read_csv(file_fts, sep = '\t', index_col=0, low_memory=False)
 ft_df = ft_df[best].drop(['feature_list_method','feature_list_cohort','feature_list_size']) # rm annotat rows
-ft_df.to_csv('data/exact_match/best_models.tsv', sep='\t')
+ft_df.to_csv('data/exact_match/best_models_{}.tsv'.format(cancer), sep='\t')
