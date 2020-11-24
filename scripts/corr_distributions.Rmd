@@ -38,8 +38,8 @@ for (file in files){
   fig <- ggplot(df, aes(x=corr)) +
     geom_histogram(binwidth=0.01, color='black') +
     ggtitle(paste(df$group1[1], '\nvs\n', df$group2[1])) +
-    labs(x='Correlation', y='Count')
-    #geom_vline(aes(xintercept=0.1), color="blue", linetype="dashed", size=1)
+    labs(x='Correlation', y='Count') +
+    geom_vline(aes(xintercept=0), color="blue", linetype="dashed", size=0.5)
   print(fig)
 }
 ```
