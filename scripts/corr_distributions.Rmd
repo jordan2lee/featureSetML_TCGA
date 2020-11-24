@@ -1,0 +1,45 @@
+---
+title: "distributions"
+author: "Jordan Lee"
+date: "11/20/2020"
+output: html_document
+---
+
+Plot distribution of the correlation coefficients. Pair-wise
+
+```{r}
+# install.packages("tidyverse")
+library('tidyr')
+library('ggplot2')
+```
+
+
+```{r}
+dir <- '../data/exact_match/corr/'
+files <- c(
+  'corrMatrix_aklimate_scikitgrid.tsv',
+  'corrMatrix_aklimate_subscope.tsv',
+  'corrMatrix_cloudforest_aklimate.tsv',
+  'corrMatrix_cloudforest_scikitgrid.tsv',
+  'corrMatrix_cloudforest_subscope.tsv',
+  'corrMatrix_gnosis_aklimate.tsv',
+  'corrMatrix_gnosis_cloudforest.tsv',
+  'corrMatrix_gnosis_scikitgrid.tsv',
+  'corrMatrix_gnosis_subscope.tsv',
+  'corrMatrix_subscope_scikitgrid.tsv'
+)
+```
+
+```{r}
+for (file in files){
+  # Note some rounding seen (pval, corr)
+  df <- read.csv(paste(dir,file, sep=''), header=TRUE, sep='\t') %>% as.data.frame()
+  
+  fig <- ggplot(df, aes(x=corr)) +
+    geom_histogram(binwidth=0.01, color='black') +
+    ggtitle(paste(df$group1[1], '\nvs\n', df$group2[1])) +
+    labs(x='Correlation', y='Count') +
+    geom_vline(aes(xintercept=0), color="blue", linetype="dashed", size=0.5)
+  print(fig)
+}
+```
