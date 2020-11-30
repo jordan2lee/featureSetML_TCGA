@@ -1,0 +1,154 @@
+---
+title: "heatmap_fts"
+author: "Jordan Lee"
+date: "11/24/2020"
+output: html_document
+---
+
+```{r, echo = FALSE}
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ComplexHeatmap))
+
+# Hardcoded 
+df <- read.csv('../data/heatmap/BRCA_matrix_best.tsv', header=TRUE, sep='\t', row.names=1) %>% as.data.frame()
+```
+
+Clustering rows. AKLIMATE selected for BRCA as best model. Based on `mean overall weighted F1` 
+
+
+```{r SANDBOX}
+#######
+# TODO: switch to use all 5 data types
+#######
+
+
+# one heatmap per platform 
+pre <- c('N.METH')
+
+for (prefix in pre){
+  # A. Order by subtype
+  mat <- df %>%
+      arrange(Labels)
+  
+  
+  # B. Column annotation
+  column_ha <- HeatmapAnnotation(Subtype = mat$Labels, na_col = 'grey')
+
+  
+  # C. TEMP Heatmap - col annot
+  mat <- mat %>%
+      select(-Labels) %>%
+      select(starts_with(prefix)) %>%
+      as.matrix() %>%
+      t()
+  print(prefix)
+  n_fts <- nrow(mat)
+  print(n_fts)
+  fig <- Heatmap(
+    mat,
+    name = prefix,
+    column_title = 'Samples',
+    row_title = 'Features',
+    cluster_rows = TRUE,
+    cluster_columns = FALSE, 
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    top_annotation = column_ha
+  )  
+  
+  
+  # D. Row annotation
+  # Create barchart annotation bar
+  #   D1. get order of features
+  length(row_order(fig)) == n_fts
+  length( rownames(mat) ) == n_fts
+  post_cluster_index <- row_order(fig) # index of rows
+  pre_cluster_names <- rownames(mat)
+  post_cluster_names <- c() # ordered fts post cluster
+  for (i in post_cluster_index){
+    post_cluster_names <- c(post_cluster_names, pre_cluster_names[i])
+  }
+  #   D2. count how many times ft appears
+  # TODO: make this based on actual data
+  y <- sample(c(1:5), 22, replace=TRUE) # count of groups
+  #   D3. Add annotation
+  row_ha = rowAnnotation(N_teams = anno_barplot(y, bar_width = 1))  
+
+  
+  # E. Final Heatmap - add row/col annot
+  fig <- Heatmap(
+    mat,
+    name = prefix,
+    column_title = 'Samples',
+    row_title = 'Features',
+    cluster_rows = TRUE,
+    cluster_columns = FALSE, 
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    left_annotation = row_ha,
+    top_annotation = column_ha
+  )    
+  draw(fig)
+}
+
+
+```
+
+
+
+
+
+```{r, include=FALSE, eval=FALSE}
+mat <- df %>% select(-Labels) %>% as.matrix()
+print(ncol(mat))
+
+# 1. one heatmap
+Heatmap(
+  mat,
+  name = 'BRCA - AKLIMATE',
+  column_title = 'Features',
+  row_title = 'Samples',
+  cluster_rows = TRUE,
+  cluster_columns = TRUE, 
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+)
+```
+
+
+```{r}
+# 2. one heatmap per platform 
+# pre <- c('N.GEXP')
+pre <- c('I.CNVR', 'N.METH' , 'N.GEXP', 'B.MUTA', 'N.MIR')
+
+for (prefix in pre){
+  # A. Order by subtype
+  mat <- df %>%
+      arrange(Labels)
+  # Pull annotation info
+  column_ha <- HeatmapAnnotation(Subtype = mat$Labels, na_col = 'grey')
+  # B. Finish 
+  mat <- mat %>%
+      select(-Labels) %>%
+      select(starts_with(prefix)) %>%
+      as.matrix() %>%
+      t()
+  print(prefix)
+  print(nrow(mat))
+  fig <- Heatmap(
+    mat,
+    name = prefix,
+    column_title = 'Samples',
+    row_title = 'Features',
+    cluster_rows = TRUE,
+    cluster_columns = FALSE, 
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    top_annotation = column_ha
+  )  
+  draw(fig)
+}
+
+
+```
