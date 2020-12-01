@@ -1,0 +1,173 @@
+---
+title: "heatmap_fts"
+author: "Jordan Lee"
+date: "11/24/2020"
+output: html_document
+---
+
+Best model per team. Based on `mean overall weighted F1`. Samples not clustered, features clustered.
+
+```{r, echo = FALSE}
+
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ComplexHeatmap))
+suppressPackageStartupMessages(library(stringr))
+suppressPackageStartupMessages(library(data.table))
+```
+```{r}
+# Hardcoded 
+cancer <- 'BRCA'
+df <- fread('../data/heatmap/BRCA_fts_by_VALUE.tsv') %>% as.data.frame()
+df_fts <- fread('../data/heatmap/BRCA_fts_by_TEAM.tsv')%>% as.data.frame()
+```
+
+# Barchart 
+
+```{r, echo=FALSE}
+####
+# Function
+####
+get_row_anno <- function(fig, n_fts, mat){
+  # D. Row annotation
+  # Create barchart annotation bar
+  #   D1. get order of features
+  length(row_order(fig)) == n_fts
+  length( rownames(mat) ) == n_fts
+  post_cluster_index <- row_order(fig) # index of rows
+  pre_cluster_names <- rownames(mat)
+  post_cluster_names <- c() # ordered fts post cluster
+  for (i in post_cluster_index){
+    post_cluster_names <- c(post_cluster_names, pre_cluster_names[i])
+  }
+  #   D2. count how many times ft appears
+  y <- c()
+  for (feature in post_cluster_names){
+    v <- subset(df_fts, featureID == feature) %>% pull('Total')
+    y <- c(y, v)
+  }
+  #   D3. Add annotation
+  row_ha = rowAnnotation(N_teams = anno_barplot(y, bar_width = 1))
+  return(row_ha)
+}
+
+
+####
+# Main
+####
+pre <- c('I:CNVR', 'N:METH' , 'N:GEXP', 'B:MUTA', 'N:MIR')
+for (prefix in pre){
+  # A. Order by subtype
+  mat <- df %>%
+      arrange(Labels)
+  
+  # B. Column annotation
+  column_ha <- HeatmapAnnotation(Subtype = mat$Labels, na_col = 'grey')
+  
+  # C. Select data type
+  mat <- mat %>%
+      select(-Labels) %>%
+      select(-all_of(cancer)) %>%
+      select(starts_with(prefix)) %>%
+      as.matrix() %>%
+      t()
+  print(prefix)
+  n_fts <- nrow(mat)
+  print(n_fts)
+  # Temp heatmap to grab row cluster order
+  fig <- Heatmap(
+    mat,
+    cluster_rows = TRUE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+  )
+
+  # E. Final Heatmap - add row/col annot
+  row_ha <- get_row_anno(fig, n_fts, mat)
+
+  fig <- Heatmap(
+    mat,
+    name = prefix,
+    column_title = 'Samples',
+    row_title = 'Features',
+    cluster_rows = TRUE,
+    show_row_dend = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    top_annotation = column_ha,
+    right_annotation = row_ha
+  )
+  draw(fig)
+}
+```
+
+# Proportion WIP 12/1/20
+
+These steps have not been run but code chunks shown here as examples
+
+```{r, eval=FALSE}
+
+matrix(nc = 2, c(1:10, 10:1))
+
+rows = features
+cols = groups (values how many)
+values = % this group contributed
+```
+```{r, eval=FALSE}
+#   D1. get order of features
+length(row_order(fig)) == n_fts
+length( rownames(mat) ) == n_fts
+post_cluster_index <- row_order(fig) # index of rows
+pre_cluster_names <- rownames(mat)
+post_cluster_names <- c() # ordered fts post cluster
+for (i in post_cluster_index){
+  post_cluster_names <- c(post_cluster_names, pre_cluster_names[i])
+}
+
+
+start <- 'first'
+
+for (feat in post_cluster_names){
+  print(feat)
+  v <- c()
+  
+  current_row <- df_fts[df_fts['featureID'] ==feat,]
+  for (i in seq(ncol(current_row)) ){
+    coln <- colnames(current_row)[i]
+    # print(coln)
+    if (coln == 'featureID'){
+      next
+    }
+    else if (coln == 'Total'){
+      next
+    }
+    else {
+      # TODO: update this so the order of cols is not hardcoded 
+      val <- current_row[,i]
+      # print(val)
+      tot <- current_row[,'Total']
+      # print(tot)
+      v <- c(v, val/tot)
+    }
+  }
+  
+  if (start == 'first'){
+    temp <- c(feat, v)
+    start = 'second'
+  }
+  else if (start == 'second'){
+    table_prop <- data.frame(rbind(temp, c(feat, v)))
+    colnames(table_prop)<- c('Feature', 'Gnosis', 'CForest', 'AKLIMATE', 'SubSCOPE', 'SciKitGrid')
+    rownames(table_prop) <- NULL # drop row names
+    start = 'multi'
+  }
+  else {
+    table_prop <- data.frame(rbind(table_prop, c(feat, v)))
+  }
+}
+
+# rownames(table_prop) <- table_prop[,1]
+
+```
