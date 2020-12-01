@@ -103,10 +103,11 @@ for (prefix in pre){
 }
 ```
 
-# Proportion WIP
+# Proportion WIP 12/1/20
 
+These steps have not been run but code chunks shown here as examples
 
-```{r, eval=FALSE,include=FALSE}
+```{r, eval=FALSE}
 
 matrix(nc = 2, c(1:10, 10:1))
 
@@ -114,7 +115,7 @@ rows = features
 cols = groups (values how many)
 values = % this group contributed
 ```
-```{r, eval=FALSE,include=FALSE}
+```{r, eval=FALSE}
 #   D1. get order of features
 length(row_order(fig)) == n_fts
 length( rownames(mat) ) == n_fts
