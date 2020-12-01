@@ -9,3 +9,4 @@ mkdir data/match
 mkdir figures
 mkdir notebooks
 mkdir scripts
+mkdir heatmap
