@@ -23,6 +23,11 @@ file = '../../data/heatmap/BRCA_vals_gexp.tsv'
 cancer = 'BRCA'
 datatype <- 'N:GEXP'
 #####
+```
+
+### Data prep 
+
+```{r}
 # TODO rownames(df) line assumes the first col is the sample col
 
 # Reformat
@@ -33,8 +38,22 @@ df <- df %>% select(-all_of(cancer) ) # rm old col
 # opt. change ft names to int (for cleaner plots)
 ordered_fts <- colnames(df) # save for matching col int to ft
 colnames(df) <- seq(length(colnames(df)))
+```
 
+```{r new data prep}
+# rm mising values from data
+df1 <- na.omit(df)
+print(identical(df1, df) ) #if true then no change made
 
+# standardize. mean 0, sd 1
+print('skip scaling bc methyation data')
+# df <- scale(df)
+
+```
+
+### Clustering 
+
+```{r}
 # Correlation - 
 # Corelation matrix (coeff)
 coeff <- cor(df, method = 'spearman')
