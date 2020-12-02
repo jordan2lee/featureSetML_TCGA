@@ -21,6 +21,7 @@ suppressPackageStartupMessages(library(ComplexHeatmap))
 #####
 file = '../../data/heatmap/BRCA_vals_meth.tsv'
 cancer = 'BRCA'
+datatype <- 'N:METH' #'N:GEXP'
 #####
 # TODO rownames(df) line assumes the first col is the sample col
 
@@ -36,15 +37,28 @@ colnames(df) <- seq(length(colnames(df)))
 
 # Correlation - 
 # Corelation matrix (coeff)
-coeff <- cor(na.omit(df), method = 'spearman')
-heatmap(coeff)
+coeff <- cor(df, method = 'spearman')
+Heatmap(
+  coeff, 
+  name = paste(cancer, datatype, sep='\n'),
+  cluster_rows = FALSE, cluster_columns = FALSE,
+  show_column_dend = FALSE, show_row_dend = FALSE,
+)
 # Absolute corr
 coeff <- abs(coeff)
-heatmap(coeff)
+Heatmap(
+  coeff, 
+  name = paste(cancer, datatype, sep='\n'),
+  cluster_rows = FALSE, cluster_columns = FALSE,
+  show_column_dend = FALSE, show_row_dend = FALSE,
+)
 # cluster 
 d <- dist(coeff, method = 'euclidean', diag = TRUE)
 # print(clust) # diagonal distance matrix
-plot(hclust(d), xlab = "Feature", ylab = "")
+d_hclust <- hclust(d)
+plot(d_hclust, xlab = "Feature", ylab = "")
+print(d_hclust)
+plot(d_hclust, xlab = "Feature", ylab = "")
 
 # Create ft int to feature name table for interpreting cluster dendrogram
 tab_clust <- cbind(seq(length(ordered_fts)), ordered_fts) %>% as.data.frame()
@@ -63,7 +77,6 @@ clust4 <- c(2,15,18,21,20,25,13,27)
 nclust <- 4
 
 ftsets <- '../../data/exact_match/best_models_BRCA.tsv'
-datatype <- 'N:METH' #'N:GEXP'
 upsetmode <- 'distinct'
 #####
 
