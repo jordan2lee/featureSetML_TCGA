@@ -8,4 +8,6 @@ echo 'completed ft list formatting'
 echo '-- run: notebooks/wip/step1_clean.ipynb --'
 
 # 2. Correlations
-echo '-- run: scripts/wip/corr_matrix.Rmd --'
+echo '-- run: scripts/wip/cluster_fts_meth.Rmd --'
+echo '-- run: scripts/wip/cluster_fts_gexp.Rmd --'
+
