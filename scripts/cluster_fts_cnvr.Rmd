@@ -1,0 +1,426 @@
+---
+title: "corr_matrix"
+author: "Jordan Lee"
+date: "12/1/2020"
+output: html_document
+---
+
+# run step1_clean.ipynb first
+
+# Correlation Matrix
+
+https://uc-r.github.io/hc_clustering
+
+https://stats.stackexchange.com/questions/2976/clustering-variables-based-on-correlations-between-them
+
+```{r, echo=FALSE}
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(ComplexHeatmap))
+suppressPackageStartupMessages(library(cluster))
+suppressPackageStartupMessages(library(tidyverse))
+```
+
+```{r}
+########## hardcoded
+ftsets <- '../data/exact_match/best_models_BRCA.tsv'
+upsetmode <- 'distinct'
+init_vector <- c(clust1 = 0, clust2 = 0, clust3 = 0, clust4 = 0, clust5 = 0) # where len == n_clusters
+team_order_upset <- c('JADBIO', 'CloudForest', 'AKLIMATE', 'SUBSCOPE', 'SciKitGrid')
+
+file = '../data/heatmap/BRCA_vals_cnvr.tsv'
+cancer = 'BRCA'
+datatype <- 'I:CNVR::'
+
+n_clusters <- 5
+##########
+```
+
+### Data Prep
+
+Read in file containing Theo's raw tarball values for features selected by teams (one best model per team). Reformat. Data format row:col:val is sample:feature:tarball_value
+
+**TODO**
+
++ rownames(df) line assumes the first col is the sample col
+
+```{r, echo = FALSE}
+
+# Reformat
+df <- fread(file) %>% as.data.frame()
+rownames(df) <- df[,1] 
+df <- df %>% select(-all_of(cancer) )
+# # opt. change ft names to int (for cleaner plots)
+# ordered_fts <- colnames(df) # save for matching col int to ft
+# colnames(df) <- seq(length(colnames(df)))
+
+
+df <- df %>% t()
+```
+
+
+
+### Clustering features based on signal
+
+Cluster features based on signal (from raw tarball). 
+
+1. Identify the strongest clustering structure of several methods `"average", "single", "complete", "ward"` for our data
+2. Apply best clustering method in agglomerative clustering (AGNES) `agnes()`
+
+Why AGNES instead of DIANA?
+
++ Agglomerative clustering (AGNES). Won't be using divisice hierarchial clustering (DIANA)
+
++ Use `agnes()` instead of `hclust`
+
+Agglomerative coefficient
+
++ Measure of the clustering structure. "measure dissimilarity of object to the first cluster it joins, divided by the dissimilarity of the final merger in the cluster analysis, averaged across samples". larger == larger strength of clustering
+
++ AC tends to increase with sample size
+ 
++ Can be compared to the silhouette coefficient
+
+```{r, echo = FALSE}
+# Find best method 
+m <- c( "average", "single", "complete", "ward")
+names(m) <- c( "average", "single", "complete", "ward")
+
+# function to compute coefficient
+ac <- function(x) {
+  agnes(df, method = x)$ac
+}
+
+benchmark <- sort(map_dbl(m, ac), decreasing=TRUE )
+print(benchmark)
+print('method with largest agglomerative coefficient:')
+best_method <- names(benchmark[1])
+print(best_method)
+```
+
+Now that we found which method to use...let's create the dendrogram
+
+### Dendrogram
+
+```{r}
+# Plot
+hc <- agnes(df, method = best_method)
+pltree(hc, cex = 0.6, hang = -50, main = paste("AGNES using",best_method,'\n', cancer, datatype)) 
+
+```
+
+```{r, echo=FALSE}
+# Cut into subgroups
+clusterID <- cutree(hc, k = n_clusters)
+```
+
+How many features in each cluster?
+
+```{r, echo=FALSE}
+# How many features in each cluster
+tabF <- table(clusterID) %>% as.data.frame()
+colnames(tabF) <- c('clusterID', 'n_members')
+kable(tabF)
+```
+
+Specifically which features? (head of data)
+
+```{r, echo = FALSE}
+# Which fts are these?
+fts <- rownames(df)
+ft_cluster_df <- cbind(clusterID, fts) %>% as.data.frame()
+ft_cluster_df<- ft_cluster_df[order(ft_cluster_df$clusterID),] #sort
+tail(ft_cluster_df)
+```
+
+### Now examine in context of teams
+
+Read in best model from each team. Which teams?
+
+```{r, echo=FALSE}
+# Binary df. cols = [clusterID, Gnosis,CloudForest,AKLIMATE,SubSCOPE,SciKitGrid]
+ftset_df <- fread(ftsets) %>% as.data.frame()
+```
+
+```{r, echo=FALSE}
+loop <- 1
+headers <- c()
+
+# Iterate through teams (cols)
+for (icol in seq(from = 2, to=ncol(ftset_df))){
+  
+  membership_clust <- init_vector # init
+  
+  # Pull team cols. skip col=1 which is featureID
+  model <- colnames(ftset_df)[icol]
+  headers <- c(headers, model)
+  print(model)
+  sub1 <- ftset_df[,c(1, icol)]
+  sub1 <- sub1[!(apply(sub1, 1, function(y) any(y == 0))),] # rm rows with values 0
+  model_fts <- sub1$featureID %>% as.vector() # pull all model filters
+
+
+ 
+  # keep only feature type want. ex GEXP
+  model_fts <- grep(datatype, model_fts, value=TRUE)
+  
+  if (length(model_fts) > 0 ){
+    # Look up cluster
+    print('found >= 1 ft')
+    for (mft in model_fts){
+      clustID <- strtoi(ft_cluster_df[ft_cluster_df['fts']==mft][1])
+      # if present then 0 -> 1
+      # print(mft)
+      # print(clustID)
+      key_id <- paste('clust',clustID, sep='')
+      membership_clust[key_id] <-1
+    }
+  } else {
+    print('found 0 ft')
+    model_fts <- 'NULL'
+  }  
+  # print(membership_clust)
+  
+  # Create or append to results df
+  if (loop == 1){
+    tab_res <- membership_clust %>% as.data.frame()
+    loop = 2
+  } else {
+    tab_res <- cbind(tab_res, membership_clust)
+  }
+}
+```
+
+Binary membership table
+
+```{r, echo=FALSE}
+colnames(tab_res) <- headers
+kable(tab_res)
+```
+
+### Upset plot
+
+Overlap of clusters
+
+```{r, echo=FALSE}
+# clean up names (for cleaner visual)
+colnames(tab_res) <- team_order_upset
+
+
+# plot
+m <- tab_res %>% as.matrix()
+m <- make_comb_mat(m, mode = upsetmode)
+
+cs = comb_size(m)
+
+ht = UpSet(
+  m,
+  pt_size = unit(3, "mm"),
+  lwd = 3,
+  top_annotation = upset_top_annotation(m, ylim = c(0, 1.1*max(cs))),
+  # comb_col = c('black','orange','orange', "orange")[comb_degree(m)] # overlap =2 groups yellow
+)
+
+ht = draw(ht)
+co = column_order(ht)
+
+nc = ncol(m)
+decorate_annotation("Intersection\nsize", {
+    grid.text(cs[co],
+        x = 1:nc,
+        y = unit(cs[co], "native") + unit(1, "mm"),
+        gp = gpar(fontsize = 8),
+        just = "bottom",
+        default.units = "native")
+})
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Old code using correlations
+
+<details><summary>Click</summary><p>
+
+12/1/20
+
+METHYLATION BRCA
+
+skip this. eval=false for all code chunks
+
+```{r, eval=FALSE}
+# Correlation - 
+# Corelation matrix (coeff)
+coeff <- cor(df, method = 'spearman')
+Heatmap(
+  coeff, 
+  name = paste(cancer, datatype, sep='\n'),
+  cluster_rows = FALSE, cluster_columns = FALSE,
+  show_column_dend = FALSE, show_row_dend = FALSE,
+)
+# Absolute corr
+coeff <- abs(coeff)
+Heatmap(
+  coeff, 
+  name = paste(cancer, datatype, sep='\n'),
+  cluster_rows = FALSE, cluster_columns = FALSE,
+  show_column_dend = FALSE, show_row_dend = FALSE,
+)
+# cluster 
+d <- dist(coeff, method = 'euclidean', diag = TRUE)
+# print(clust) # diagonal distance matrix
+d_hclust <- hclust(d)
+plot(d_hclust, xlab = "Feature", ylab = "")
+print(d_hclust)
+plot(d_hclust, xlab = "Feature", ylab = "")
+
+# Create ft int to feature name table for interpreting cluster dendrogram
+tab_clust <- cbind(seq(length(ordered_fts)), ordered_fts) %>% as.data.frame()
+colnames(tab_clust) <- c('index', 'ft')
+tab_clust
+```
+
+ Now this is a manual step of picking clusters
+
+```{r, eval=FALSE}
+##### Hardcoded
+clust1 <- c(2,4,26,23,29,30)
+clust2 <- c(10,12,22,6,11)
+clust3 <- c(17,8,9,28,16,24,19,1,5,7,14)
+clust4 <- c(2,15,18,21,20,25,13,27)
+nclust <- 4
+
+ftsets <- '../../data/exact_match/best_models_BRCA.tsv'
+upsetmode <- 'distinct'
+#####
+
+get_vec <- function(feature, results_vector, clust1, clust2, clust3, clust4){
+  # for a ft, add which cluster apart of
+  if (feature %in% clust1 == TRUE){
+    # print('adding cluster 1 if not already present')
+    results_vector['clust1'] <-1
+  } else if (feature %in% clust2 == TRUE){
+    # print('adding cluster 2 if not already present')
+    results_vector['clust2'] <-1
+  } else if (feature %in% clust3 == TRUE){
+    # print('adding cluster 3 if not already present')
+    results_vector['clust3'] <-1
+  } else if (feature %in% clust4 == TRUE){
+    # print('adding cluster 4 if not already present')
+    results_vector['clust4'] <-1
+  } else {
+    print('-- error, ft not found in clusters:')
+    print(feature)
+    return(results_vector)
+  }
+  return(results_vector)
+}
+
+```
+
+```{r, eval=FALSE}
+# Convert clust int to feature name
+clust1 <- tab_clust[clust1,][,'ft'] %>% as.vector()
+clust2 <- tab_clust[clust2,][,'ft'] %>% as.vector()
+clust3 <- tab_clust[clust3,][,'ft'] %>% as.vector()
+clust4 <- tab_clust[clust4,][,'ft'] %>% as.vector()
+```
+
+```{r, eval=FALSE}
+# Binary df. cols = [clusterID, Gnosis,CloudForest,AKLIMATE,SubSCOPE,SciKitGrid]
+ftset_df <- fread(ftsets) %>% as.data.frame()
+print(colnames(ftset_df))
+
+# TODO dive into why fbed has unknown ft 'N:METH:cg26937500:CARD11:TssD142:Island'
+
+loop <- 1
+headers <- c()
+
+# Iterate through teams (cols)
+for (icol in seq(from = 2, to=ncol(ftset_df))){
+  
+  membership_clust <- c(clust1 = 0, clust2 = 0, clust3 = 0, clust4 = 0) # init
+  
+  # Pull team cols. skip col=1 which is featureID
+  model <- colnames(ftset_df)[icol]
+  headers <- c(headers, model)
+  print(model)
+  sub1 <- ftset_df[,c(1, icol)]
+  sub1 <- sub1[!(apply(sub1, 1, function(y) any(y == 0))),] # rm rows with values 0
+  model_fts <- sub1$featureID %>% as.vector() # pull all model filters
+
+  # keep only feature type want. ex GEXP
+  model_fts <- grep(datatype, model_fts, value=TRUE)
+  
+  if (length(model_fts) > 0 ){
+    # Look up cluster
+    # print('found >= 1 ft')
+    for (mft in model_fts){
+      membership_clust <- get_vec(
+        mft, membership_clust,
+        clust1, clust2, clust3, clust4
+      )
+    }
+  } else {
+    print('found 0 ft')
+    model_fts <- 'NULL'
+  }
+  # print(membership_clust)
+
+  # Create or append to results df
+  if (loop == 1){
+    tab_res <- membership_clust %>% as.data.frame()
+    loop = 2
+  } else {
+    tab_res <- cbind(tab_res, membership_clust)
+  }
+}
+colnames(tab_res) <- headers
+kable(tab_res)
+```
+
+
+Plot upset plot
+
+```{r, eval=FALSE}
+m <- tab_res %>% as.matrix()
+m <- make_comb_mat(m, mode = upsetmode)
+
+# cs = comb_size(m)
+
+ht = UpSet(
+  m,
+  pt_size = unit(3, "mm"),
+  lwd = 3,
+  top_annotation = upset_top_annotation(m, ylim = c(0, 1.1*max(cs))),
+  # comb_col = c('black','orange','orange', "orange")[comb_degree(m)] # overlap =2 groups yellow
+)
+
+ht = draw(ht)
+co = column_order(ht)
+
+nc = ncol(m)
+decorate_annotation("Intersection\nsize", {
+    grid.text(cs[co],
+        x = 1:nc,
+        y = unit(cs[co], "native") + unit(1, "mm"),
+        gp = gpar(fontsize = 8),
+        just = "bottom",
+        default.units = "native")
+})
+
+```
+
+</details>
