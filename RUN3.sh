@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
-# # 0. Format feature lists of groups (best performing model)
-# python scripts/get_fts.py
-# echo 'completed ft list formatting'
+# 0. Format feature lists of groups (best performing model)
+python scripts/get_fts.py
+echo 'completed ft list formatting'
 
 # 1. Clean
 python scripts/step1_clean.py \
