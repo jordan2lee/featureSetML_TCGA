@@ -26,14 +26,14 @@ suppressPackageStartupMessages(library(tidyverse))
 ########## hardcoded
 ftsets <- '../data/exact_match/best_models_BRCA.tsv'
 upsetmode <- 'distinct'
-init_vector <- c(clust1 = 0, clust2 = 0) # where len == n_clusters
+init_vector <- c(clust1 = 0, clust2 = 0, clust3=0) # where len == n_clusters
 team_order_upset <- c('JADBIO', 'CloudForest', 'AKLIMATE', 'SUBSCOPE', 'SciKitGrid')
 
 file = '../data/heatmap/BRCA_vals_muta.tsv'
 cancer = 'BRCA'
 datatype <- 'B:MUTA:'
 
-n_clusters <- 2
+# n_clusters <- 2
 ##########
 ```
 
@@ -99,8 +99,37 @@ best_method <- names(benchmark[1])
 print(best_method)
 ```
 
-Now that we found which method to use...let's create the dendrogram
 
+```{r elbow}
+library(factoextra)
+library(NbClust)
+
+######
+# hcut
+######
+# Find optimal n clusters
+# 1. WSS
+res_wss <-fviz_nbclust(df, FUNcluster = hcut, method = "wss", k.max = 6, print.summary = TRUE) #switch to 6 to avoid error
+# print(res_wss$labels)
+res_wss
+
+# 2. Silhouette
+res_sill <-fviz_nbclust(df, FUNcluster = hcut, method = "silhouette", k.max = 6, print.summary = TRUE) #switch to 6 to avoid error
+res_sill
+# expand to print the opti number
+data <- res_sill$data[order(res_sill$data$y, decreasing = TRUE),]
+n_clusters <- data[1,1]
+print('optimal number of clusters')
+print(n_clusters)
+# add one
+n_clusters <- n_clusters %>% as.integer()+1
+
+#######
+#B. Kmeans**
+#######
+# 1. kmeans clustering
+# fviz_nbclust(df, kmeans, method = "wss", print.summary = TRUE) #err
+```
 ### Dendrogram
 
 ```{r}
