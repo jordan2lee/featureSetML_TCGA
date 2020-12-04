@@ -4,10 +4,12 @@ notebooks/.ipynb_checkpoints/
 notebooks/archive/.ipynb_checkpoints/
 notebooks/wip/.ipynb_checkpoints/
 
-src/
+src/*
+!src/README.md
 data/
 !data/correlation/out/*
 scripts/.Rhistory
+slides/
 
 # Chris script
 scripts/feature_list_with_performance_with_subtype_names_20200828-CW.py

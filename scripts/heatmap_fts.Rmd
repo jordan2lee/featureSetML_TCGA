@@ -107,7 +107,7 @@ for (prefix in pre){
 
 These steps have not been run but code chunks shown here as examples
 
-```{r, eval=FALSE}
+```{r, eval=FALSE,}
 
 matrix(nc = 2, c(1:10, 10:1))
 
