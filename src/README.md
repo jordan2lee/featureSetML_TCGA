@@ -65,3 +65,6 @@ The file records the data for:
 24664 features
 1272 feature lists
 ```
+# brca_pam50_hits.tsv
+
+BK created on 12/3/20. takes list of PAM50 genes. convert these into the TCGA naming system for GEXP features ONLY (so that have list of the PAM50 gexp features as named in Theo's tarball)

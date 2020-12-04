@@ -99,6 +99,34 @@ best_method <- names(benchmark[1])
 print(best_method)
 ```
 
+
+
+```{r elbow}
+# testing to find optimal n clusters
+library(factoextra)
+library(NbClust)
+res_wss <-fviz_nbclust(df, FUNcluster = hcut, method = "wss", k.max = 10, print.summary = TRUE)
+print(res_wss$labels)
+res_wss
+
+
+res_sill <-fviz_nbclust(df, FUNcluster = hcut, method = "silhouette", k.max = 10, print.summary = TRUE)
+res_sill
+```
+```{r}
+data <- res_sill$data[order(res_sill$data$y, decreasing = TRUE),]
+n_clusters <- data[1,1]
+print('optimal number of clusters')
+n_clusters
+```
+
+
+```{r}
+# kmeans clustering
+fviz_nbclust(df, kmeans, method = "wss", print.summary = TRUE)
+
+```
+
 Now that we found which method to use...let's create the dendrogram
 
 ### Dendrogram
