@@ -147,6 +147,12 @@ pltree(hc, cex = 0.6, hang = -50, main = paste("AGNES using",best_method,'\n', c
 clusterID <- cutree(hc, k = n_clusters)
 ```
 
+Visualize cluster members
+
+```{r}
+fviz_cluster(list(data = df, cluster = clusterID))
+```
+
 How many features in each cluster?
 
 ```{r, echo=FALSE}
