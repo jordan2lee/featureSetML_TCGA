@@ -25,10 +25,7 @@ df_fts <- fread('../data/heatmap/BRCA_fts_by_TEAM.tsv')%>% as.data.frame()
 
 # testing if can pull order of rows and col, for sanity check
 
-```{r}
-
-
-
+```{r for single data type, eval=FALSE, include=FALSE}
 ####
 # Main
 ####
@@ -124,7 +121,7 @@ team_list <- rowAnnotation(
 fig <- Heatmap(
   mat2,
   name = prefix,
-  cluster_rows = TRUE,
+  cluster_rows = FALSE,
   cluster_columns = FALSE,
   show_row_names = FALSE,
   show_column_names = FALSE,
@@ -136,154 +133,113 @@ fig <- Heatmap(
 draw(fig)
 ```
 
-# Barchart - Past, this works
-
-commenting these out while develop one data platform at a time
-
-```
-####
-# Function
-####
-get_row_anno <- function(fig, n_fts, mat){
-  # D. Row annotation
-  # Create barchart annotation bar
-  #   D1. get order of features
-  length(row_order(fig)) == n_fts
-  length( rownames(mat) ) == n_fts
-  post_cluster_index <- row_order(fig) # index of rows
-  pre_cluster_names <- rownames(mat)
-  post_cluster_names <- c() # ordered fts post cluster
-  for (i in post_cluster_index){
-    post_cluster_names <- c(post_cluster_names, pre_cluster_names[i])
-  }
-  #   D2. count how many times ft appears
-  y <- c()
-  for (feature in post_cluster_names){
-    v <- subset(df_fts, featureID == feature) %>% pull('Total')
-    y <- c(y, v)
-  }
-  #   D3. Add annotation
-  row_ha = rowAnnotation(N_teams = anno_barplot(y, bar_width = 1))
-  return(row_ha)
-}
-
-
+```{r loop for all data types}
 ####
 # Main
 ####
+# prefix <- 'I:CNVR'
 pre <- c('I:CNVR', 'N:METH' , 'N:GEXP', 'B:MUTA', 'N:MIR')
 for (prefix in pre){
   # A. Order by subtype
-  mat <- df %>%
-      arrange(Labels)
+  df_transform <- df %>% arrange(Labels)
   
   # B. Column annotation
-  column_ha <- HeatmapAnnotation(Subtype = mat$Labels, na_col = 'grey')
+  column_ha <- HeatmapAnnotation(
+    Subtype = df_transform$Labels, 
+    na_col = 'grey', 
+    col = list(
+      Subtype = c(
+        "BRCA_1" = 'royalblue4',
+        "BRCA_2"='royalblue1',
+        "BRCA_3"='paleturquoise3',
+        "BRCA_4"='paleturquoise1'
+      )
+    )
+  )
   
   # C. Select data type
-  mat <- mat %>%
+  df_transform <- df_transform %>%
       select(-Labels) %>%
       select(-all_of(cancer)) %>%
-      select(starts_with(prefix)) %>%
+      select(starts_with(prefix))
+  mat <- df_transform %>%
       as.matrix() %>%
       t()
   print(prefix)
   n_fts <- nrow(mat)
   print(n_fts)
-  # Temp heatmap to grab row cluster order
+  
+  # 1. Heatmap that applies clustering we want
+  #    second heatmap same row/col order but with added annotation bars
   fig <- Heatmap(
     mat,
+    name = 'first heatmap',
     cluster_rows = TRUE,
     cluster_columns = FALSE,
     show_row_names = FALSE,
     show_column_names = FALSE,
-  )
-
-  # E. Final Heatmap - add row/col annot
-  row_ha <- get_row_anno(fig, n_fts, mat)
-
-  fig <- Heatmap(
-    mat,
-    name = prefix,
     column_title = 'Samples',
     row_title = 'Features',
-    cluster_rows = TRUE,
-    show_row_dend = FALSE,
+    top_annotation = column_ha
+  )
+  draw(fig)
+  
+  #### 
+  # new
+  ####
+  
+  # Ordering
+  # 1. Get order of features post heatmap clustering
+  heatmap_order <- row_order(fig) # index vector
+  ftnames_order <- c() # featurename vector
+  for (i in heatmap_order){
+    add_ft <- colnames(df_transform)[i]
+    ftnames_order <- c(ftnames_order, add_ft)
+  }
+  print(ftnames_order)
+  # 2. Get new matrix that is ordered by heatmap clustering
+  mat2 <- mat[match(ftnames_order, rownames(mat)),]
+  
+  
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull('gnosis_1_BRCA') %>% as.character()
+  cforest <- team_df %>% pull('CF|All_Top 100_BRCA') %>% as.character()
+  aklimate <- team_df %>% pull('AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA') %>% as.character()
+  subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA') %>% as.character()
+  skgrid <- team_df %>% pull('fbedeBIC_BRCA') %>% as.character()
+  team_list <- rowAnnotation(
+    JadBIO = jadbio,
+    CForest = cforest,
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    SKGrid = skgrid,
+    col = list(
+      JadBIO = c('0' = "snow2", '1' = "palevioletred1"),
+      CForest =  c('0' = "snow2", '1' = "mediumpurple1"),
+      AKLIMATE =  c('0' = "snow2", '1' = "cadetblue1"),
+      SubSCOPE =  c('0' = "snow2", '1' = "palegreen2"),
+      SKGrid =  c('0' = "snow2", '1' = "rosybrown2")
+    ),
+    show_legend = FALSE
+  )
+  # 3. Heatmap
+  fig <- Heatmap(
+    mat2,
+    name = prefix,
+    cluster_rows = FALSE,
     cluster_columns = FALSE,
     show_row_names = FALSE,
     show_column_names = FALSE,
+    # rect_gp = gpar(col = "white", lwd = 2),
+    column_title = 'Samples',
+    row_title = 'Features',
     top_annotation = column_ha,
-    right_annotation = row_ha
+    right_annotation = team_list
   )
   draw(fig)
 }
-```
-
-# Proportion WIP 12/1/20
-
-These steps have not been run but code chunks shown here as examples
-
-```{r, eval=FALSE,}
-
-matrix(nc = 2, c(1:10, 10:1))
-
-rows = features
-cols = groups (values how many)
-values = % this group contributed
-```
-```{r, eval=FALSE}
-#   D1. get order of features
-length(row_order(fig)) == n_fts
-length( rownames(mat) ) == n_fts
-post_cluster_index <- row_order(fig) # index of rows
-pre_cluster_names <- rownames(mat)
-post_cluster_names <- c() # ordered fts post cluster
-for (i in post_cluster_index){
-  post_cluster_names <- c(post_cluster_names, pre_cluster_names[i])
-}
-
-
-start <- 'first'
-
-for (feat in post_cluster_names){
-  print(feat)
-  v <- c()
-  
-  current_row <- df_fts[df_fts['featureID'] ==feat,]
-  for (i in seq(ncol(current_row)) ){
-    coln <- colnames(current_row)[i]
-    # print(coln)
-    if (coln == 'featureID'){
-      next
-    }
-    else if (coln == 'Total'){
-      next
-    }
-    else {
-      # TODO: update this so the order of cols is not hardcoded 
-      val <- current_row[,i]
-      # print(val)
-      tot <- current_row[,'Total']
-      # print(tot)
-      v <- c(v, val/tot)
-    }
-  }
-  
-  if (start == 'first'){
-    temp <- c(feat, v)
-    start = 'second'
-  }
-  else if (start == 'second'){
-    table_prop <- data.frame(rbind(temp, c(feat, v)))
-    colnames(table_prop)<- c('Feature', 'Gnosis', 'CForest', 'AKLIMATE', 'SubSCOPE', 'SciKitGrid')
-    rownames(table_prop) <- NULL # drop row names
-    start = 'multi'
-  }
-  else {
-    table_prop <- data.frame(rbind(table_prop, c(feat, v)))
-  }
-}
-
-# rownames(table_prop) <- table_prop[,1]
-
 ```
