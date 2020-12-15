@@ -113,17 +113,25 @@ mat2 <- mat[match(ftnames_order, rownames(mat)),]
 # 1. df of all teams. match ft order in heatmap
 team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
 # 2. Pull just the team of interest
-jadbio <- team_df %>% pull('gnosis_1_BRCA')
-cforest <- team_df %>% pull('CF|All_Top 100_BRCA')
-aklimate <- team_df %>% pull('AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA')
-subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA')
-skgrid <- team_df %>% pull('fbedeBIC_BRCA')
+jadbio <- team_df %>% pull('gnosis_1_BRCA') %>% as.character()
+cforest <- team_df %>% pull('CF|All_Top 100_BRCA') %>% as.character()
+aklimate <- team_df %>% pull('AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA') %>% as.character()
+subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA') %>% as.character()
+skgrid <- team_df %>% pull('fbedeBIC_BRCA') %>% as.character()
 team_list <- rowAnnotation(
   JadBIO = jadbio,
   CForest = cforest,
   AKLIMATE = aklimate,
   SubSCOPE = subscope,
-  SKGrid = skgrid
+  SKGrid = skgrid,
+  col = list(
+    JadBIO = c('0' = "snow2", '1' = "palevioletred1"),
+    CForest =  c('0' = "snow2", '1' = "mediumpurple1"),
+    AKLIMATE =  c('0' = "snow2", '1' = "cadetblue1"),
+    SubSCOPE =  c('0' = "snow2", '1' = "palegreen2"),
+    SKGrid =  c('0' = "snow2", '1' = "rosybrown2")
+  ),
+  show_legend = FALSE
 )
 # 3. Heatmap
 fig <- Heatmap(
