@@ -20,36 +20,13 @@ suppressPackageStartupMessages(library(data.table))
 cancer <- 'BRCA'
 df <- fread('../data/heatmap/BRCA_fts_by_VALUE.tsv') %>% as.data.frame()
 df_fts <- fread('../data/heatmap/BRCA_fts_by_TEAM.tsv')%>% as.data.frame()
+
 ```
 
 # testing if can pull order of rows and col, for sanity check
 
 ```{r}
-####
-# Function
-####
-# get_row_anno <- function(fig, n_fts, mat){
-#   # D. Row annotation
-#   # Create barchart annotation bar
-#   #   D1. get order of features
-#   length(row_order(fig)) == n_fts
-#   length( rownames(mat) ) == n_fts
-#   post_cluster_index <- row_order(fig) # index of rows
-#   pre_cluster_names <- rownames(mat)
-#   post_cluster_names <- c() # ordered fts post cluster
-#   for (i in post_cluster_index){
-#     post_cluster_names <- c(post_cluster_names, pre_cluster_names[i])
-#   }
-#   #   D2. count how many times ft appears
-#   y <- c()
-#   for (feature in post_cluster_names){
-#     v <- subset(df_fts, featureID == feature) %>% pull('Total')
-#     y <- c(y, v)
-#   }
-#   #   D3. Add annotation
-#   row_ha = rowAnnotation(N_teams = anno_barplot(y, bar_width = 1))
-#   return(row_ha)
-# }
+
 
 
 ####
@@ -58,11 +35,21 @@ df_fts <- fread('../data/heatmap/BRCA_fts_by_TEAM.tsv')%>% as.data.frame()
 prefix <- 'I:CNVR'
 
 # A. Order by subtype
-df_transform <- df %>%
-    arrange(Labels)
+df_transform <- df %>% arrange(Labels)
 
 # B. Column annotation
-column_ha <- HeatmapAnnotation(Subtype = df_transform$Labels, na_col = 'grey')
+column_ha <- HeatmapAnnotation(
+  Subtype = df_transform$Labels, 
+  na_col = 'grey', 
+  col = list(
+    Subtype = c(
+      "BRCA_1" = 'royalblue4',
+      "BRCA_2"='royalblue1',
+      "BRCA_3"='paleturquoise3',
+      "BRCA_4"='paleturquoise1'
+    )
+  )
+)
 
 # C. Select data type
 df_transform <- df_transform %>%
@@ -136,8 +123,8 @@ team_list <- rowAnnotation(
 # 3. Heatmap
 fig <- Heatmap(
   mat2,
-  name = 'second heatmap',
-  cluster_rows = FALSE,
+  name = prefix,
+  cluster_rows = TRUE,
   cluster_columns = FALSE,
   show_row_names = FALSE,
   show_column_names = FALSE,
