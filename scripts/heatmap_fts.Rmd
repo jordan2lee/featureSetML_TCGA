@@ -5,7 +5,32 @@ date: "11/24/2020"
 output: html_document
 ---
 
-Best model per team. Based on `mean overall weighted F1`. Samples not clustered, features clustered.
+# TMP GDAN working group 
+## Figure 4 Suggestion
+
+### Question
+
+We see (in other figures) that different teams have similar high classification performance. Is this similar performance due to selection of the same feature sets?
+
+### Rationale
+
+If we see teams picking different features, this suggests that there are multiple biomarkers that can predict cancer subtype well. An alternative explaination if we see teams picking different features, is that perhaps there is some relationship (correlation, biological pathway connection, etc.) between features so in a sense the teams are picking the "same" features if they are correlated.
+
+In this analysis we will address the first part: are groups picking the same features?
+
++ `TODO:` And we will dabble in exploring feature relationships (through dissimilarity). From clustering on a dissimilarity matrix.
+
+### Analysis
+
+The preprocessing and generation of these files was conducted in a custom python pipeline. A summary of the pipeline is:
+
+1. Pick a cancer cohort (here we picked breast cancer)
+2. Select the best model from each of the 5 teams (JadBIO, SubSCOPE, AKLIMATE, Sci-Kit Grid, and Cloud Forest). Based on highest mean overall weighted F1 score
+3. Pull the corresponding feature set from each model
+4. Map features to molecular file (based on Theo's tarball)
+5. Cluster feature rows, no clustering of sample columns. Clustering done on molecular file
+
+Note in calculating z-scores, NAs were omitted
 
 ```{r, echo = FALSE}
 
@@ -14,6 +39,8 @@ suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(ComplexHeatmap))
 suppressPackageStartupMessages(library(stringr))
 suppressPackageStartupMessages(library(data.table))
+# install.packages('testit')
+suppressPackageStartupMessages(library(testit))
 ```
 ```{r}
 # Hardcoded 
@@ -23,7 +50,10 @@ df_fts <- fread('../data/heatmap/BRCA_fts_by_TEAM.tsv')%>% as.data.frame()
 
 ```
 
-# testing if can pull order of rows and col, for sanity check
+
+### Raw unscaled data - heatmap
+
+<details><summary>Analysis Results</summary><p>
 
 ```{r for single data type, eval=FALSE, include=FALSE}
 ####
@@ -243,3 +273,269 @@ for (prefix in pre){
   draw(fig)
 }
 ```
+
+</details>
+
+
+### Scaled data - heatmap
+
+I want to see the differences between features. Data was scaled - all samples for a given feature have mean 0 and sd 1. then ran through normal pipeline
+
+<details><summary>Analysis Results</summary><p>
+
+```{r z score for single data type, eval=FALSE, include=FALSE}
+####
+# Main
+####
+prefix <- 'I:CNVR'
+
+# A. Order by subtype
+df_transform <- df %>% arrange(Labels)
+
+# B. Column annotation
+column_ha <- HeatmapAnnotation(
+  Subtype = df_transform$Labels, 
+  na_col = 'grey', 
+  col = list(
+    Subtype = c(
+      "BRCA_1" = 'orange',
+      "BRCA_2"='sienna1',
+      "BRCA_3"='red',
+      "BRCA_4"='red4'
+    )
+  )
+)
+
+# C. Select data type
+df_transform <- df_transform %>%
+    select(-Labels) %>%
+    select(-all_of(cancer)) %>%
+    select(starts_with(prefix))
+mat <- df_transform %>%
+    as.matrix() %>%
+    t()
+print(prefix)
+n_fts <- nrow(mat)
+print(n_fts)
+
+# 1. Heatmap that applies clustering we want
+#    second heatmap same row/col order but with added annotation bars
+scaled_mat <- scale(t(mat), center=TRUE, scale=TRUE) #each ft row will have mean 0, sd 1. omit NAs
+scaled_mat <- t(scaled_mat) #but flip for heatmap looks
+fig <- Heatmap(
+  scaled_mat,
+  name = 'first heatmap',
+  cluster_rows = TRUE,
+  cluster_columns = FALSE,
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  column_title = 'Samples',
+  row_title = 'Features',
+  top_annotation = column_ha
+)
+# draw(fig) # dont need to draw
+
+
+#### 
+# Add team annotation bar
+####
+# Ordering
+# 1. Get order of features post heatmap clustering
+heatmap_order <- row_order(fig) # index vector
+ftnames_order <- c() # featurename vector
+for (i in heatmap_order){
+  add_ft <- rownames(scaled_mat)[i]
+  ftnames_order <- c(ftnames_order, add_ft)
+}
+print(ftnames_order)
+# 2. Get new matrix that is ordered by heatmap clustering
+mat2 <- scaled_mat[match(ftnames_order, rownames(scaled_mat)),]
+
+
+
+# Build annotation bars of teams feature sets. 
+# 1. df of all teams. match ft order in heatmap
+team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+# 2. Pull just the team of interest
+jadbio <- team_df %>% pull('gnosis_1_BRCA') %>% as.character()
+cforest <- team_df %>% pull('CF|All_Top 100_BRCA') %>% as.character()
+aklimate <- team_df %>% pull('AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA') %>% as.character()
+subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA') %>% as.character()
+skgrid <- team_df %>% pull('fbedeBIC_BRCA') %>% as.character()
+team_list <- rowAnnotation(
+  JadBIO = jadbio,
+  CForest = cforest,
+  AKLIMATE = aklimate,
+  SubSCOPE = subscope,
+  SKGrid = skgrid,
+  col = list(
+    JadBIO = c('0' = "snow2", '1' = "palevioletred1"),
+    CForest =  c('0' = "snow2", '1' = "mediumpurple1"),
+    AKLIMATE =  c('0' = "snow2", '1' = "cadetblue1"),
+    SubSCOPE =  c('0' = "snow2", '1' = "palegreen2"),
+    SKGrid =  c('0' = "snow2", '1' = "rosybrown2")
+  ),
+  show_legend = FALSE
+)
+# 3. Heatmap
+fig <- Heatmap(
+  mat2, #each col will have mean 0, sd 1
+  name = prefix,
+  cluster_rows = TRUE,
+  cluster_columns = FALSE,
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  column_title = 'Samples',
+  row_title = 'Features',
+  top_annotation = column_ha,
+  right_annotation = team_list
+)
+draw(fig)
+
+#####
+# unit tests
+#####
+# sanity check 1 - that the row orders are the same in the two heatmaps
+assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', rownames(mat2) == ftnames_order)
+# sanity check 2 - directly compare heatmap rows
+heatmap_order <- row_order(fig) # index vector
+ftnames_order2 <- c() # featurename vector
+for (i in heatmap_order){
+  add_ft <- rownames(mat2)[i]
+  ftnames_order2 <- c(ftnames_order2, add_ft)
+}
+assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', ftnames_order2 == ftnames_order)
+
+print(paste('Distance metric = ', fig@row_dend_param$distance, '. Method = ', fig@row_dend_param$method, sep=' '))
+```
+
+```{r z score loop for all data types}
+####
+# Main
+####
+pre <- c('I:CNVR', 'N:METH' , 'N:GEXP', 'B:MUTA', 'N:MIR')
+for (prefix in pre){
+  # A. Order by subtype
+  df_transform <- df %>% arrange(Labels)
+  
+  # B. Column annotation
+  column_ha <- HeatmapAnnotation(
+    Subtype = df_transform$Labels, 
+    na_col = 'grey', 
+    col = list(
+      Subtype = c(
+        "BRCA_1" = 'orange',
+        "BRCA_2"='sienna1',
+        "BRCA_3"='red',
+        "BRCA_4"='red4'
+      )
+    )
+  )
+  
+  # C. Select data type
+  df_transform <- df_transform %>%
+      select(-Labels) %>%
+      select(-all_of(cancer)) %>%
+      select(starts_with(prefix))
+  mat <- df_transform %>%
+      as.matrix() %>%
+      t()
+  print(prefix)
+  n_fts <- nrow(mat)
+  print(n_fts)
+  
+  # 1. Heatmap that applies clustering we want
+  #    second heatmap same row/col order but with added annotation bars
+  scaled_mat <- scale(t(mat), center=TRUE, scale=TRUE) #each ft row will have mean 0, sd 1. omit NAs
+  scaled_mat <- t(scaled_mat) #but flip for heatmap looks
+  fig <- Heatmap(
+    scaled_mat,
+    name = 'first heatmap',
+    cluster_rows = TRUE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = 'Samples',
+    row_title = 'Features',
+    top_annotation = column_ha
+  )
+  # draw(fig) # dont need to draw
+  
+  
+  #### 
+  # Add team annotation bar
+  ####
+  # Ordering
+  # 1. Get order of features post heatmap clustering
+  heatmap_order <- row_order(fig) # index vector
+  ftnames_order <- c() # featurename vector
+  for (i in heatmap_order){
+    add_ft <- rownames(scaled_mat)[i]
+    ftnames_order <- c(ftnames_order, add_ft)
+  }
+  print(ftnames_order)
+  # 2. Get new matrix that is ordered by heatmap clustering
+  mat2 <- scaled_mat[match(ftnames_order, rownames(scaled_mat)),]
+  
+  
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull('gnosis_1_BRCA') %>% as.character()
+  cforest <- team_df %>% pull('CF|All_Top 100_BRCA') %>% as.character()
+  aklimate <- team_df %>% pull('AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA') %>% as.character()
+  subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA') %>% as.character()
+  skgrid <- team_df %>% pull('fbedeBIC_BRCA') %>% as.character()
+  team_list <- rowAnnotation(
+    JadBIO = jadbio,
+    CForest = cforest,
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    SKGrid = skgrid,
+    col = list(
+      JadBIO = c('0' = "snow2", '1' = "palevioletred1"),
+      CForest =  c('0' = "snow2", '1' = "mediumpurple1"),
+      AKLIMATE =  c('0' = "snow2", '1' = "cadetblue1"),
+      SubSCOPE =  c('0' = "snow2", '1' = "palegreen2"),
+      SKGrid =  c('0' = "snow2", '1' = "rosybrown2")
+    ),
+    show_legend = FALSE
+  )
+  # 3. Heatmap
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    name = prefix,
+    cluster_rows = TRUE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = 'Samples',
+    row_title = 'Features',
+    top_annotation = column_ha,
+    right_annotation = team_list
+  )
+  draw(fig)
+  
+  #####
+  # unit tests
+  #####
+  # sanity check 1 - that the row orders are the same in the two heatmaps
+  assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', rownames(mat2) == ftnames_order)
+  # sanity check 2 - directly compare heatmap rows
+  heatmap_order <- row_order(fig) # index vector
+  ftnames_order2 <- c() # featurename vector
+  for (i in heatmap_order){
+    add_ft <- rownames(mat2)[i]
+    ftnames_order2 <- c(ftnames_order2, add_ft)
+  }
+  assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', ftnames_order2 == ftnames_order)
+  
+  print(paste('Distance metric = ', fig@row_dend_param$distance, '. Method = ', fig@row_dend_param$method, sep=' '))
+}
+```
+
+</details>
+
+
