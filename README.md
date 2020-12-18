@@ -1,5 +1,5 @@
 # Feature Selection Analysis
-### Setup Workspace
+## Setup Workspace
 
 Create virtual environment, install packages, and create repo folders
 
@@ -9,7 +9,7 @@ pip install -r requirements.txt
 bash init.sh
 ```
 
-### Molecular Feature Overlap Heatmap
+## Molecular Feature Overlap Heatmap
 
 Last updated: 12/18/20
 
@@ -27,7 +27,7 @@ figures/heatmap_fts.Rmd
 
 Note that figures generated in `.Rmd` file were then manually copied into slides for group presentation `notebooks/leejordan_fig4_presentation_121820.pdf`
 
-### Exact Feature Name Overlap Upset Plot (Base Upset Plot)
+## Exact Feature Name Overlap Upset Plot (Base Upset Plot)
 
 Last updated: 12/18/20
 
