@@ -1,13 +1,15 @@
-# TODO update this script and others to finalized versions
+# Feature Selection Analysis
+### Setup Workspace
 
-# Set up workspace
+Create virtual environment, install packages, and create repo folders
 
 ```
 . venv/bin/activate
+pip install -r requirements.txt
 bash init.sh
 ```
 
-# Molecular Feature Overlap Heatmap
+### Molecular Feature Overlap Heatmap
 
 Last updated: 12/18/20
 
@@ -25,7 +27,7 @@ figures/heatmap_fts.Rmd
 
 Note that figures generated in `.Rmd` file were then manually copied into slides for group presentation `notebooks/leejordan_fig4_presentation_121820.pdf`
 
-# Exact Feature Name Overlap Upset Plot (Base Upset Plot)
+### Exact Feature Name Overlap Upset Plot (Base Upset Plot)
 
 Last updated: 12/18/20
 
@@ -42,15 +44,13 @@ Creates upset plot pdf files in `figures/upsetPlot_distinct_exact.pdf`
 
 Note the default method used for overlap plotting is `distinct` but did explore using method `intersect`. Ultimately decided against using intersect because didn't match the narrative we were going for. If want to run `intersect` then just update input parameter fields when calling `scripts/upset_exactMatch.R`. The actual output figure of `intersect` will be moved to archive
 
-
-# Cluster Based Exact Feature Name Overlap Upset Plot
+### Cluster Based Exact Feature Name Overlap Upset Plot
 
 Last updated: 12/18/20
 
 Purpose: create an upset plot that shows how much overlap there is between the feature sets of the best models
 
 Methods: pull the best model per team (currently based on mean overall weighted F1 score). pull corresponding feature set for each model. cluster and incorporates pairwise correlation calculations between features look at overlap of features across teams
-
 
 ```
 # Preprocessing - in scripts/ it calls get_fts.py, pull_grp_best.py and step1_clean.py
