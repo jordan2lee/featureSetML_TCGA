@@ -7,6 +7,7 @@
 bash init.sh
 ```
 
+
 # Exact Feature Name Overlap Upset Plot (Base Upset Plot)
 
 Last updated: 12/18/20
@@ -49,18 +50,3 @@ Note: Created a few secondary files to the `cluster_fts_<datatype>.Rmd` which in
 + `figures/archive/cluster_fts_gexp-explore2_PAM.Rmd` adds the list of PAM50 features to the "teams" list shown in upset plots. compares how many groups selected features that also belong within the PAM50 set
 
 Note that figures generated in `.Rmd` file were then manually copied into slides for group presentation `notebooks/leejordan_fig4_upset_clusters_presentation_121120.pdf`
-
-# Analysis
-
-```
-bash RUN.sh
-```
-
-Additional:
-
-+ Distribution of correlation coefficients `scripts/corr_distributions.Rmd`
-
-
-# WIP
-
-Then run `notebooks/gene_overlaps` (TODO update hardcoded paths to files)
