@@ -4,7 +4,11 @@
 python scripts/get_fts.py
 echo 'completed ft list formatting'
 
-# 1. Clean
+# 1. Create input file for next step - ${tumor}_fts_by_VALUE.tsv
+python scripts/pull_grp_best.py
+echo 'completed generating fts_by_VALUE file'
+
+# 2. Clean
 python scripts/step1_clean.py \
     -f data/heatmap/BRCA_fts_by_VALUE.tsv \
     -o data/heatmap/BRCA_vals_meth.tsv \
@@ -28,4 +32,4 @@ python scripts/step1_clean.py \
 echo 'completed cleaning'
 
 # 2. Correlations
-echo '-- run: scripts/cluster_fts_<datatype>.Rmd --'
+echo '-- run: figures/cluster_fts_<datatype>.Rmd --'
