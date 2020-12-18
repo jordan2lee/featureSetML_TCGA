@@ -44,7 +44,7 @@ Creates upset plot pdf files in `figures/upsetPlot_distinct_exact.pdf`
 
 Note the default method used for overlap plotting is `distinct` but did explore using method `intersect`. Ultimately decided against using intersect because didn't match the narrative we were going for. If want to run `intersect` then just update input parameter fields when calling `scripts/upset_exactMatch.R`. The actual output figure of `intersect` will be moved to archive
 
-### Cluster Based Exact Feature Name Overlap Upset Plot
+## Cluster Based Exact Feature Name Overlap Upset Plot
 
 Last updated: 12/18/20
 
