@@ -16,9 +16,20 @@ Methods: pull the best model per team (currently based on mean overall weighted 
 
 
 ```
+# Preprocessing - in scripts/ it calls get_fts.py, pull_grp_best.py and step1_clean.py
+bash RUN_uplot.sh
 
+# Upset plots - manually run
+figures/cluster_fts_<datatype>.Rmd
 ```
 
+Note: Created a few secondary files to the `cluster_fts_<datatype>.Rmd` which includes these 2
+
++ `scripts/archive/cluster_fts_gexp-explore.Rmd` this script was built first to explore the options. so only one data type was analyzed (GEXP) to see if this route is worthwhile running for all 5 data types. Includes aspects included in the main `cluster_fts_<datatype>.Rmd` (optimize clustering structure, optimize number of clusters, different clustering methods) but also includes aspects not in `cluster_fts_<datatype>.Rmd` such as testing out cluster plots to showcase similar features in a component analysis space and potentially other options
+
++ `figures/cluster_fts_gexp-explore2_PAM.Rmd` adds the list of PAM50 features to the "teams" list shown in upset plots. compares how many groups selected features that also belong within the PAM50 set
+
+Note that figures generated in `.Rmd` file were then manually copied into slides for group presentation `notebooks/leejordan_fig4_upset_clusters_presentation_121120.pdf`
 
 # Analysis
 
