@@ -1,3 +1,5 @@
+# TODO update this script and others to finalized versions 
+
 # Set up workspace
 
 ```
