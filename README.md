@@ -1,7 +1,9 @@
 # Feature Selection Analysis
 ## Setup Workspace
 
-Create virtual environment, install packages, and create repo folders
+1. Install Python and R
+
+2. Create virtual environment, install packages, and create repo folders
 
 ```
 . venv/bin/activate
