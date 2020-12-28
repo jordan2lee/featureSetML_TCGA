@@ -3,6 +3,7 @@
 mkdir src
 mkdir src/tarball
 mkdir data
+mkdir data/skgrid_ft_sets
 mkdir data/exact_match
 mkdir data/exact_match/corr
 mkdir data/match
