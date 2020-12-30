@@ -5,6 +5,7 @@ tumor=${1}
 echo "####################"
 echo "Now running "${tumor}
 echo "####################"
+echo 'RFE15'
 
 # 1. Feature Selection: Recursive feature elimination 15 features per platform
 	#input: original ft matirx, output: feature selection files in 02_ft-selection/
