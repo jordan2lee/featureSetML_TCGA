@@ -105,7 +105,7 @@ if (dim(ALL_ft_matrix)[2] != 0){
 
 
     # 3. Summary Txt
-    txtname = paste("summary-",name, "--ALL120920.txt", sep="")
+    txtname = paste("summary-",name, "--combined_platform.txt", sep="")
     sink(txtname) #all info to be written below
     print(inputdate)
     print(args$class)
@@ -147,7 +147,7 @@ print(txtname)
 # 2. Create selected features tsv
 # all <- cbind.fill(MUT_select, CNVR_select, GEXP_select, MI_select, MET_select, fill=NA)
 # colnames(all) <- c("MUTA", "CNVR", "GEXP", "MI", "MET")
-outputname = paste(class, "_", FtS, crit, "--ALL120920.tsv", sep="")
+outputname = paste(class, "_", FtS, crit, "--combined_platform.tsv", sep="")
 write.table(ALL_select, file=outputname, quote=FALSE, sep='\t', col.names = TRUE, row.names=TRUE)
 print('saving file: ')
 print(args$output_path)

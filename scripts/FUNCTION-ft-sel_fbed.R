@@ -96,7 +96,7 @@ if (dim(MUT_ft_matrix)[2] != 0){
 
 
     # 3. Summary Txt
-    txtname = paste("summary-",name, "--indep_platform.txt", sep="")
+    txtname = paste("summary-",name, "--per_platform.txt", sep="")
     sink(txtname) #all info to be written below
     print(args$class)
     print("##### MUTA with FBED eBIC #####")
@@ -169,7 +169,7 @@ if (dim(CNVR_ft_matrix)[2] != 0){
     name = paste(class, "_", FtS, crit, "--", platform, sep="")
 
     # 3. Summary Txt
-    txtname = paste("summary-",name, "--indep_platform.txt", sep="")
+    txtname = paste("summary-",name, "--per_platform.txt", sep="")
     sink(txtname) #all info to be written below
     print(args$class)
     print("##### CNVR with FBED eBIC #####")
@@ -243,7 +243,7 @@ if (dim(GEXP_ft_matrix)[2] != 0){
     name = paste(class, "_", FtS, crit, "--", platform, sep="")
 
     # 3. Summary Txt
-    txtname = paste("summary-",name, "--indep_platform.txt", sep="")
+    txtname = paste("summary-",name, "--per_platform.txt", sep="")
     sink(txtname) #all info to be written below
     print(args$class)
     print("##### GEXP with FBED eBIC #####")
@@ -316,7 +316,7 @@ if (dim(MI_ft_matrix)[2] != 0){
     name = paste(class, "_", FtS, crit, "--", platform, sep="")
 
     # 3. Summary Txt
-    txtname = paste("summary-",name, "--indep_platform.txt", sep="")
+    txtname = paste("summary-",name, "--per_platform.txt", sep="")
     sink(txtname) #all info to be written below
     print(args$class)
     print("##### MI with FBED eBIC #####")
@@ -388,7 +388,7 @@ if (dim(MET_ft_matrix)[2] != 0){
     name = paste(class, "_", FtS, crit, "--", platform, sep="")
 
     # 3. Summary Txt
-    txtname = paste("summary-",name, "--indep_platform.txt", sep="")
+    txtname = paste("summary-",name, "--per_platform.txt", sep="")
     sink(txtname) #all info to be written below
     print(args$class)
     print("##### MET with FBED eBIC #####")
@@ -430,7 +430,7 @@ print(txtname)
 all <- cbind.fill(MUT_select, CNVR_select, GEXP_select, MI_select, MET_select, fill=NA)
 colnames(all) <- c("MUTA", "CNVR", "GEXP", "MI", "MET")
 #write.table(all, file='test.tsv', quote=FALSE, sep='\t', col.names = TRUE, row.names=TRUE)
-outputname = paste(class, "_", FtS, crit, "--indep_platform.tsv", sep="")
+outputname = paste(class, "_", FtS, crit, "--per_platform.tsv", sep="")
 write.table(all, file=outputname, quote=FALSE, sep='\t', col.names = TRUE, row.names=TRUE)
 print('saving file: ')
 print(args$output_path)
