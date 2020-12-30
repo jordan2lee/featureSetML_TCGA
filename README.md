@@ -1,12 +1,27 @@
 # Feature Selection Analysis
 ## Setup Workspace
 
-Create virtual environment, install packages, and create repo folders
+1. Install Python and R
+
+2. Create virtual environment, install packages, and create repo folders
 
 ```
 . venv/bin/activate
 pip install -r requirements.txt
 bash init.sh
+```
+## Run Feature Selection Algorithms
+
+Last updated: 12/29/20
+
+Purpose: perform feature selection
+
+Methods: RFE and FBED. For each cancer cohort, each ran in two iterations - across all molecular features (gene expression, copy number variation, miRNA, methylation, mutation status) - or ran independently for each of the five molecular feature types then after feature selection reported all features in one file.
+
+Rationale: likely the dynamic range of the five molecular data types will bias feature selection algorithms towards data types with larger numbers (example gene expression can be in the thousands vs mutation status at most can be 1.0).
+
+```
+bash RUN_ft_select_skgrid.sh <cancer-cohort>
 ```
 
 ## Molecular Feature Overlap Heatmap

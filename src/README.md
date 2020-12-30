@@ -1,3 +1,7 @@
+# tarball/
+
+This dir contains the unzipped contents of raw molecular files (Theo's files). As of 12/29/20 this is for the V8 tarball. Note the paper will use V9 tarball that is identical to the V8 tarball except in that it has all miRNA features removed from `KIRCKICH` and  `LIHCCHOL` cancers.
+
 # feature_list_with_performance_with_subtype_names_20200828.tsv.gz
 
 (syn22337110)
