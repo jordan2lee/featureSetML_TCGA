@@ -10,7 +10,7 @@ echo "FBED (thres 0.05, conditional_test testIndMultinom, kmax 2, crit eBIC)"
 # Feature Selection: FBED separate for each platform
 echo "Feature selection: FBED separate per platform"
 Rscript scripts/FUNCTION-ft-sel_fbed.R \
-	--file src/${tumor}_v8_20200203.tsv \
+	--file src/tarball/${tumor}_v8_20200203.tsv \
 	--class ${tumor} \
 	--output_path data/ft_selection_skgrid/${tumor}/
 
@@ -27,7 +27,7 @@ else
 	# 2B. Use for all other cancers
 	echo "Feature selection: (for any non- KIRCKICH/LIHCCHOL) FBED all platforms"
 	Rscript scripts/FUNCTION-ft-sel_fbed_ALLDTYPES.R \
-		--file src/${tumor}_v8_20200203.tsv \
+		--file src/tarball/${tumor}_v8_20200203.tsv \
 		--class ${tumor} \
 		--output_path data/ft_selection_skgrid/${tumor}/
 fi

@@ -12,7 +12,7 @@ echo 'RFE15'
 echo "Feature selection: RFE15"
 python3.7 scripts/FUNCTION-ft-sel_rfe15.py \
    --input_path src/ \
-   --input_matrix ${tumor}_v8_20200203.tsv \
+   --input_matrix tarball/${tumor}_v8_20200203.tsv \
    --output_path ../data/ft_selection_skgrid/${tumor}/ \
    --tumor ${tumor}
 
@@ -31,7 +31,7 @@ else
     echo "Feature selection: (for any non- KIRCKICH/LIHCCHOL) RFE15 all platforms"
     python3.7 scripts/FUNCTION-ft-sel_rfe15_ALLDTYPES.py \
        --input_path src/ \
-       --input_matrix ${tumor}_v8_20200203.tsv \
+       --input_matrix tarball/${tumor}_v8_20200203.tsv \
        --output_path ../data/ft_selection_skgrid/${tumor}/ \
        --tumor ${tumor}
 fi
