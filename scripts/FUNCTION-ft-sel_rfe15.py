@@ -37,7 +37,7 @@ tumor = args.tumor
 ###################
 
 ft_method = "rfe15"
-out_name = tumor + "_" + ft_method + "--all.tsv"
+out_name = tumor + "_" + ft_method + "--per_platform.tsv"
 
 ###############################
 # SET UP
@@ -108,8 +108,8 @@ if MUT_ft_matrix.shape[1] > 0:
     # Pause: Save all features+rankings to a .tsv
     df_all_FEATURES = pd.DataFrame.from_dict(res_dictionary)
     df_all_FEATURES = df_all_FEATURES.sort_values(by=['Rank']).reset_index(drop=True)
-    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--indep_platform.txt", sep='\t', index=False)
-    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--indep_platform.txt")
+    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--per_platform.txt", sep='\t', index=False)
+    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--per_platform.txt")
 
     # Create list of top 15 features
     MUT_select = list(df_all_FEATURES.iloc[0:15,0])
@@ -147,8 +147,8 @@ if CNVR_ft_matrix.shape[1] > 0:
     # Pause: Save all features+rankings to a .tsv
     df_all_FEATURES = pd.DataFrame.from_dict(res_dictionary)
     df_all_FEATURES = df_all_FEATURES.sort_values(by=['Rank']).reset_index(drop=True)
-    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--indep_platform.txt", sep='\t', index=False)
-    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--indep_platform.txt")
+    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--per_platform.txt", sep='\t', index=False)
+    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--per_platform.txt")
 
     # Create list of top 15 features
     CNVR_select = list(df_all_FEATURES.iloc[0:15,0])
@@ -186,8 +186,8 @@ if GEXP_ft_matrix.shape[1] > 0:
     # Pause: Save all features+rankings to a .tsv
     df_all_FEATURES = pd.DataFrame.from_dict(res_dictionary)
     df_all_FEATURES = df_all_FEATURES.sort_values(by=['Rank']).reset_index(drop=True)
-    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--indep_platform.txt", sep='\t', index=False)
-    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--indep_platform.txt")
+    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--per_platform.txt", sep='\t', index=False)
+    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--per_platform.txt")
 
     # Create list of top 15 features
     GEXP_select = list(df_all_FEATURES.iloc[0:15,0])
@@ -226,8 +226,8 @@ if MET_ft_matrix.shape[1] > 0:
     # Pause: Save all features+rankings to a .tsv
     df_all_FEATURES = pd.DataFrame.from_dict(res_dictionary)
     df_all_FEATURES = df_all_FEATURES.sort_values(by=['Rank']).reset_index(drop=True)
-    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--indep_platform.txt", sep='\t', index=False)
-    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--indep_platform.txt")
+    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--per_platform.txt", sep='\t', index=False)
+    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--per_platform.txt")
 
     # Create list of top 15 features
     MET_select = list(df_all_FEATURES.iloc[0:15,0])
@@ -266,8 +266,8 @@ if MI_ft_matrix.shape[1] > 0:
     # Pause: Save all features+rankings to a .tsv
     df_all_FEATURES = pd.DataFrame.from_dict(res_dictionary)
     df_all_FEATURES = df_all_FEATURES.sort_values(by=['Rank']).reset_index(drop=True)
-    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--indep_platform.txt", sep='\t', index=False)
-    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--indep_platform.txt")
+    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--per_platform.txt", sep='\t', index=False)
+    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--per_platform.txt")
 
     # Create list of top 15 features
     MI_select = list(df_all_FEATURES.iloc[0:15,0])

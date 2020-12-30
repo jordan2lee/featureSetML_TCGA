@@ -37,7 +37,7 @@ tumor = args.tumor
 ###################
 
 ft_method = "rfe15"
-out_name = tumor + "_" + ft_method + "--ALL120920.tsv"
+out_name = tumor + "_" + ft_method + "--combined_platform.tsv"
 
 ###############################
 # SET UP
@@ -113,8 +113,8 @@ if ALL_ft_matrix.shape[1] > 0:
     # Pause: Save all features+rankings to a .tsv
     df_all_FEATURES = pd.DataFrame.from_dict(res_dictionary)
     df_all_FEATURES = df_all_FEATURES.sort_values(by=['Rank']).reset_index(drop=True)
-    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--ALL120920.txt", sep='\t', index=False)
-    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--ALL120920.txt")
+    df_all_FEATURES.to_csv(op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--combined_platform.txt", sep='\t', index=False)
+    print('output saved at: ', op+'summaryfullranks-'+tumor+'_rfe15--'+platform+"--combined_platform.txt")
 
     # Create list of top 15 features
     ALL_select = list(df_all_FEATURES.iloc[0:15,0])
