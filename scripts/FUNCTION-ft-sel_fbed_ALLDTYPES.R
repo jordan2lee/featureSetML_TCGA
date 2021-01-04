@@ -96,7 +96,7 @@ if (dim(ALL_ft_matrix)[2] != 0){
     # print("algorithm done and now writing results")
     # Results + Output
     # 1. Create a list of selected features   -downstream summary .tsv
-    ALL_select  <- c(colnames(ALL_ft_matrix[ALL_ebic$res[,2]])) # index2 instead1 bc how how we sliced matrix
+    ALL_select  <- c(colnames(ALL_ft_matrix[ALL_ebic$res[,'Vars']])) # fix this
     # print("selected ALL features")
     # print(ALL_select)
 
