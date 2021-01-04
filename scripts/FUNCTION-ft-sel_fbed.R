@@ -87,7 +87,7 @@ if (dim(MUT_ft_matrix)[2] != 0){
     # print("algorithm done and now writing results")
     # Results + Output
     # 1. Create a list of selected features   -downstream summary .tsv
-    MUT_select  <- c(colnames(MUT_ft_matrix[MUT_ebic$res[,1]]))
+    MUT_select  <- c(colnames(MUT_ft_matrix[MUT_ebic$res[,'Vars']]))
     # print("selected MUT features")
     # print(MUT_select)
 
@@ -161,7 +161,7 @@ if (dim(CNVR_ft_matrix)[2] != 0){
 
     # Results + Output
     # 1. Create a list of selected features   -downstream summary .tsv
-    CNVR_select  <- c(colnames(CNVR_ft_matrix[CNVR_ebic$res[,1]]))
+    CNVR_select  <- c(colnames(CNVR_ft_matrix[CNVR_ebic$res[,'Vars']]))
     # print("selected CNVR features")
     # print(CNVR_select)
 
@@ -235,7 +235,7 @@ if (dim(GEXP_ft_matrix)[2] != 0){
 
     # Results + Output
     # 1. Create a list of selected features   -downstream summary .tsv
-    GEXP_select  <- c(colnames(GEXP_ft_matrix[GEXP_ebic$res[,1]]))
+    GEXP_select  <- c(colnames(GEXP_ft_matrix[GEXP_ebic$res[,'Vars']]))
     # print("selected GEXP features")
     # print(GEXP_select)
 
@@ -308,7 +308,7 @@ if (dim(MI_ft_matrix)[2] != 0){
 
     # Results + Output
     # 1. Create a list of selected features   -downstream summary .tsv
-    MI_select  <- c(colnames(MI_ft_matrix[MI_ebic$res[,1]]))
+    MI_select  <- c(colnames(MI_ft_matrix[MI_ebic$res[,'Vars']]))
     # print("selected MI features")
     # print(MI_select)
 
@@ -380,7 +380,7 @@ if (dim(MET_ft_matrix)[2] != 0){
 
     # Results + Output
     # 1. Create a list of selected features   -downstream summary .tsv
-    MET_select  <- c(colnames(MET_ft_matrix[MET_ebic$res[,1]]))
+    MET_select  <- c(colnames(MET_ft_matrix[MET_ebic$res[,'Vars']]))
     # print("selected MET features")
     # print(MET_select)
 
