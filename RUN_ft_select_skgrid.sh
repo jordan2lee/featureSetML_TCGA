@@ -6,7 +6,7 @@ tumor=${1}
 ################
 mkdir data/ft_selection_skgrid/${tumor}
 
-# Run feature selection, method=fbed
+# 1. Run feature selection, method=fbed
 ./scripts/RUN-ft-sel_fbed.sh ${tumor}
 
 # 2. Run feature selection, method=rfe15
