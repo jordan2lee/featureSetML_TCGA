@@ -14,7 +14,7 @@ bash init.sh
 ```
 ## Run Feature Selection Algorithms
 
-Last updated: 12/29/20
+Last updated: 1/5/21
 
 Purpose: perform feature selection
 
@@ -23,7 +23,11 @@ Methods: RFE and FBED. For each cancer cohort, each ran in two iterations - acro
 Rationale: likely the dynamic range of the five molecular data types will bias feature selection algorithms towards data types with larger numbers (example gene expression can be in the thousands vs mutation status at most can be 1.0).
 
 ```
+# Run feature selection models
 bash RUN_ft_select_skgrid.sh <cancer-cohort>
+
+# Consolidate and format feature selection results
+bash RUN_to_synapse.sh
 ```
 
 ## Molecular Feature Overlap Heatmap
