@@ -1,5 +1,0 @@
-# then is this number more or less than we expect randomly -- we can do a null model
-# what if those 2 groups picked randomly any genes (from orig matix) > until fill
-# then repeat 100 times (check for more correlations, but could do 2 tailed )
-# ---eventually play with pval thres
-# then plot distribut of this null model
