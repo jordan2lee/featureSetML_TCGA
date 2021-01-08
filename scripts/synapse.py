@@ -51,13 +51,24 @@ def parse_combined_file(input_file, ft_method):
         ftset = []
         for line in fhc:
             if header == False:
-                # FtsetID
-                fID = '_'.join([team, tumor, ''.join([ft_method, iteration] ) ])
-                # cancer cohort
-                cohort = '[\"'+ tumor + '\"]'
-                # ft set
-                ft = line.strip().split('\t')[1]
-                ftset.append(ft)
+                if ft_method == 'fbedeBIC':
+                    # FtsetID
+                    fID = '_'.join([team, tumor, ''.join([ft_method, iteration] ) ])
+                    # cancer cohort
+                    cohort = '[\"'+ tumor + '\"]'
+                    # ft set
+                    ft = line.strip().split('\t')[1]
+                    ftset.append(ft)
+                elif ft_method == 'rfe15':
+                    # FtsetID
+                    fID = '_'.join([team, tumor, ''.join([ft_method, iteration] ) ])
+                    # cancer cohort
+                    cohort = '[\"'+ tumor + '\"]'
+                    # ft set
+                    ft = line.strip()
+                    ftset.append(ft)
+                else:
+                    print('error, found a ft selection method not accounted for ', ft_method)
             else:
                 header = False
         # clean up list of fts
@@ -100,8 +111,10 @@ with open(file_out, 'w') as out:
 
     # For each feature selection model
     for ft_method in list_ft_methods:
+        print(ft_method)
         # For each cancer pull the feature list
         for tumor in cancer_list:
+            print(tumor)
             # For the combined file
             iteration = 'combined'
             file = 'data/ft_selection_skgrid/{}/{}_{}--combined_platform.tsv'.format(tumor, tumor, ft_method)
