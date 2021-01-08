@@ -9,6 +9,8 @@ src/*
 data/ft_selection_skgrid/
 data/manual_remove_mi/*.tsv
 !data/correlation/out/*
+data/archive/*
+!data/archive/README.md
 scripts/.Rhistory
 
 # Chris script
