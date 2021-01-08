@@ -61,10 +61,12 @@ Methods: select a cancer cohort. pull the best model per team (based on mean `ov
 ```
 # Preprocessing - in scripts/ it calls get_fts.py and pull_grp_best.py
 bash RUN_Heatmap_Exact.sh
+```
 
-# TODO convert to R script called in RUN_Heatmap_Exact.sh
+TODO convert to R script called in RUN_Heatmap_Exact.sh
+```
 # Heatmaps - manually run
-figures/heatmap_fts.Rmd
+scripts/heatmap_cluster.Rmd
 ```
 
 Note that figures generated in `.Rmd` file were then manually copied into slides for group presentation `notebooks/leejordan_fig4_presentation_121820.pdf`

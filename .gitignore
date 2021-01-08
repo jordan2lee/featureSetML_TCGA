@@ -1,23 +1,22 @@
+# Routine
 venv/
 .DS_store
+scripts/.Rhistory
 notebooks/.ipynb_checkpoints/
 notebooks/archive/.ipynb_checkpoints/
 notebooks/wip/.ipynb_checkpoints/
 
+# Source and transformed data
 src/*
 !src/README.md
 data/ft_selection_skgrid/
+!data/ft_selection_skgrid/README.md
 data/manual_remove_mi/*.tsv
+!data/manual_remove_mi/README.md
 !data/correlation/out/*
 data/archive/*
 !data/archive/README.md
-scripts/.Rhistory
+notebooks/archive
 
-# Chris script
+# Scripts
 scripts/feature_list_with_performance_with_subtype_names_20200828-CW.py
-# BK notebook
-notebooks/archive/Fig_3_samp_counts-BK.ipynb
-
-# feature selection results
-!data/ft_selection_skgrid/README.md
-!data/manual_remove_mi/README.md
