@@ -2,14 +2,6 @@
 
 import pandas as pd
 import argparse
-############# Hardcoded Values
-# cancer = 'BRCA'
-# pmetric = 'overall_weighted_f1'
-groups = ['gnosis', 'CF|All', 'AKLIMATE', 'nn', ['rfe15', 'fbedeBIC']]
-
-# file_preds = 'src/feature_list_with_performance_with_subtype_names_20200828.tsv.gz'
-# file_fts = 'src/collected_features_matrix_20200722.tsv.gz'
-#############
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='')
@@ -27,6 +19,9 @@ file_fts = args.file1_fts
 file_preds = args.file2_perform
 file_output = args.out
 
+############# Hardcoded Object
+groups = ['gnosis', 'CF|All', 'AKLIMATE', 'nn', ['rfe15', 'fbedeBIC']]
+#############
 
 performance_df = pd.read_csv(file_preds, sep = '\t', low_memory=False)
 
