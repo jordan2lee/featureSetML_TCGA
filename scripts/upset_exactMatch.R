@@ -1,7 +1,7 @@
 #!/usr/bin/Rscript
 
 # 11/22/20 JordanL
-# Purpose: create upset plots of the overlap of features between groups (best model)
+# Purpose: create upset plot of the overlap of features between groups (best model) for Figure 4 panel A
 
 suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(ComplexHeatmap))
@@ -38,7 +38,7 @@ ht = UpSet(
   pt_size = unit(3, "mm"),
   lwd = 3,
   top_annotation = upset_top_annotation(m, ylim = c(0, 1.1*max(cs))),
-  comb_col = c('black','orange','orange', "orange")[comb_degree(m)] # overlap =2 groups yellow
+  comb_col = c('black','orange','orange', "orange")[comb_degree(m)] # overlap =2 groups orange
 )
 
 ht = draw(ht)
