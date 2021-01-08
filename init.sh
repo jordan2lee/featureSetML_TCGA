@@ -5,8 +5,6 @@ mkdir src/tarball
 mkdir data
 mkdir data/manual_remove_mi
 mkdir data/figure_panel_a
-mkdir data/match
-mkdir figures
+mkdir data/figure_panel_b
 mkdir notebooks
 mkdir scripts
-mkdir heatmap
