@@ -1,0 +1,403 @@
+---
+title: "Molecular Heatmap - Exact Feature Match"
+author: "Jordan Lee"
+date: "1/12/2021"
+output: html_document
+---
+
+# TMP GDAN working group 
+## Figure 4 Suggestion
+
+### Question
+
+We see (in other figures) that different teams have similar high classification performance. Is this similar performance due to selection of the same feature sets?
+
+### Rationale
+
+If we see teams picking different features, this suggests that there are multiple biomarkers that can predict cancer subtype well. An alternative explanation if we see teams picking different features, is that perhaps there is some relationship (correlation, biological pathway connection, etc.) between features so in a sense the teams are picking the "same" features if they are correlated.
+
+In this analysis we will address the first part: are groups picking the same features?
+
++ `TODO:` And we will dabble in exploring feature relationships (through dissimilarity). From clustering on a dissimilarity matrix.
+
+### Analysis
+
+The preprocessing and generation of these files was conducted in a custom python pipeline. A summary of the pipeline is:
+
+1. Pick a cancer cohort (here we picked breast cancer)
+2. Select the best model from each of the 5 teams (JadBIO, SubSCOPE, AKLIMATE, Sci-Kit Grid, and Cloud Forest). Based on highest mean overall weighted F1 score
+3. Pull the corresponding feature set from each model
+4. Map features to molecular file (based on Theo's tarball)
+5. Cluster feature rows, no clustering of sample columns. Clustering done on molecular file
+
+Note in calculating z-scores, NAs were omitted
+
+```{r, echo = FALSE}
+
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ComplexHeatmap))
+suppressPackageStartupMessages(library(stringr))
+suppressPackageStartupMessages(library(data.table))
+# install.packages('testit')
+suppressPackageStartupMessages(library(testit))
+suppressPackageStartupMessages(library(knitr))
+```
+
+```{r}
+###### Hardcoded 
+cancer <- 'BRCA'
+df <- fread('../data/figure_panel_b/BRCA_fts_by_VALUE.tsv') %>% as.data.frame()
+df_fts <- fread('../data/figure_panel_b/BRCA_fts_by_TEAM.tsv')%>% as.data.frame()
+mappings <- fread('../data/figure_panel_b/hallmarks.tsv') %>% as.data.frame()
+######
+```
+
+### Scaled where appropriate - heatmap
+
+Scaling data - METH, GEXP, and MIR
+
+Non-scaled data - MUTA, CNVR
+
+I want to see the differences between features. Data was scaled - all samples for a given feature have mean 0 and sd 1. then ran through normal pipeline
+
+```{r}
+##### hardcoded
+yes_scale <- c('N:METH' , 'N:GEXP','N:MIR') # which fts to scale
+#####
+```
+
+<details><summary>Analysis Results</summary><p>
+
+```{r mixed scaled z score loop for all data types}
+####
+# Main
+####
+# pre <- c('I:CNVR', 'N:METH' , 'N:GEXP', 'B:MUTA', 'N:MIR')
+pre <- c('N:GEXP') # TODO remove this from dev
+
+for (prefix in pre){
+  # A. Order by subtype
+  df_transform <- df %>% arrange(Labels)
+  
+  # B. Column annotation
+  column_ha <- HeatmapAnnotation(
+    Subtype = df_transform$Labels, 
+    na_col = 'grey', 
+    col = list(
+      Subtype = c(
+        "BRCA_1" = 'orange',
+        "BRCA_2"='sienna1',
+        "BRCA_3"='red',
+        "BRCA_4"='red4'
+      )
+    )
+  )
+  
+  # C. Select data type
+  df_transform <- df_transform %>%
+      select(-Labels) %>%
+      select(-all_of(cancer)) %>%
+      select(starts_with(prefix))
+  mat <- df_transform %>%
+      as.matrix() %>%
+      t()
+  print(prefix)
+  n_fts <- nrow(mat)
+  print(n_fts)
+  
+  # 1. Heatmap that applies clustering we want
+  #    second heatmap same row/col order but with added annotation bars
+  
+  # scale if appropriate 
+  if (prefix %in% yes_scale){
+    mat <- scale(t(mat), center=TRUE, scale=TRUE) #each ft row will have mean 0, sd 1. omit NAs
+    mat <- t(mat) #but flip for heatmap looks
+  }
+
+  fig <- Heatmap(
+    mat,
+    name = 'first heatmap',
+    cluster_rows = TRUE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = 'Samples',
+    row_title = 'Features',
+    top_annotation = column_ha
+  )
+  # draw(fig) # dont need to draw
+  
+  
+  #### 
+  # Add team annotation bar
+  ####
+  # Ordering
+  # 1. Get order of features post heatmap clustering
+  heatmap_order <- row_order(fig) # index vector
+  ftnames_order <- c() # featurename vector
+  for (i in heatmap_order){
+    add_ft <- rownames(mat)[i]
+    ftnames_order <- c(ftnames_order, add_ft)
+  }
+  print(ftnames_order)
+  # 2. Get new matrix that is ordered by heatmap clustering
+  mat2 <- mat[match(ftnames_order, rownames(mat)),]
+  
+  
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull('gnosis_1_BRCA') %>% as.character()
+  cforest <- team_df %>% pull('CF|All_Top 100_BRCA') %>% as.character()
+  aklimate <- team_df %>% pull('AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA') %>% as.character()
+  subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA') %>% as.character()
+  skgrid <- team_df %>% pull('fbedeBIC_BRCA') %>% as.character()
+  team_list <- rowAnnotation(
+    JadBIO = jadbio,
+    CForest = cforest,
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    SKGrid = skgrid,
+    col = list(
+      JadBIO = c('0' = "snow2", '1' = "palevioletred1"),
+      CForest =  c('0' = "snow2", '1' = "mediumpurple1"),
+      AKLIMATE =  c('0' = "snow2", '1' = "cadetblue1"),
+      SubSCOPE =  c('0' = "snow2", '1' = "palegreen2"),
+      SKGrid =  c('0' = "snow2", '1' = "rosybrown2")
+    ),
+    show_legend = FALSE
+  )
+  # 3. Heatmap
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    name = prefix,
+    cluster_rows = TRUE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = 'Samples',
+    row_title = 'Features',
+    top_annotation = column_ha,
+    right_annotation = team_list,
+  )
+  draw(fig)
+
+
+  #####
+  # unit tests
+  #####
+  # sanity check 1 - that the row orders are the same in the two heatmaps
+  assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', rownames(mat2) == ftnames_order)
+  # sanity check 2 - directly compare heatmap rows
+  heatmap_order <- row_order(fig) # index vector
+  ftnames_order2 <- c() # featurename vector
+  for (i in heatmap_order){
+    add_ft <- rownames(mat2)[i]
+    ftnames_order2 <- c(ftnames_order2, add_ft)
+  }
+  assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', ftnames_order2 == ftnames_order)
+  
+  print(paste('Distance metric = ', fig@row_dend_param$distance, '. Method = ', fig@row_dend_param$method, sep=' '))
+}
+```
+
+</details>
+
+# WIP Version 2 - add in one hallmark annot (1 hallmark, "multi", "none")
+
+<details><summary>Analysis</summary><p>
+
+```{r for one annotaiton band}
+# this code chunk likely won't work because we have a lot of annot bars on left side
+
+# look up if in hallmark mappings table
+n_hallmarks <- c() # exploratory
+pooled_hallmarks <- c() # exploratory
+hallmark_vect <- c()
+for (feature in ftnames_order){
+  # 1. Preprocess - to gene symbol
+  GENE <- unlist(strsplit(feature, '::'))[2]
+  GENE <- unlist(strsplit(GENE, ':'))[1]
+  
+  # 2. Hallmark Mapping
+  halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
+  # Multiple Hallmarks
+  n_hallmarks <- c(n_hallmarks, length(halls))
+  pooled_hallmarks <- c(pooled_hallmarks, halls)
+  if (length(halls) >1){
+    hallmark_vect <- c(hallmark_vect, 'multi')
+  } 
+  # One Hallmark
+  else if (length(halls) == 1){
+    hallmark_vect <- c(hallmark_vect, halls)
+  } 
+  # No Hallmarks
+  else {
+    hallmark_vect <- c(hallmark_vect, 'none')
+  }
+}
+
+# 3. Build heatmap
+hall_annot <- rowAnnotation(
+  Hallmark = hallmark_vect,
+  # col = list(
+  #   Hallmark = c('none' = "black", 'multi' = "gray")
+  # ),
+  show_legend = FALSE
+)
+
+fig <- Heatmap(
+  mat2, #each col will have mean 0, sd 1
+  name = prefix,
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  column_title = 'Samples',
+  row_title = 'Features',
+  top_annotation = column_ha,
+  right_annotation = team_list,
+  left_annotation = hall_annot
+)
+draw(fig)
+```
+
+</details>
+
+
+
+# WIP Version 3 - one annotation bar (top hallmarks only, all others are gray)
+
+This section requires the previous section to be ran `WIP Version 2`
+
+<details><summary>1. look at overlap in hallmarks</summary><p>
+
+```{r}
+# How many hallmarks is a feature associated with?
+data <- table(n_hallmarks)
+fig <- barplot(data, xlab='', main='Histogram - How many hallmarks is a feature associated with?')
+kable(data)
+```
+
+```{r}
+# What hallmarks are fts most often associated with?
+data <- sort(table(pooled_hallmarks), decreasing=T)
+fig <- barplot(data, xlab='', main='Histogram - What hallmarks are fts most often associated with?')
+labs <- names(data)
+text(cex=.5, x=fig-.25, y=-1.25, labs, xpd=TRUE, srt=90)
+head(data)
+```
+
+```{r}
+
+# Upset plot - If no hallmarks then don't include in this upset plot
+lt <- list()
+for (feature in ftnames_order){
+    # 1. Preprocess - to gene symbol
+  GENE <- unlist(strsplit(feature, '::'))[2]
+  GENE <- unlist(strsplit(GENE, ':'))[1]
+  # 2. Hallmark Mapping
+  halls <- mappings[mappings$human_gene_symbol==GENE,] %>% as.data.frame() %>% pull(gs_name)
+  
+  # 3. create input upset data if at least one hallmark
+  if (length(halls)>0){
+    lt[[GENE]]<- halls
+  }
+}
+
+# Upset
+print('Overlap fig below: hallmark overlap between features (genes)')
+if (length(lt)>25){
+  print('pruning - only first 25 MOLECULAR FEATURES due to UpSet limit')
+  mH = make_comb_mat(lt[1:25], mode='distinct')
+  UpSet(mH)
+} else {
+  mH = make_comb_mat(lt, mode='distinct')
+  UpSet(mH)
+}
+```
+
+</details>
+
+<details><summary>2. Now grab ONLY the top 10 hallmarks (freq) regardless of % coverage</summary><p>
+
+```{r}
+####
+# function
+####
+build_hallmark_vect <- function(hallmark, ftnames_order){
+  fts_checked <- c() # sanity check
+  hallmark_present <- c()
+  for (feature in ftnames_order){
+    # 1. Preprocess - to gene symbol
+    GENE <- unlist(strsplit(feature, '::'))[2]
+    GENE <- unlist(strsplit(GENE, ':'))[1]
+    
+    # 2. Hallmark Mapping
+    halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
+    # If hallmark present
+    if (hallmark %in% halls){
+      i <- match(hallmark, halls)
+      hallmark_present <- c(hallmark_present, 1)
+      fts_checked <- c(fts_checked, feature)
+    }
+    else {
+      hallmark_present <- c(hallmark_present, 0)
+      fts_checked <- c(fts_checked, feature)
+    }
+  }
+  return(hallmark_present)
+}
+```
+
+```{r}
+# Find top hallmarks
+print('Heatmap below will use these hallmarks (order matches with heatmap)')
+top <- data[1:5]
+print(top)
+top <- names(top)
+
+vals_1 <- build_hallmark_vect(top[1],ftnames_order)
+vals_2 <- build_hallmark_vect(top[2],ftnames_order)
+vals_3 <- build_hallmark_vect(top[3],ftnames_order)
+vals_4 <- build_hallmark_vect(top[4],ftnames_order)
+vals_5 <- build_hallmark_vect(top[5],ftnames_order)
+
+
+# Build heatmap
+hall_annot <- rowAnnotation(
+  Hallmark_1 = vals_1,
+  Hallmark_2 = vals_2,
+  Hallmark_3 = vals_3,
+  Hallmark_4 = vals_4,
+  Hallmark_5 = vals_5,
+  col = list(
+    Hallmark_1 = c('0' = "white", '1' = "black"),
+    Hallmark_2 = c('0' = "white", '1' = "black"),
+    Hallmark_3 = c('0' = "white", '1' = "black"),
+    Hallmark_4 = c('0' = "white", '1' = "black"),
+    Hallmark_5 = c('0' = "white", '1' = "black")
+  ),
+  show_legend = FALSE
+)
+
+fig <- Heatmap(
+  mat2, #each col will have mean 0, sd 1
+  name = prefix,
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  column_title = 'Samples',
+  row_title = 'Features',
+  top_annotation = column_ha,
+  right_annotation = team_list,
+  left_annotation = hall_annot
+)
+draw(fig)
+```
+
+</details>
