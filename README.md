@@ -78,3 +78,11 @@ Last updated on 1/11/21
 for this heatmap replace dendrogram with strongest associated cancer hallmark for each feature. currently if a feature does not have any associated hallmark then will leave blank (or shown in gray).
 
 TODO: likely will update this so that genes without association will be assigned one by correlation analysis
+
+```
+# Pull gene2hallmark mappings and save in data/figure_panel_b/hallmarks.tsv
+scripts/WIP_cancer_hallmarks.Rmd
+
+# Create heatmap with hallmark annotations
+scripts/WIP-add_hallmarks_heatmap_cluster.Rmd
+```
