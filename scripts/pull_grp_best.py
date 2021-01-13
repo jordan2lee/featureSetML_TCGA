@@ -3,7 +3,7 @@
 ##### Hardcoded
 cancer = 'BRCA'
 file = 'data/exact_match/best_models_BRCA.tsv'
-file_tarball = 'src/tarball/{}_v8_20200203.tsv'.format(cancer)
+file_tarball = 'src/tarball/{}_v9_20201029.tsv'.format(cancer)
 out1 = 'data/heatmap/{}_fts_by_TEAM.tsv'.format(cancer)
 out2 = 'data/heatmap/{}_fts_by_VALUE.tsv'.format(cancer)
 #####
