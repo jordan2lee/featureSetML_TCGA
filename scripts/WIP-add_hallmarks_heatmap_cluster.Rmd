@@ -42,6 +42,7 @@ suppressPackageStartupMessages(library(data.table))
 # install.packages('testit')
 suppressPackageStartupMessages(library(testit))
 suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(ggplot2))
 ```
 
 ```{r}
@@ -277,52 +278,37 @@ This section requires the previous section to be ran `WIP Version 2`
 
 ```{r}
 # How many hallmarks is a feature associated with?
-data <- table(n_hallmarks)
-fig <- barplot(data, xlab='', main='Histogram - How many hallmarks is a feature associated with?')
-kable(data)
+df <- table(n_hallmarks) %>% as.data.frame()
+colnames(df)<- c('nHallmarks', 'Freq')
+ggplot(data=df, aes(x=nHallmarks, y=Freq, fill='blue')) + 
+  geom_bar(stat='identity') +
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5) +
+  ggtitle('Histogram - How many hallmarks is a feature associated with?') +
+  theme(legend.position = "none")
+
 ```
 
 ```{r}
 # What hallmarks are fts most often associated with?
-data <- sort(table(pooled_hallmarks), decreasing=T)
-fig <- barplot(data, xlab='', main='Histogram - What hallmarks are fts most often associated with?')
-labs <- names(data)
-text(cex=.5, x=fig-.25, y=-1.25, labs, xpd=TRUE, srt=90)
-head(data)
-```
-
-```{r}
-
-# Upset plot - If no hallmarks then don't include in this upset plot
-lt <- list()
-for (feature in ftnames_order){
-    # 1. Preprocess - to gene symbol
-  GENE <- unlist(strsplit(feature, '::'))[2]
-  GENE <- unlist(strsplit(GENE, ':'))[1]
-  # 2. Hallmark Mapping
-  halls <- mappings[mappings$human_gene_symbol==GENE,] %>% as.data.frame() %>% pull(gs_name)
-  
-  # 3. create input upset data if at least one hallmark
-  if (length(halls)>0){
-    lt[[GENE]]<- halls
-  }
-}
-
-# Upset
-print('Overlap fig below: hallmark overlap between features (genes)')
-if (length(lt)>25){
-  print('pruning - only first 25 MOLECULAR FEATURES due to UpSet limit')
-  mH = make_comb_mat(lt[1:25], mode='distinct')
-  UpSet(mH)
-} else {
-  mH = make_comb_mat(lt, mode='distinct')
-  UpSet(mH)
-}
+df <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
+colnames(df)<- c('Hallmarks', 'Freq')
+ggplot(data=df, aes(x=Hallmarks, y=Freq, fill='blue')) + 
+  geom_bar(stat='identity') +
+  geom_text(aes(label=Freq), hjust=-0.5, size=1.5) +
+  ggtitle('What hallmarks are fts most often associated with') +
+  theme(text = element_text(size=6)) +
+  theme(legend.position = "none") +
+  coord_flip()
 ```
 
 </details>
 
 <details><summary>2. Now grab ONLY the top 10 hallmarks (freq) regardless of % coverage</summary><p>
+
+```{r}
+# get top data
+data <- sort(table(pooled_hallmarks), decreasing=T)
+```
 
 ```{r}
 ####
