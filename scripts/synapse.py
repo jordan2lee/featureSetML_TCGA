@@ -53,7 +53,7 @@ def parse_combined_file(input_file, ft_method):
             if header == False:
                 if ft_method == 'fbedeBIC':
                     # FtsetID
-                    fID = '_'.join([team, tumor, ''.join([ft_method, iteration] ) ])
+                    fID = '_'.join([team, tumor, '_'.join([ft_method, iteration] ) ])
                     # cancer cohort
                     cohort = '[\"'+ tumor + '\"]'
                     # ft set
@@ -61,7 +61,7 @@ def parse_combined_file(input_file, ft_method):
                     ftset.append(ft)
                 elif ft_method == 'rfe15':
                     # FtsetID
-                    fID = '_'.join([team, tumor, ''.join([ft_method, iteration] ) ])
+                    fID = '_'.join([team, tumor, '_'.join([ft_method, iteration] ) ])
                     # cancer cohort
                     cohort = '[\"'+ tumor + '\"]'
                     # ft set
@@ -78,26 +78,57 @@ def parse_combined_file(input_file, ft_method):
 
 
 def parse_per_file(file, ft_method):
-    ftset = []
+    ALL = [] # contains all 5 data types
+    GEXP = [] # filters for gexp
+    CNVR = [] # fitlers for cnvr
+    MI = [] # filters for mirna
+    METH = [] #filters for meth
+    MUTA = []
     with open(file, 'r') as fh:
         header = True
         for line in fh:
             if header == False:
                 # FtsetID
-                fID = '_'.join([team, tumor, ''.join([ft_method, iteration] ) ])
+                fID = '_'.join([team, tumor, '_'.join([ft_method, iteration] ) ])
                 # cancer cohort
                 cohort = '[\"'+ tumor + '\"]'
                 # ft set
                 line = line.strip().split('\t')[1:]
                 for s in line:
-                    if s != "NA":
-                        ftset.append(s)
+                    if s != "NA" and s != "":
+                        # Add to each list
+                        ALL.append(s)
+                        if s.startswith('B:MUTA:'):
+                            MUTA.append(s)
+                        elif s.startswith('I:CNVR::'):
+                            CNVR.append(s)
+                        elif s.startswith('N:GEXP'):
+                            GEXP.append(s)
+                        elif s.startswith('N:METH:'):
+                            METH.append(s)
+                        elif s.startswith('N:MIR::'):
+                            MI.append(s)
             else:
                 header = False
-    # clean up list of fts
-    ftset = str(ftset).replace("\'", "\"").replace(' ', '')
-    # write output results
-    out.write('\t'.join([fID, cohort, ftset]) + '\n')
+    # clean up list of fts + write output results
+    ALL = str(ALL).replace("\'", "\"").replace(' ', '')
+    out.write('\t'.join([''.join([fID, 'ALL']), cohort, ALL]) + '\n')
+
+    if len(MUTA)>0:
+        MUTA = str(MUTA).replace("\'", "\"").replace(' ', '')
+        out.write('\t'.join([''.join([fID, 'MUTA']), cohort, MUTA]) + '\n')
+    if len(CNVR)>0:
+        CNVR = str(CNVR).replace("\'", "\"").replace(' ', '')
+        out.write('\t'.join([''.join([fID, 'CNVR']), cohort, CNVR]) + '\n')
+    if len(GEXP)>0:
+        GEXP = str(GEXP).replace("\'", "\"").replace(' ', '')
+        out.write('\t'.join([''.join([fID, 'GEXP']), cohort, GEXP]) + '\n')
+    if len(METH)>0:
+        METH = str(METH).replace("\'", "\"").replace(' ', '')
+        out.write('\t'.join([''.join([fID, 'METH']), cohort, METH]) + '\n')
+    if len(MI)>0:
+        MI = str(MI).replace("\'", "\"").replace(' ', '')
+        out.write('\t'.join([''.join([fID, 'MI']), cohort, MI]) + '\n')
 
 
 ####
@@ -111,10 +142,10 @@ with open(file_out, 'w') as out:
 
     # For each feature selection model
     for ft_method in list_ft_methods:
-        print(ft_method)
+        # print(ft_method)
         # For each cancer pull the feature list
         for tumor in cancer_list:
-            print(tumor)
+            # print(tumor)
             # For the combined file
             iteration = 'combined'
             file = 'data/ft_selection_skgrid/{}/{}_{}--combined_platform.tsv'.format(tumor, tumor, ft_method)
