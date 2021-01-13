@@ -81,7 +81,7 @@ def parse_per_file(file, ft_method):
     ALL = [] # contains all 5 data types
     GEXP = [] # filters for gexp
     CNVR = [] # fitlers for cnvr
-    MI = [] # filters for mirna
+    MIR = [] # filters for mirna
     METH = [] #filters for meth
     MUTA = []
     with open(file, 'r') as fh:
@@ -107,7 +107,7 @@ def parse_per_file(file, ft_method):
                         elif s.startswith('N:METH:'):
                             METH.append(s)
                         elif s.startswith('N:MIR::'):
-                            MI.append(s)
+                            MIR.append(s)
             else:
                 header = False
     # clean up list of fts + write output results
@@ -126,9 +126,9 @@ def parse_per_file(file, ft_method):
     if len(METH)>0:
         METH = str(METH).replace("\'", "\"").replace(' ', '')
         out.write('\t'.join([''.join([fID, 'METH']), cohort, METH]) + '\n')
-    if len(MI)>0:
-        MI = str(MI).replace("\'", "\"").replace(' ', '')
-        out.write('\t'.join([''.join([fID, 'MI']), cohort, MI]) + '\n')
+    if len(MIR)>0:
+        MIR = str(MIR).replace("\'", "\"").replace(' ', '')
+        out.write('\t'.join([''.join([fID, 'MIR']), cohort, MIR]) + '\n')
 
 
 ####
