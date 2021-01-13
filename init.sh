@@ -3,12 +3,8 @@
 mkdir src
 mkdir src/tarball
 mkdir data
-mkdir data/skgrid_ft_sets
 mkdir data/manual_remove_mi
-mkdir data/exact_match
-mkdir data/exact_match/corr
-mkdir data/match
-mkdir figures
+mkdir data/figure_panel_a
+mkdir data/figure_panel_b
 mkdir notebooks
 mkdir scripts
-mkdir heatmap

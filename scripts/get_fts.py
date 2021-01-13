@@ -1,14 +1,26 @@
 #!/usr/bin/python
 
 import pandas as pd
+import argparse
 
-############# Hardcoded Values
-cancer = 'BRCA'
-pmetric = 'overall_weighted_f1'
+def get_arguments():
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument("-t", "--tumor", help ="cancer cohort", required=True, type=str)
+    parser.add_argument("-m", "--metric", help ="classification performance metric", required=True, type=str)
+    parser.add_argument("-f1", "--file1_fts", help ="classification performance file with all groups", required=True, type=str)
+    parser.add_argument("-f2", "--file2_perform", help ="feature set file with all groups", required=True, type=str)
+    parser.add_argument("-o", "--out", help ="output file", required=True, type=str)
+    return parser.parse_args()
+
+args = get_arguments()
+cancer = args.tumor
+pmetric = args.metric
+file_fts = args.file1_fts
+file_preds = args.file2_perform
+file_output = args.out
+
+############# Hardcoded Object
 groups = ['gnosis', 'CF|All', 'AKLIMATE', 'nn', ['rfe15', 'fbedeBIC']]
-
-file_preds = 'src/feature_list_with_performance_with_subtype_names_20200828.tsv.gz'
-file_fts = 'src/collected_features_matrix_20200722.tsv.gz'
 #############
 
 performance_df = pd.read_csv(file_preds, sep = '\t', low_memory=False)
@@ -47,4 +59,4 @@ assert len(best) == 5, 'best model not found for all 5 groups'
 # Subset feature matrix for only best model per team
 ft_df = pd.read_csv(file_fts, sep = '\t', index_col=0, low_memory=False)
 ft_df = ft_df[best].drop(['feature_list_method','feature_list_cohort','feature_list_size']) # rm annotat rows
-ft_df.to_csv('data/exact_match/best_models_{}.tsv'.format(cancer), sep='\t')
+ft_df.to_csv(file_output, sep='\t')
