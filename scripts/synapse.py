@@ -53,7 +53,7 @@ def parse_combined_file(input_file, ft_method):
             if header == False:
                 if ft_method == 'fbedeBIC':
                     # FtsetID
-                    fID = '_'.join([team, tumor, ''.join([ft_method, iteration] ) ])
+                    fID = '_'.join([team, tumor, '_'.join([ft_method, iteration] ) ])
                     # cancer cohort
                     cohort = '[\"'+ tumor + '\"]'
                     # ft set
@@ -61,7 +61,7 @@ def parse_combined_file(input_file, ft_method):
                     ftset.append(ft)
                 elif ft_method == 'rfe15':
                     # FtsetID
-                    fID = '_'.join([team, tumor, ''.join([ft_method, iteration] ) ])
+                    fID = '_'.join([team, tumor, '_'.join([ft_method, iteration] ) ])
                     # cancer cohort
                     cohort = '[\"'+ tumor + '\"]'
                     # ft set
@@ -84,13 +84,13 @@ def parse_per_file(file, ft_method):
         for line in fh:
             if header == False:
                 # FtsetID
-                fID = '_'.join([team, tumor, ''.join([ft_method, iteration] ) ])
+                fID = '_'.join([team, tumor, '_'.join([ft_method, iteration] ) ])
                 # cancer cohort
                 cohort = '[\"'+ tumor + '\"]'
                 # ft set
                 line = line.strip().split('\t')[1:]
                 for s in line:
-                    if s != "NA":
+                    if s != "NA" and s != "":
                         ftset.append(s)
             else:
                 header = False
@@ -98,7 +98,6 @@ def parse_per_file(file, ft_method):
     ftset = str(ftset).replace("\'", "\"").replace(' ', '')
     # write output results
     out.write('\t'.join([fID, cohort, ftset]) + '\n')
-
 
 ####
 # Main
