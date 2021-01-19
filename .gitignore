@@ -5,6 +5,7 @@ scripts/.Rhistory
 notebooks/.ipynb_checkpoints/
 notebooks/archive/.ipynb_checkpoints/
 notebooks/wip/.ipynb_checkpoints/
+scripts/.Rapp.history
 
 # Source and transformed data
 src/*
