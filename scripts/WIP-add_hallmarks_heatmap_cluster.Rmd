@@ -376,7 +376,7 @@ dev.off()
 
 
 
-<details><summary>3. Heatmap with Hallmarks (Top 10) </summary><p>
+<details><summary>WIP 3. Heatmap with Hallmarks (Top 10) </summary><p>
  
 first set how many hallmarks want. **Note will need to manualy update the `rowAnnotation()` to reflect these n results. currently set to 10**
 
