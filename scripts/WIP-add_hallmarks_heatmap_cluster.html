@@ -406,8 +406,8 @@ df_fts &lt;- fread(&#39;../data/figure_panel_b/BRCA_fts_by_TEAM.tsv&#39;)%&gt;% 
 mappings &lt;- fread(&#39;../data/figure_panel_b/hallmarks.tsv&#39;) %&gt;% as.data.frame()
 ######</code></pre>
 </div>
-<div id="scaled-where-appropriate---heatmap" class="section level3">
-<h3>Scaled where appropriate - heatmap</h3>
+<div id="heatmaps-for-each-data-type" class="section level3">
+<h3>Heatmaps for each data type</h3>
 <p>Scaling data - METH, GEXP, and MIR</p>
 <p>Non-scaled data - MUTA, CNVR</p>
 <p>I want to see the differences between features. Data was scaled - all samples for a given feature have mean 0 and sd 1. then ran through normal pipeline</p>
@@ -415,20 +415,21 @@ mappings &lt;- fread(&#39;../data/figure_panel_b/hallmarks.tsv&#39;) %&gt;% as.d
 yes_scale &lt;- c(&#39;N:METH&#39; , &#39;N:GEXP&#39;,&#39;N:MIR&#39;) # which fts to scale
 #####</code></pre>
 <details>
-<summary>Analysis Results</summary>
+<summary>Code and figures</summary>
 <p>
-<pre class="r"><code>####
+<pre class="r"><code># Set up saving fig packet
+setwd(outdir)
+####
 # Main
 ####
-# pre &lt;- c(&#39;I:CNVR&#39;, &#39;N:METH&#39; , &#39;N:GEXP&#39;, &#39;B:MUTA&#39;, &#39;N:MIR&#39;)
-pre &lt;- c(&#39;N:GEXP&#39;) # TODO remove this from dev
+pre &lt;- c(&#39;N:METH&#39;,&#39;N:MIR&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;, &#39;N:GEXP&#39;) # GEXP must be last
 
 for (prefix in pre){
   # A. Order by subtype
   df_transform &lt;- df %&gt;% arrange(Labels)
   
   # B. Column annotation
-  column_ha &lt;- HeatmapAnnotation(
+  subtype_ha &lt;- rowAnnotation(
     Subtype = df_transform$Labels, 
     na_col = &#39;grey&#39;, 
     col = list(
@@ -459,21 +460,22 @@ for (prefix in pre){
   # scale if appropriate 
   if (prefix %in% yes_scale){
     mat &lt;- scale(t(mat), center=TRUE, scale=TRUE) #each ft row will have mean 0, sd 1. omit NAs
-    mat &lt;- t(mat) #but flip for heatmap looks
+  } else {
+    mat &lt;- t(mat) #flip for heatmap looks
   }
-
+  
   fig &lt;- Heatmap(
     mat,
     name = &#39;first heatmap&#39;,
-    cluster_rows = TRUE,
-    clustering_distance_rows = &quot;euclidean&quot;,
-    clustering_method_rows = &quot;ward.D&quot;,
-    cluster_columns = FALSE,
+    cluster_rows = FALSE,
+    clustering_distance_columns = &quot;euclidean&quot;,
+    clustering_method_columns = &quot;ward.D&quot;,
+    cluster_columns = TRUE,
     show_row_names = FALSE,
     show_column_names = FALSE,
     column_title = &#39;Samples&#39;,
     row_title = &#39;Features&#39;,
-    top_annotation = column_ha
+    right_annotation = subtype_ha
   )
   # draw(fig) # dont need to draw
   
@@ -483,15 +485,15 @@ for (prefix in pre){
   ####
   # Ordering
   # 1. Get order of features post heatmap clustering
-  heatmap_order &lt;- row_order(fig) # index vector
+  heatmap_order &lt;- column_order(fig) # index vector
   ftnames_order &lt;- c() # featurename vector
   for (i in heatmap_order){
-    add_ft &lt;- rownames(mat)[i]
+    add_ft &lt;- colnames(mat)[i]
     ftnames_order &lt;- c(ftnames_order, add_ft)
   }
   # print(ftnames_order)
   # 2. Get new matrix that is ordered by heatmap clustering
-  mat2 &lt;- mat[match(ftnames_order, rownames(mat)),]
+  mat2 &lt;- mat[,match(ftnames_order, colnames(mat))]
   
   
   
@@ -504,7 +506,7 @@ for (prefix in pre){
   aklimate &lt;- team_df %&gt;% pull(&#39;AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA&#39;) %&gt;% as.character()
   subscope &lt;- team_df %&gt;% pull(&#39;nn_jg_2020-03-20_top1kfreq:BRCA_BRCA&#39;) %&gt;% as.character()
   skgrid &lt;- team_df %&gt;% pull(&#39;fbedeBIC_BRCA&#39;) %&gt;% as.character()
-  team_list &lt;- rowAnnotation(
+  team_list &lt;- HeatmapAnnotation(
     JadBIO = jadbio,
     CForest = cforest,
     AKLIMATE = aklimate,
@@ -522,121 +524,80 @@ for (prefix in pre){
   )
   
   # 3. Heatmap
-    # Set up saving fig packet
-    setwd(outdir)
-    pdf(paste(&#39;ht_base_&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;&#39;), onefile=FALSE)
-    fig &lt;- Heatmap(
+  # Set up saving fig packet
+  pdf(paste(&#39;ht_base_&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;&#39;), onefile=FALSE)
+  fig &lt;- Heatmap(
     mat2, #each col will have mean 0, sd 1
     name = prefix,
-    cluster_rows = TRUE,
-    clustering_distance_rows = &quot;euclidean&quot;,
-    clustering_method_rows = &quot;ward.D&quot;,
-    cluster_columns = FALSE,
+    cluster_rows = FALSE,
+    clustering_distance_columns = &quot;euclidean&quot;,
+    clustering_method_columns = &quot;ward.D&quot;,
+    cluster_columns = TRUE,
     show_row_names = FALSE,
     show_column_names = FALSE,
     column_title = &#39;Samples&#39;,
     row_title = &#39;Features&#39;,
-    top_annotation = column_ha,
-    right_annotation = team_list,
+    right_annotation = subtype_ha,
+    top_annotation = team_list,
   )
   draw(fig)
   dev.off()
-
-
+  
+  
   #####
   # unit tests
   #####
   # sanity check 1 - that the row orders are the same in the two heatmaps
-  assert(&#39;Assertion Error: order of feature rows on heatmap and final heatmap not same&#39;, rownames(mat2) == ftnames_order)
+  assert(&#39;Assertion Error: order of feature rows on heatmap and final heatmap not same&#39;, colnames(mat2) == ftnames_order)
   # sanity check 2 - directly compare heatmap rows
-  heatmap_order &lt;- row_order(fig) # index vector
+  heatmap_order &lt;- column_order(fig) # index vector
   ftnames_order2 &lt;- c() # featurename vector
   for (i in heatmap_order){
-    add_ft &lt;- rownames(mat2)[i]
+    add_ft &lt;- colnames(mat2)[i]
     ftnames_order2 &lt;- c(ftnames_order2, add_ft)
   }
   assert(&#39;Assertion Error: order of feature rows on heatmap and final heatmap not same&#39;, ftnames_order2 == ftnames_order)
   
   print(paste(&#39;Distance metric = &#39;, fig@row_dend_param$distance, &#39;. Method = &#39;, fig@row_dend_param$method, sep=&#39; &#39;))
 }</code></pre>
-<pre><code>## [1] &quot;N:GEXP&quot;
+<pre><code>## [1] &quot;N:METH&quot;
+## [1] 30</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;N:MIR&quot;
+## [1] 14</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;I:CNVR&quot;
+## [1] 18</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;B:MUTA&quot;
+## [1] 7</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;N:GEXP&quot;
 ## [1] 1682</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;</code></pre>
 </details>
 </div>
-</div>
-</div>
-<div id="wip-version-2---add-in-one-hallmark-annot-1-hallmark-multi-none" class="section level1">
-<h1>WIP Version 2 - add in one hallmark annot (1 hallmark, “multi”, “none”)</h1>
+<div id="explore-the-hallmarks-associated-with-gexp-features" class="section level3">
+<h3>Explore the hallmarks associated with GEXP features</h3>
+<p>One annotation bar (top hallmarks only, all others are not colored)</p>
 <details>
-<summary>Analysis</summary>
+<summary>1. Explore Hallmarks</summary>
 <p>
-<pre class="r"><code># this code chunk likely won&#39;t work because we have a lot of annot bars on left side
+<pre class="r"><code># Prep
 
 # look up if in hallmark mappings table
 n_hallmarks &lt;- c() # exploratory
 pooled_hallmarks &lt;- c() # exploratory
-hallmark_vect &lt;- c()
 for (feature in ftnames_order){
   # 1. Preprocess - to gene symbol
   GENE &lt;- unlist(strsplit(feature, &#39;::&#39;))[2]
   GENE &lt;- unlist(strsplit(GENE, &#39;:&#39;))[1]
-  
   # 2. Hallmark Mapping
   halls &lt;- mappings[mappings$human_gene_symbol==GENE,]$gs_name %&gt;% as.vector()
   # Multiple Hallmarks
   n_hallmarks &lt;- c(n_hallmarks, length(halls))
   pooled_hallmarks &lt;- c(pooled_hallmarks, halls)
-  if (length(halls) &gt;1){
-    hallmark_vect &lt;- c(hallmark_vect, &#39;multi&#39;)
-  } 
-  # One Hallmark
-  else if (length(halls) == 1){
-    hallmark_vect &lt;- c(hallmark_vect, halls)
-  } 
-  # No Hallmarks
-  else {
-    hallmark_vect &lt;- c(hallmark_vect, &#39;none&#39;)
-  }
-}
-
-# 3. Build heatmap
-hall_annot &lt;- rowAnnotation(
-  Hallmark = hallmark_vect,
-  # col = list(
-  #   Hallmark = c(&#39;none&#39; = &quot;black&quot;, &#39;multi&#39; = &quot;gray&quot;)
-  # ),
-  show_legend = FALSE
-)
-
-fig &lt;- Heatmap(
-  mat2, #each col will have mean 0, sd 1
-  name = prefix,
-  cluster_rows = FALSE,
-  cluster_columns = FALSE,
-  show_row_names = FALSE,
-  show_column_names = FALSE,
-  column_title = &#39;Samples&#39;,
-  row_title = &#39;Features&#39;,
-  top_annotation = column_ha,
-  right_annotation = team_list,
-  left_annotation = hall_annot
-)
-# Set up saving fig packet
-setwd(outdir)
-pdf(paste(&#39;OneMultiNone_ht_&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;&#39;), onefile=FALSE)
-draw(fig)
-dev.off()</code></pre>
-<pre><code>## quartz_off_screen 
-##                 2</code></pre>
-</details>
-</div>
-<div id="wip-version-3---one-annotation-bar-top-hallmarks-only-all-others-are-gray" class="section level1">
-<h1>WIP Version 3 - one annotation bar (top hallmarks only, all others are gray)</h1>
-<p>This section requires the previous section to be ran <code>WIP Version 2</code></p>
-<details>
-<summary>1. look at overlap in hallmarks</summary>
-<p>
+}</code></pre>
 <pre class="r"><code># How many hallmarks is a feature associated with?
 # Set up saving fig packet
 setwd(outdir)
@@ -671,10 +632,8 @@ dev.off()</code></pre>
 ##                 2</code></pre>
 </details>
 <details>
-<summary>2. Now grab ONLY the top 5 hallmarks (freq) regardless of % coverage</summary>
+<summary>2. Heatmap with Hallmarks (Top 5)</summary>
 <p>
-<pre class="r"><code># get top data
-hallmark_data &lt;- sort(table(pooled_hallmarks), decreasing=T)</code></pre>
 <pre class="r"><code>####
 # function
 ####
@@ -701,7 +660,10 @@ build_hallmark_vect &lt;- function(hallmark, ftnames_order){
   }
   return(hallmark_present)
 }</code></pre>
-<pre class="r"><code># Find top hallmarks
+<pre class="r"><code># Get top data
+hallmark_data &lt;- sort(table(pooled_hallmarks), decreasing=T)
+
+# Find top hallmarks
 print(&#39;Heatmap below will use these hallmarks (order matches with heatmap)&#39;)</code></pre>
 <pre><code>## [1] &quot;Heatmap below will use these hallmarks (order matches with heatmap)&quot;</code></pre>
 <pre class="r"><code>top &lt;- hallmark_data[1:5]
@@ -721,7 +683,7 @@ vals_5 &lt;- build_hallmark_vect(top[5],ftnames_order)
 
 
 # Build heatmap
-hall_annot &lt;- rowAnnotation(
+hall_annot &lt;- HeatmapAnnotation(
   Hallmark_1 = vals_1,
   Hallmark_2 = vals_2,
   Hallmark_3 = vals_3,
@@ -746,9 +708,9 @@ fig &lt;- Heatmap(
   show_column_names = FALSE,
   column_title = &#39;Samples&#39;,
   row_title = &#39;Features&#39;,
-  top_annotation = column_ha,
-  right_annotation = team_list,
-  left_annotation = hall_annot
+  right_annotation = subtype_ha,
+  top_annotation = team_list,
+  bottom_annotation = hall_annot
 )
 # Set up saving fig packet
 setwd(outdir)
@@ -759,7 +721,7 @@ dev.off()</code></pre>
 ##                 2</code></pre>
 </details>
 <details>
-<summary>3. Now grab ONLY the top 10 hallmarks (freq) regardless of % coverage </summary>
+<summary>3. Heatmap with Hallmarks (Top 10) </summary>
 <p>
 <p>first set how many hallmarks want. <strong>Note will need to manualy update the <code>rowAnnotation()</code> to reflect these n results. currently set to 10</strong></p>
 <pre class="r"><code>#### harcoded
@@ -783,7 +745,7 @@ for (i in 1:how_many_halls){
 
 # Build heatmap
 # TODO loop through to assign these as in #3 above
-hall_annot &lt;- rowAnnotation(
+hall_annot &lt;- HeatmapAnnotation(
   Hallmark_1 = vals_1,
   Hallmark_2 = vals_2,
   Hallmark_3 = vals_3,
@@ -807,9 +769,9 @@ fig &lt;- Heatmap(
   show_column_names = FALSE,
   column_title = &#39;Samples&#39;,
   row_title = &#39;Features&#39;,
-  top_annotation = column_ha,
-  right_annotation = team_list,
-  left_annotation = hall_annot,
+  right_annotation = subtype_ha,
+  top_annotation = team_list,
+  bottom_annotation = hall_annot,
 )
 # Set up saving fig packet
 setwd(outdir)
@@ -819,6 +781,8 @@ dev.off()</code></pre>
 <pre><code>## quartz_off_screen 
 ##                 2</code></pre>
 </details>
+</div>
+</div>
 </div>
 
 

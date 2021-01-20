@@ -57,7 +57,7 @@ mappings <- fread('../data/figure_panel_b/hallmarks.tsv') %>% as.data.frame()
 ######
 ```
 
-### Scaled where appropriate - heatmap
+### Heatmaps for each data type
 
 Scaling data - METH, GEXP, and MIR
 
@@ -71,26 +71,22 @@ yes_scale <- c('N:METH' , 'N:GEXP','N:MIR') # which fts to scale
 #####
 ```
 
-
-<details><summary>Analysis Results</summary><p>
+<details><summary>Code and figures</summary><p>
 
 ```{r mixed scaled z score loop for all data types}
-
-
 # Set up saving fig packet
 setwd(outdir)
 ####
 # Main
 ####
-pre <- c('I:CNVR', 'N:METH' , 'N:GEXP', 'B:MUTA', 'N:MIR')
-# pre <- c('N:GEXP') # TODO remove this from dev
+pre <- c('N:METH','N:MIR', 'I:CNVR', 'B:MUTA', 'N:GEXP') # GEXP must be last
 
 for (prefix in pre){
   # A. Order by subtype
   df_transform <- df %>% arrange(Labels)
   
   # B. Column annotation
-  column_ha <- HeatmapAnnotation(
+  subtype_ha <- rowAnnotation(
     Subtype = df_transform$Labels, 
     na_col = 'grey', 
     col = list(
@@ -121,21 +117,22 @@ for (prefix in pre){
   # scale if appropriate 
   if (prefix %in% yes_scale){
     mat <- scale(t(mat), center=TRUE, scale=TRUE) #each ft row will have mean 0, sd 1. omit NAs
-    mat <- t(mat) #but flip for heatmap looks
+  } else {
+    mat <- t(mat) #flip for heatmap looks
   }
-
+  
   fig <- Heatmap(
     mat,
     name = 'first heatmap',
-    cluster_rows = TRUE,
-    clustering_distance_rows = "euclidean",
-    clustering_method_rows = "ward.D",
-    cluster_columns = FALSE,
+    cluster_rows = FALSE,
+    clustering_distance_columns = "euclidean",
+    clustering_method_columns = "ward.D",
+    cluster_columns = TRUE,
     show_row_names = FALSE,
     show_column_names = FALSE,
     column_title = 'Samples',
     row_title = 'Features',
-    top_annotation = column_ha
+    right_annotation = subtype_ha
   )
   # draw(fig) # dont need to draw
   
@@ -145,15 +142,15 @@ for (prefix in pre){
   ####
   # Ordering
   # 1. Get order of features post heatmap clustering
-  heatmap_order <- row_order(fig) # index vector
+  heatmap_order <- column_order(fig) # index vector
   ftnames_order <- c() # featurename vector
   for (i in heatmap_order){
-    add_ft <- rownames(mat)[i]
+    add_ft <- colnames(mat)[i]
     ftnames_order <- c(ftnames_order, add_ft)
   }
   # print(ftnames_order)
   # 2. Get new matrix that is ordered by heatmap clustering
-  mat2 <- mat[match(ftnames_order, rownames(mat)),]
+  mat2 <- mat[,match(ftnames_order, colnames(mat))]
   
   
   
@@ -166,7 +163,7 @@ for (prefix in pre){
   aklimate <- team_df %>% pull('AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA') %>% as.character()
   subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA') %>% as.character()
   skgrid <- team_df %>% pull('fbedeBIC_BRCA') %>% as.character()
-  team_list <- rowAnnotation(
+  team_list <- HeatmapAnnotation(
     JadBIO = jadbio,
     CForest = cforest,
     AKLIMATE = aklimate,
@@ -184,37 +181,36 @@ for (prefix in pre){
   )
   
   # 3. Heatmap
-    # Set up saving fig packet
-    # setwd(outdir)
-    pdf(paste('ht_base_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
-    fig <- Heatmap(
+  # Set up saving fig packet
+  pdf(paste('ht_base_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
+  fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
     name = prefix,
-    cluster_rows = TRUE,
-    clustering_distance_rows = "euclidean",
-    clustering_method_rows = "ward.D",
-    cluster_columns = FALSE,
+    cluster_rows = FALSE,
+    clustering_distance_columns = "euclidean",
+    clustering_method_columns = "ward.D",
+    cluster_columns = TRUE,
     show_row_names = FALSE,
     show_column_names = FALSE,
     column_title = 'Samples',
     row_title = 'Features',
-    top_annotation = column_ha,
-    right_annotation = team_list,
+    right_annotation = subtype_ha,
+    top_annotation = team_list,
   )
   draw(fig)
   dev.off()
-
-
+  
+  
   #####
   # unit tests
   #####
   # sanity check 1 - that the row orders are the same in the two heatmaps
-  assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', rownames(mat2) == ftnames_order)
+  assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', colnames(mat2) == ftnames_order)
   # sanity check 2 - directly compare heatmap rows
-  heatmap_order <- row_order(fig) # index vector
+  heatmap_order <- column_order(fig) # index vector
   ftnames_order2 <- c() # featurename vector
   for (i in heatmap_order){
-    add_ft <- rownames(mat2)[i]
+    add_ft <- colnames(mat2)[i]
     ftnames_order2 <- c(ftnames_order2, add_ft)
   }
   assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', ftnames_order2 == ftnames_order)
@@ -225,78 +221,34 @@ for (prefix in pre){
 
 </details>
 
-# WIP Version 2 - add in one hallmark annot (1 hallmark, "multi", "none")
 
-<details><summary>Analysis</summary><p>
+### Explore the hallmarks associated with GEXP features
+
+One annotation bar (top hallmarks only, all others are not colored)
+
+
+
+
+
+<details><summary>1. Explore Hallmarks</summary><p>
 
 ```{r for one annotaiton band}
-# this code chunk likely won't work because we have a lot of annot bars on left side
+# Prep
 
 # look up if in hallmark mappings table
 n_hallmarks <- c() # exploratory
 pooled_hallmarks <- c() # exploratory
-hallmark_vect <- c()
 for (feature in ftnames_order){
   # 1. Preprocess - to gene symbol
   GENE <- unlist(strsplit(feature, '::'))[2]
   GENE <- unlist(strsplit(GENE, ':'))[1]
-  
   # 2. Hallmark Mapping
   halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
   # Multiple Hallmarks
   n_hallmarks <- c(n_hallmarks, length(halls))
   pooled_hallmarks <- c(pooled_hallmarks, halls)
-  if (length(halls) >1){
-    hallmark_vect <- c(hallmark_vect, 'multi')
-  } 
-  # One Hallmark
-  else if (length(halls) == 1){
-    hallmark_vect <- c(hallmark_vect, halls)
-  } 
-  # No Hallmarks
-  else {
-    hallmark_vect <- c(hallmark_vect, 'none')
-  }
 }
-
-# 3. Build heatmap
-hall_annot <- rowAnnotation(
-  Hallmark = hallmark_vect,
-  # col = list(
-  #   Hallmark = c('none' = "black", 'multi' = "gray")
-  # ),
-  show_legend = FALSE
-)
-
-fig <- Heatmap(
-  mat2, #each col will have mean 0, sd 1
-  name = prefix,
-  cluster_rows = FALSE,
-  cluster_columns = FALSE,
-  show_row_names = FALSE,
-  show_column_names = FALSE,
-  column_title = 'Samples',
-  row_title = 'Features',
-  top_annotation = column_ha,
-  right_annotation = team_list,
-  left_annotation = hall_annot
-)
-# Set up saving fig packet
-setwd(outdir)
-pdf(paste('OneMultiNone_ht_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
-draw(fig)
-dev.off()
 ```
-
-</details>
-
-
-
-# WIP Version 3 - one annotation bar (top hallmarks only, all others are gray)
-
-This section requires the previous section to be ran `WIP Version 2`
-
-<details><summary>1. look at overlap in hallmarks</summary><p>
 
 ```{r}
 # How many hallmarks is a feature associated with?
@@ -334,12 +286,7 @@ dev.off()
 
 </details>
 
-<details><summary>2. Now grab ONLY the top 5 hallmarks (freq) regardless of % coverage</summary><p>
-
-```{r}
-# get top data
-hallmark_data <- sort(table(pooled_hallmarks), decreasing=T)
-```
+<details><summary>2. Heatmap with Hallmarks (Top 5)</summary><p>
 
 ```{r}
 ####
@@ -371,6 +318,9 @@ build_hallmark_vect <- function(hallmark, ftnames_order){
 ```
 
 ```{r}
+# Get top data
+hallmark_data <- sort(table(pooled_hallmarks), decreasing=T)
+
 # Find top hallmarks
 print('Heatmap below will use these hallmarks (order matches with heatmap)')
 top <- hallmark_data[1:5]
@@ -385,7 +335,7 @@ vals_5 <- build_hallmark_vect(top[5],ftnames_order)
 
 
 # Build heatmap
-hall_annot <- rowAnnotation(
+hall_annot <- HeatmapAnnotation(
   Hallmark_1 = vals_1,
   Hallmark_2 = vals_2,
   Hallmark_3 = vals_3,
@@ -410,9 +360,9 @@ fig <- Heatmap(
   show_column_names = FALSE,
   column_title = 'Samples',
   row_title = 'Features',
-  top_annotation = column_ha,
-  right_annotation = team_list,
-  left_annotation = hall_annot
+  right_annotation = subtype_ha,
+  top_annotation = team_list,
+  bottom_annotation = hall_annot
 )
 # Set up saving fig packet
 setwd(outdir)
@@ -426,7 +376,7 @@ dev.off()
 
 
 
-<details><summary>3. Now grab ONLY the top 10 hallmarks (freq) regardless of % coverage </summary><p>
+<details><summary>3. Heatmap with Hallmarks (Top 10) </summary><p>
  
 first set how many hallmarks want. **Note will need to manualy update the `rowAnnotation()` to reflect these n results. currently set to 10**
 
@@ -456,7 +406,7 @@ for (i in 1:how_many_halls){
 
 # Build heatmap
 # TODO loop through to assign these as in #3 above
-hall_annot <- rowAnnotation(
+hall_annot <- HeatmapAnnotation(
   Hallmark_1 = vals_1,
   Hallmark_2 = vals_2,
   Hallmark_3 = vals_3,
@@ -480,9 +430,9 @@ fig <- Heatmap(
   show_column_names = FALSE,
   column_title = 'Samples',
   row_title = 'Features',
-  top_annotation = column_ha,
-  right_annotation = team_list,
-  left_annotation = hall_annot,
+  right_annotation = subtype_ha,
+  top_annotation = team_list,
+  bottom_annotation = hall_annot,
 )
 # Set up saving fig packet
 setwd(outdir)
@@ -491,17 +441,4 @@ draw(fig)
 dev.off()
 ```
 
-
 </details>
-
-
-
-
-
-
-
-
-
-
-
-
