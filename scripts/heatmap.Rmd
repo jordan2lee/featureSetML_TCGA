@@ -432,10 +432,10 @@ fig <- Heatmap(
   bottom_annotation = col_annot
 )
 # Set up saving fig packet
-# setwd(outdir)
-# pdf(paste('ht_top5_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
+setwd(outdir)
+pdf(paste('ht_top5_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
 draw(fig)
-# dev.off()
+dev.off()
 ```
 
 </details>
