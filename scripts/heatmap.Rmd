@@ -90,10 +90,10 @@ for (prefix in pre){
     na_col = 'grey', 
     col = list(
       Subtype = c(
-        "BRCA_1" = 'orange',
-        "BRCA_2"='sienna1',
-        "BRCA_3"='red',
-        "BRCA_4"='red4'
+      "BRCA_1" = 'saddlebrown',
+      "BRCA_2"='firebrick4',
+      "BRCA_3"='firebrick3',
+      "BRCA_4"='brown1'
       )
     ),
     show_annotation_name = FALSE
@@ -116,7 +116,7 @@ for (prefix in pre){
   
   # scale if appropriate 
   if (prefix %in% yes_scale){
-    mat <- scale(t(mat), center=TRUE, scale=TRUE) #each ft row will have mean 0, sd 1. omit NAs
+    mat <- scale(t(mat), center=TRUE, scale=TRUE) #z-scores == each ft row will have mean 0, sd 1. omit NAs
   } else {
     mat <- t(mat) #flip for heatmap looks
   }
@@ -256,9 +256,9 @@ for (feature in ftnames_order){
 setwd(outdir)
 pdf(paste('hallmark_fts_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
 
-df <- table(n_hallmarks) %>% as.data.frame()
-colnames(df)<- c('nHallmarks', 'Freq')
-ggplot(data=df, aes(x=nHallmarks, y=Freq, fill='blue')) + 
+df2 <- table(n_hallmarks) %>% as.data.frame()
+colnames(df2)<- c('nHallmarks', 'Freq')
+ggplot(data=df2, aes(x=nHallmarks, y=Freq, fill='blue')) + 
   geom_bar(stat='identity') +
   geom_text(aes(label=Freq), vjust=-0.3, size=3.5) +
   ggtitle('Histogram - How many hallmarks is a feature associated with?') +
@@ -272,9 +272,9 @@ dev.off()
 setwd(outdir)
 pdf(paste('hallmark_hist_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
 
-df <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
-colnames(df)<- c('Hallmarks', 'Freq')
-ggplot(data=df, aes(x=Hallmarks, y=Freq, fill='blue')) + 
+df2 <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
+colnames(df2)<- c('Hallmarks', 'Freq')
+ggplot(data=df2, aes(x=Hallmarks, y=Freq, fill='blue')) + 
   geom_bar(stat='identity') +
   geom_text(aes(label=Freq), hjust=-0.5, size=1.5) +
   ggtitle('What hallmarks are fts most often associated with') +
@@ -326,7 +326,31 @@ print('Heatmap below will use these hallmarks (order matches with heatmap)')
 top <- hallmark_data[1:5]
 print(top)
 top <- names(top)
+```
 
+#### Need to manually update this code chunk
+
+```{r}
+print('need to manually update this')
+
+
+gene_set_size <- function(input_hallmark){
+  # subset for hallmark rows
+  tab<- mappings[mappings['gs_name']==input_hallmark,]
+  # count unique gene symbols
+  genes <- unique(unlist(tab['human_gene_symbol']))
+  return(length(genes))
+}
+
+for (h in top){
+  print(h)
+  print(gene_set_size(h))
+}
+
+```
+
+
+```{r}
 vals_1 <- build_hallmark_vect(top[1],ftnames_order)
 vals_2 <- build_hallmark_vect(top[2],ftnames_order)
 vals_3 <- build_hallmark_vect(top[3],ftnames_order)
@@ -343,6 +367,7 @@ aklimate <- team_df %>% pull('AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA'
 subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA') %>% as.character()
 skgrid <- team_df %>% pull('fbedeBIC_BRCA') %>% as.character()
 
+# Build annotation
 col_annot <- HeatmapAnnotation(
   AKLIMATE = aklimate,
   SubSCOPE = subscope,
@@ -352,11 +377,12 @@ col_annot <- HeatmapAnnotation(
   
   ct= anno_barplot(team_df$Total, bar_width = 1),
   
-  Hallmark_1 = vals_1,
-  Hallmark_2 = vals_2,
-  Hallmark_3 = vals_3,
-  Hallmark_4 = vals_4,
-  Hallmark_5 = vals_5,  
+  # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+  EstrogrenResponseEarly_200 = vals_1,
+  EstrogrenResponseLate_200 = vals_2,
+  E2FTargets_200 = vals_3,
+  G2MCheckpoint_200 = vals_4,
+  MTORC1Signaling_200 = vals_5,  
   
   col = list(
     AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
@@ -364,11 +390,11 @@ col_annot <- HeatmapAnnotation(
     CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
     JADBIO = c('0' = "#333333", '1' = "palevioletred1"),
     SKGrid =  c('0' = "#333333", '1' = "rosybrown2"),
-    Hallmark_1 = c('0' = "#333333", '1' = "white"),
-    Hallmark_2 = c('0' = "#333333", '1' = "white"),
-    Hallmark_3 = c('0' = "#333333", '1' = "white"),
-    Hallmark_4 = c('0' = "#333333", '1' = "white"),
-    Hallmark_5 = c('0' = "#333333", '1' = "white")
+    EstrogrenResponseEarly_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+    EstrogrenResponseLate_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+    E2FTargets_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+    G2MCheckpoint_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+    MTORC1Signaling_200 = c('0' = "#333333", '1' = "darkgoldenrod3")
   ),
   show_legend = FALSE
 )
