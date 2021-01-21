@@ -50,7 +50,7 @@ Outputs two files in `data/figure_panel_a/`:
 
 ## 3. Exact Feature Overlap Heatmap - Clustering features
 
-Last updated: 1/8/21
+Last updated: 1/20/21
 
 Purpose: create heatmap of all features of best models and cluster based on original molecular tarball signatures
 
@@ -59,14 +59,8 @@ Methods: select a cancer cohort. pull the best model per team (based on mean `ov
 *Note: assumes you ran scripts from section* `2. Exact Feature Name Overlap Upset Plot (Base Upset Plot)`
 
 ```
-# Preprocessing - in scripts/ it calls get_fts.py and pull_grp_best.py
+# Preprocessing - in scripts/ it calls get_fts.py, pull_grp_best.py, extract_hallmarks
 bash RUN_Heatmap_Exact.sh
-```
-
-TODO convert to R script called in RUN_Heatmap_Exact.sh
-```
-# Heatmaps - manually run
-scripts/heatmap_cluster.Rmd
 ```
 
 Note that figures generated in `.Rmd` file were then manually copied into slides for group presentation `notebooks/leejordan_fig4_presentation_121820.pdf`
