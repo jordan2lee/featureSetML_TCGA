@@ -349,6 +349,24 @@ for (h in top){
 
 ```
 
+```{r temp dev}
+df_transform <- df %>% arrange(Labels)
+subtype_ha <- rowAnnotation(
+  Subtype = df_transform$Labels, 
+  na_col = 'grey', 
+  col = list(
+    Subtype = c(
+    "BRCA_1" = 'saddlebrown',
+    "BRCA_2"='firebrick4',
+    "BRCA_3"='firebrick3',
+    "BRCA_4"='brown1'
+    )
+  ),
+  show_annotation_name = FALSE,
+  simple_anno_size = unit(2, "mm")
+)
+```
+
 
 ```{r}
 vals_1 <- build_hallmark_vect(top[1],ftnames_order)
@@ -375,7 +393,7 @@ col_annot <- HeatmapAnnotation(
   JADBIO = jadbio,
   SKGrid = skgrid,
   
-  ct= anno_barplot(team_df$Total, bar_width = 1),
+  nTeamSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill='blue', col='grey38') ),
   
   # TODO need to manually update the name + gene set size of each hallmark name + color pallate
   EstrogrenResponseEarly_200 = vals_1,
@@ -396,13 +414,14 @@ col_annot <- HeatmapAnnotation(
     G2MCheckpoint_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
     MTORC1Signaling_200 = c('0' = "#333333", '1' = "darkgoldenrod3")
   ),
-  show_legend = FALSE
+  show_legend = FALSE,
+  gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
 )
 
 # Plot
 fig <- Heatmap(
   mat2, #each col will have mean 0, sd 1
-  name = prefix,
+  name = unlist(strsplit(prefix, ':'))[2],
   cluster_rows = FALSE,
   cluster_columns = FALSE,
   show_row_names = FALSE,
