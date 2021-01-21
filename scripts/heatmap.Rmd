@@ -164,13 +164,13 @@ for (prefix in pre){
   subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA') %>% as.character()
   skgrid <- team_df %>% pull('fbedeBIC_BRCA') %>% as.character()
   team_list <- HeatmapAnnotation(
-    JadBIO = jadbio,
+    JADBIO = jadbio,
     CForest = cforest,
     AKLIMATE = aklimate,
     SubSCOPE = subscope,
     SKGrid = skgrid,
     col = list(
-      JadBIO = c('0' = "#333333", '1' = "palevioletred1"),
+      JABIO = c('0' = "#333333", '1' = "palevioletred1"),
       CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
@@ -344,10 +344,10 @@ subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA') %>% as.char
 skgrid <- team_df %>% pull('fbedeBIC_BRCA') %>% as.character()
 
 col_annot <- HeatmapAnnotation(
-  JadBIO = jadbio,
-  CForest = cforest,
   AKLIMATE = aklimate,
   SubSCOPE = subscope,
+  CForest = cforest,
+  JADBIO = jadbio,
   SKGrid = skgrid,
   
   ct= anno_barplot(team_df$Total, bar_width = 1),
@@ -359,10 +359,10 @@ col_annot <- HeatmapAnnotation(
   Hallmark_5 = vals_5,  
   
   col = list(
-    JadBIO = c('0' = "#333333", '1' = "palevioletred1"),
-    CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
     AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
     SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
+    CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+    JADBIO = c('0' = "#333333", '1' = "palevioletred1"),
     SKGrid =  c('0' = "#333333", '1' = "rosybrown2"),
     Hallmark_1 = c('0' = "#333333", '1' = "white"),
     Hallmark_2 = c('0' = "#333333", '1' = "white"),
@@ -387,10 +387,10 @@ fig <- Heatmap(
   bottom_annotation = col_annot
 )
 # Set up saving fig packet
-setwd(outdir)
-pdf(paste('ht_top5_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
+# setwd(outdir)
+# pdf(paste('ht_top5_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
 draw(fig)
-dev.off()
+# dev.off()
 ```
 
 </details>
