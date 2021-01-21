@@ -29,8 +29,11 @@ bash RUN_ft_select_skgrid.sh <cancer-cohort>
 # Consolidate and format feature selection results
 bash RUN_to_synapse.sh
 ```
+## 2. Run Classifiers and Download Group Results
 
-## 2. Exact Feature Name Overlap Upset Plot (Base Upset Plot)
+Run feature sets through Sci-kit Grid classifiers. Combine prediction results with the results from other team members and download the merged feature set file and classifier performance file into `src/`
+
+## 3. Exact Feature Name Overlap Upset Plot (Base Upset Plot)
 
 Last updated: 1/8/21
 
@@ -48,7 +51,7 @@ Outputs two files in `data/figure_panel_a/`:
 + `best_models_<cancer>.tsv`
 + `upsetplot_<cancer>.pdf`
 
-## 3. Exact Feature Overlap Heatmap - Clustering features
+## 4. Exact Feature Overlap Heatmap - Clustering features
 
 Last updated: 1/20/21
 
