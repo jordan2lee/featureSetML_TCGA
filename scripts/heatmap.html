@@ -426,18 +426,23 @@ for (prefix in pre){
   df_transform &lt;- df %&gt;% arrange(Labels)
   
   # B. Column annotation
+  # TODO hardcoded here
   subtype_ha &lt;- rowAnnotation(
-    Subtype = df_transform$Labels, 
+    Subtype = 
+      select(df_transform, Labels) %&gt;%
+      mutate_all(funs(str_replace(., &quot;BRCA_&quot;, &quot;&quot;))) %&gt;%
+      as.matrix(), 
     na_col = &#39;grey&#39;, 
     col = list(
       Subtype = c(
-      &quot;BRCA_1&quot; = &#39;saddlebrown&#39;,
-      &quot;BRCA_2&quot;=&#39;firebrick4&#39;,
-      &quot;BRCA_3&quot;=&#39;firebrick3&#39;,
-      &quot;BRCA_4&quot;=&#39;brown1&#39;
+      &quot;1&quot; = &#39;saddlebrown&#39;,
+      &quot;2&quot;=&#39;firebrick4&#39;,
+      &quot;3&quot;=&#39;firebrick3&#39;,
+      &quot;4&quot;=&#39;brown1&#39;
       )
     ),
-    show_annotation_name = FALSE
+    show_annotation_name = FALSE,
+    simple_anno_size = unit(2, &quot;mm&quot;)
   )
   
   # C. Select data type
@@ -558,6 +563,19 @@ for (prefix in pre){
   
   print(paste(&#39;Distance metric = &#39;, fig@row_dend_param$distance, &#39;. Method = &#39;, fig@row_dend_param$method, sep=&#39; &#39;))
 }</code></pre>
+<pre><code>## Warning: `funs()` is deprecated as of dplyr 0.8.0.
+## Please use a list of either functions or lambdas: 
+## 
+##   # Simple named list: 
+##   list(mean = mean, median = median)
+## 
+##   # Auto named with `tibble::lst()`: 
+##   tibble::lst(mean, median)
+## 
+##   # Using lambdas
+##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## [1] &quot;N:METH&quot;
 ## [1] 30</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
@@ -699,15 +717,19 @@ for (h in top){
 ## [1] &quot;MTORC1_SIGNALING&quot;
 ## [1] 200</code></pre>
 <pre class="r"><code>df_transform &lt;- df %&gt;% arrange(Labels)
+
 subtype_ha &lt;- rowAnnotation(
-  Subtype = df_transform$Labels, 
+  Subtype = 
+    select(df_transform, Labels) %&gt;%
+    mutate_all(funs(str_replace(., &quot;BRCA_&quot;, &quot;&quot;))) %&gt;%
+    as.matrix(), 
   na_col = &#39;grey&#39;, 
   col = list(
     Subtype = c(
-    &quot;BRCA_1&quot; = &#39;saddlebrown&#39;,
-    &quot;BRCA_2&quot;=&#39;firebrick4&#39;,
-    &quot;BRCA_3&quot;=&#39;firebrick3&#39;,
-    &quot;BRCA_4&quot;=&#39;brown1&#39;
+    &quot;1&quot; = &#39;saddlebrown&#39;,
+    &quot;2&quot;=&#39;firebrick4&#39;,
+    &quot;3&quot;=&#39;firebrick3&#39;,
+    &quot;4&quot;=&#39;brown1&#39;
     )
   ),
   show_annotation_name = FALSE,
@@ -773,7 +795,8 @@ fig &lt;- Heatmap(
   column_title = &#39;Samples&#39;,
   row_title = &#39;Features&#39;,
   right_annotation = subtype_ha,
-  bottom_annotation = col_annot
+  bottom_annotation = col_annot,
+  use_raster = TRUE
 )
 # Set up saving fig packet
 setwd(outdir)

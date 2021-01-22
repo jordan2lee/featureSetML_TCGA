@@ -85,18 +85,23 @@ for (prefix in pre){
   df_transform <- df %>% arrange(Labels)
   
   # B. Column annotation
+  # TODO hardcoded here
   subtype_ha <- rowAnnotation(
-    Subtype = df_transform$Labels, 
+    Subtype = 
+      select(df_transform, Labels) %>%
+      mutate_all(funs(str_replace(., "BRCA_", ""))) %>%
+      as.matrix(), 
     na_col = 'grey', 
     col = list(
       Subtype = c(
-      "BRCA_1" = 'saddlebrown',
-      "BRCA_2"='firebrick4',
-      "BRCA_3"='firebrick3',
-      "BRCA_4"='brown1'
+      "1" = 'saddlebrown',
+      "2"='firebrick4',
+      "3"='firebrick3',
+      "4"='brown1'
       )
     ),
-    show_annotation_name = FALSE
+    show_annotation_name = FALSE,
+    simple_anno_size = unit(2, "mm")
   )
   
   # C. Select data type
@@ -351,15 +356,19 @@ for (h in top){
 
 ```{r temp dev}
 df_transform <- df %>% arrange(Labels)
+
 subtype_ha <- rowAnnotation(
-  Subtype = df_transform$Labels, 
+  Subtype = 
+    select(df_transform, Labels) %>%
+    mutate_all(funs(str_replace(., "BRCA_", ""))) %>%
+    as.matrix(), 
   na_col = 'grey', 
   col = list(
     Subtype = c(
-    "BRCA_1" = 'saddlebrown',
-    "BRCA_2"='firebrick4',
-    "BRCA_3"='firebrick3',
-    "BRCA_4"='brown1'
+    "1" = 'saddlebrown',
+    "2"='firebrick4',
+    "3"='firebrick3',
+    "4"='brown1'
     )
   ),
   show_annotation_name = FALSE,
@@ -429,7 +438,8 @@ fig <- Heatmap(
   column_title = 'Samples',
   row_title = 'Features',
   right_annotation = subtype_ha,
-  bottom_annotation = col_annot
+  bottom_annotation = col_annot,
+  use_raster = TRUE
 )
 # Set up saving fig packet
 setwd(outdir)
