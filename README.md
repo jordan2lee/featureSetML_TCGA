@@ -61,9 +61,18 @@ Methods: select a cancer cohort. pull the best model per team (based on mean `ov
 
 *Note: assumes you ran scripts from section* `2. Exact Feature Name Overlap Upset Plot (Base Upset Plot)`
 
+First, save a local file containing hallmark gene sets
+
+```
+# Run once. Does not need to be recalled for each cancer type
+bash RUN_Extract_Hallmark_file.sh
+```
+
+Second, create heatmap for each cancer cohort using the hallmark file from last step
+
 ```
 # Preprocessing - in scripts/ it calls get_fts.py, pull_grp_best.py, extract_hallmarks
-bash RUN_Heatmap_Exact.sh
+bash RUN_Heatmap_Exact.sh <cancer>
 
 # Create heatmaps
 ## run scripts/heatmap.Rmd
