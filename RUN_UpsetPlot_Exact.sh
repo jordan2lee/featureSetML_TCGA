@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 tumor_cohort='BRCA'
-
+#
 # 0. Format feature lists of groups (best performing model)
 python scripts/get_fts.py \
     --tumor ${tumor_cohort} \
@@ -13,8 +13,9 @@ echo 'completed ft list formatting'
 
 # 1. Exact Feature Match - Overlaps
 # Create upset plots
+# Note that --headers must match order of --infile headers
 Rscript scripts/upset_exactMatch.R \
     -c ${tumor_cohort} -m distinct --infile data/figure_panel_a/best_models_${tumor_cohort}.tsv \
     --outdir data/figure_panel_a --outname upsetplot_${tumor_cohort}.pdf \
-    --headers Gnosis,CloudForest,AKLIMATE,SubSCOPE,SciKitGrid
+    --headers JADBIO,CForest,AKLIMATE,SubSCOPE,SKGrid
 echo 'completed upset plot - mode distinct'
