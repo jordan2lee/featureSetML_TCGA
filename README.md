@@ -53,7 +53,7 @@ Outputs two files in `data/figure_panel_a/`:
 
 ## 4. Exact Feature Overlap Heatmap - Clustering features
 
-Last updated: 1/20/21
+Last updated: 1/22/21
 
 Purpose: create heatmap of all features of best models and cluster based on original molecular tarball signatures
 
