@@ -43,7 +43,7 @@ Methods: pull the best model per team (based on mean `overall weighted F1` score
 
 ```
 # Preprocessing and Upset Plot - in script/ it calls get_fts.py and upset_exactMatch.R
-bash RUN_UpsetPlot_Exact.sh
+bash RUN_UpsetPlot_Exact.sh <cancer>
 ```
 
 Outputs two files in `data/figure_panel_a/`:

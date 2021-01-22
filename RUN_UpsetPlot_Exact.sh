@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-tumor_cohort='BRCA'
+tumor_cohort=${1}
 #
 # 0. Format feature lists of groups (best performing model)
 python scripts/get_fts.py \
