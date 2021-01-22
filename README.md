@@ -29,8 +29,11 @@ bash RUN_ft_select_skgrid.sh <cancer-cohort>
 # Consolidate and format feature selection results
 bash RUN_to_synapse.sh
 ```
+## 2. Run Classifiers and Download Group Results
 
-## 2. Exact Feature Name Overlap Upset Plot (Base Upset Plot)
+Run feature sets through Sci-kit Grid classifiers. Combine prediction results with the results from other team members and download the merged feature set file and classifier performance file into `src/`
+
+## 3. Exact Feature Name Overlap Upset Plot (Base Upset Plot)
 
 Last updated: 1/8/21
 
@@ -48,9 +51,9 @@ Outputs two files in `data/figure_panel_a/`:
 + `best_models_<cancer>.tsv`
 + `upsetplot_<cancer>.pdf`
 
-## 3. Exact Feature Overlap Heatmap - Clustering features
+## 4. Exact Feature Overlap Heatmap - Clustering features
 
-Last updated: 1/8/21
+Last updated: 1/20/21
 
 Purpose: create heatmap of all features of best models and cluster based on original molecular tarball signatures
 
@@ -59,30 +62,9 @@ Methods: select a cancer cohort. pull the best model per team (based on mean `ov
 *Note: assumes you ran scripts from section* `2. Exact Feature Name Overlap Upset Plot (Base Upset Plot)`
 
 ```
-# Preprocessing - in scripts/ it calls get_fts.py and pull_grp_best.py
+# Preprocessing - in scripts/ it calls get_fts.py, pull_grp_best.py, extract_hallmarks
 bash RUN_Heatmap_Exact.sh
-```
 
-TODO convert to R script called in RUN_Heatmap_Exact.sh
-```
-# Heatmaps - manually run
-scripts/heatmap_cluster.Rmd
-```
-
-Note that figures generated in `.Rmd` file were then manually copied into slides for group presentation `notebooks/leejordan_fig4_presentation_121820.pdf`
-
-#### WIP Replace dendrogram for cancer hallmark info
-
-Last updated on 1/11/21
-
-for this heatmap replace dendrogram with strongest associated cancer hallmark for each feature. currently if a feature does not have any associated hallmark then will leave blank (or shown in gray).
-
-TODO: likely will update this so that genes without association will be assigned one by correlation analysis
-
-```
-# Pull gene2hallmark mappings and save in data/figure_panel_b/hallmarks.tsv
-scripts/WIP_cancer_hallmarks.Rmd
-
-# Create heatmap with hallmark annotations
-scripts/WIP-add_hallmarks_heatmap_cluster.Rmd
+# Create heatmaps
+## run scripts/heatmap.Rmd
 ```
