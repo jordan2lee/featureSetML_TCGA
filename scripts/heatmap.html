@@ -398,9 +398,11 @@ outdir =&#39;../data/figure_panel_b/&#39;
 # note hardcoded output file names for now
 
 cancer &lt;- &#39;BRCA&#39;
-df &lt;- fread(&#39;../data/figure_panel_b/BRCA_fts_by_VALUE.tsv&#39;) %&gt;% as.data.frame()
-df_fts &lt;- fread(&#39;../data/figure_panel_b/BRCA_fts_by_TEAM.tsv&#39;)%&gt;% as.data.frame()
+df &lt;- fread(paste(&#39;../data/figure_panel_b/&#39;, cancer, &#39;_fts_by_VALUE.tsv&#39;, sep=&#39;&#39;)) %&gt;% as.data.frame()
+df_fts &lt;- fread(paste(&#39;../data/figure_panel_b/&#39;, cancer, &#39;_fts_by_TEAM.tsv&#39;, sep=&#39;&#39;))%&gt;% as.data.frame()
 mappings &lt;- fread(&#39;../data/figure_panel_b/hallmarks.tsv&#39;) %&gt;% as.data.frame()
+
+platform_of_interest &lt;- &#39;N:GEXP&#39; # select data type to highlight for hallmarks heatmap
 ######</code></pre>
 </div>
 <div id="section-1-heatmaps-for-each-data-type" class="section level3">
@@ -408,24 +410,19 @@ mappings &lt;- fread(&#39;../data/figure_panel_b/hallmarks.tsv&#39;) %&gt;% as.d
 <p>Scaling data - METH, GEXP, and MIR</p>
 <p>Non-scaled data - MUTA, CNVR</p>
 <p>I want to see the differences between features. Data was scaled - all samples for a given feature have mean 0 and sd 1. then ran through normal pipeline</p>
-<pre class="r"><code>##### hardcoded
-yes_scale &lt;- c(&#39;N:METH&#39; , &#39;N:GEXP&#39;,&#39;N:MIR&#39;) # which fts to scale
-#####</code></pre>
 <details>
 <summary>Functions</summary>
 <p>
-<pre class="r"><code>get_base_heatmap &lt;- function(prefix, cancer){
-
-  
+<pre class="r"><code>get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid){
   # A. Order by subtype
   df_transform &lt;- df %&gt;% arrange(Labels)
   
   # B. Column annotation
-  # TODO hardcoded here
+  subtypestring &lt;- paste(cancer, &#39;_&#39;, sep=&#39;&#39;)
   subtype_ha &lt;- rowAnnotation(
     Subtype = 
       select(df_transform, Labels) %&gt;%
-      mutate_all(funs(str_replace(., &quot;BRCA_&quot;, &quot;&quot;))) %&gt;%
+      mutate_all(funs(str_replace(., subtypestring, &quot;&quot;))) %&gt;%
       as.matrix(), 
     na_col = &#39;grey&#39;, 
     col = list(
@@ -499,11 +496,11 @@ yes_scale &lt;- c(&#39;N:METH&#39; , &#39;N:GEXP&#39;,&#39;N:MIR&#39;) # which f
   # 1. df of all teams. match ft order in heatmap
   team_df&lt;- df_fts %&gt;% filter(featureID %in% ftnames_order) %&gt;% arrange(match(featureID, ftnames_order))
   # 2. Pull just the team of interest
-  jadbio &lt;- team_df %&gt;% pull(&#39;gnosis_1_BRCA&#39;) %&gt;% as.character()
-  cforest &lt;- team_df %&gt;% pull(&#39;CF|All_Top 100_BRCA&#39;) %&gt;% as.character()
-  aklimate &lt;- team_df %&gt;% pull(&#39;AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA&#39;) %&gt;% as.character()
-  subscope &lt;- team_df %&gt;% pull(&#39;nn_jg_2020-03-20_top1kfreq:BRCA_BRCA&#39;) %&gt;% as.character()
-  skgrid &lt;- team_df %&gt;% pull(&#39;fbedeBIC_BRCA&#39;) %&gt;% as.character()
+  jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
+  cforest &lt;- team_df %&gt;% pull(header_cforest) %&gt;% as.character()
+  aklimate &lt;- team_df %&gt;% pull(header_aklimate) %&gt;% as.character()
+  subscope &lt;- team_df %&gt;% pull(header_subscope) %&gt;% as.character()
+  skgrid &lt;- team_df %&gt;% pull(header_skgrid) %&gt;% as.character()
   team_list &lt;- HeatmapAnnotation(
     JADBIO = jadbio,
     CForest = cforest,
@@ -565,19 +562,26 @@ yes_scale &lt;- c(&#39;N:METH&#39; , &#39;N:GEXP&#39;,&#39;N:MIR&#39;) # which f
 <details>
 <summary>Code and figures for all data types</summary>
 <p>
-<pre class="r"><code>##### Hardcoded
-platform_of_interest &lt;- &#39;N:GEXP&#39; # select data type to highlight for hallmarks heatmap
-#####</code></pre>
 <pre class="r"><code>####
 # Create Heatmap for all data types
 ####
 platforms &lt;- c(&#39;N:METH&#39;,&#39;N:MIR&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;, &#39;N:GEXP&#39;)
+yes_scale &lt;- c(&#39;N:METH&#39; , &#39;N:GEXP&#39;,&#39;N:MIR&#39;) # which fts to scale
 
 # Set up saving fig packet
 setwd(outdir)
 for (prefix in platforms){
   # Create Base Heatmap
-  results_list &lt;- get_base_heatmap(prefix, cancer)
+  # TODO change from hardcoded
+  results_list &lt;- get_base_heatmap(
+    prefix, 
+    cancer, 
+    &#39;gnosis_1_BRCA&#39;,
+    &#39;CF|All_Top 100_BRCA&#39;,
+    &#39;AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA&#39;,
+    &#39;nn_jg_2020-03-20_top1kfreq:BRCA_BRCA&#39;,
+    &#39;fbedeBIC_BRCA&#39;
+  )
   
   # If platform for Hallmarks Heatmap then save global variables - input for Section 2
   if (prefix == platform_of_interest){

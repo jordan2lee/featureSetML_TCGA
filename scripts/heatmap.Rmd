@@ -50,9 +50,11 @@ outdir ='../data/figure_panel_b/'
 # note hardcoded output file names for now
 
 cancer <- 'BRCA'
-df <- fread('../data/figure_panel_b/BRCA_fts_by_VALUE.tsv') %>% as.data.frame()
-df_fts <- fread('../data/figure_panel_b/BRCA_fts_by_TEAM.tsv')%>% as.data.frame()
+df <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_VALUE.tsv', sep='')) %>% as.data.frame()
+df_fts <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_TEAM.tsv', sep=''))%>% as.data.frame()
 mappings <- fread('../data/figure_panel_b/hallmarks.tsv') %>% as.data.frame()
+
+platform_of_interest <- 'N:GEXP' # select data type to highlight for hallmarks heatmap
 ######
 ```
 
@@ -64,27 +66,19 @@ Non-scaled data - MUTA, CNVR
 
 I want to see the differences between features. Data was scaled - all samples for a given feature have mean 0 and sd 1. then ran through normal pipeline
 
-```{r}
-##### hardcoded
-yes_scale <- c('N:METH' , 'N:GEXP','N:MIR') # which fts to scale
-#####
-```
-
 <details><summary>Functions</summary><p>
 
 ```{r functions}
-get_base_heatmap <- function(prefix, cancer){
-
-  
+get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid){
   # A. Order by subtype
   df_transform <- df %>% arrange(Labels)
   
   # B. Column annotation
-  # TODO hardcoded here
+  subtypestring <- paste(cancer, '_', sep='')
   subtype_ha <- rowAnnotation(
     Subtype = 
       select(df_transform, Labels) %>%
-      mutate_all(funs(str_replace(., "BRCA_", ""))) %>%
+      mutate_all(funs(str_replace(., subtypestring, ""))) %>%
       as.matrix(), 
     na_col = 'grey', 
     col = list(
@@ -158,11 +152,11 @@ get_base_heatmap <- function(prefix, cancer){
   # 1. df of all teams. match ft order in heatmap
   team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
   # 2. Pull just the team of interest
-  jadbio <- team_df %>% pull('gnosis_1_BRCA') %>% as.character()
-  cforest <- team_df %>% pull('CF|All_Top 100_BRCA') %>% as.character()
-  aklimate <- team_df %>% pull('AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA') %>% as.character()
-  subscope <- team_df %>% pull('nn_jg_2020-03-20_top1kfreq:BRCA_BRCA') %>% as.character()
-  skgrid <- team_df %>% pull('fbedeBIC_BRCA') %>% as.character()
+  jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+  cforest <- team_df %>% pull(header_cforest) %>% as.character()
+  aklimate <- team_df %>% pull(header_aklimate) %>% as.character()
+  subscope <- team_df %>% pull(header_subscope) %>% as.character()
+  skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
   team_list <- HeatmapAnnotation(
     JADBIO = jadbio,
     CForest = cforest,
@@ -226,23 +220,27 @@ get_base_heatmap <- function(prefix, cancer){
 
 <details><summary>Code and figures for all data types</summary><p>
 
-```{r}
-##### Hardcoded
-platform_of_interest <- 'N:GEXP' # select data type to highlight for hallmarks heatmap
-#####
-```
-
 ```{r mixed scaled z score loop for all data types}
 ####
 # Create Heatmap for all data types
 ####
 platforms <- c('N:METH','N:MIR', 'I:CNVR', 'B:MUTA', 'N:GEXP')
+yes_scale <- c('N:METH' , 'N:GEXP','N:MIR') # which fts to scale
 
 # Set up saving fig packet
 setwd(outdir)
 for (prefix in platforms){
   # Create Base Heatmap
-  results_list <- get_base_heatmap(prefix, cancer)
+  # TODO change from hardcoded
+  results_list <- get_base_heatmap(
+    prefix, 
+    cancer, 
+    'gnosis_1_BRCA',
+    'CF|All_Top 100_BRCA',
+    'AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA',
+    'nn_jg_2020-03-20_top1kfreq:BRCA_BRCA',
+    'fbedeBIC_BRCA'
+  )
   
   # If platform for Hallmarks Heatmap then save global variables - input for Section 2
   if (prefix == platform_of_interest){
