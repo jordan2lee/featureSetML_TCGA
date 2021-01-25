@@ -73,7 +73,7 @@ yes_scale <- c('N:METH' , 'N:GEXP','N:MIR') # which fts to scale
 <details><summary>Functions</summary><p>
 
 ```{r functions}
-get_base_heatmap <- function(prefix){
+get_base_heatmap <- function(prefix, cancer){
 
   
   # A. Order by subtype
@@ -182,7 +182,7 @@ get_base_heatmap <- function(prefix){
   
   # 3. Heatmap
   # Set up saving fig packet
-  pdf(paste('ht_base_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
+  pdf(paste(cancer, 'ht_base', unlist(strsplit(prefix, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
   fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
     name = prefix,
@@ -242,7 +242,7 @@ platforms <- c('N:METH','N:MIR', 'I:CNVR', 'B:MUTA', 'N:GEXP')
 setwd(outdir)
 for (prefix in platforms){
   # Create Base Heatmap
-  results_list <- get_base_heatmap(prefix)
+  results_list <- get_base_heatmap(prefix, cancer)
   
   # If platform for Hallmarks Heatmap then save global variables - input for Section 2
   if (prefix == platform_of_interest){
@@ -286,7 +286,7 @@ for (feature in ftnames_order){
 # How many hallmarks is a feature associated with?
 # Set up saving fig packet
 setwd(outdir)
-pdf(paste('hallmark_fts_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
+pdf(paste(cancer, 'hallmark_fts', unlist(strsplit(prefix, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
 
 df2 <- table(n_hallmarks) %>% as.data.frame()
 colnames(df2)<- c('nHallmarks', 'Freq')
@@ -302,7 +302,7 @@ dev.off()
 # What hallmarks are fts most often associated with?
 # Set up saving fig packet
 setwd(outdir)
-pdf(paste('hallmark_hist_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
+pdf(paste(cancer, 'hallmark_hist', unlist(strsplit(prefix, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
 
 df2 <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
 colnames(df2)<- c('Hallmarks', 'Freq')
@@ -470,7 +470,7 @@ fig <- Heatmap(
 )
 # Set up saving fig packet
 setwd(outdir)
-pdf(paste('ht_top5_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep=''), onefile=FALSE)
+pdf(paste(cancer, 'ht_top5', unlist(strsplit(prefix, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
 draw(fig)
 dev.off()
 ```
