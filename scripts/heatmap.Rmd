@@ -264,7 +264,6 @@ One annotation bar (top hallmarks only, all others are not colored)
 
 ```{r explore hallmarks}
 # Prep
-
 # look up if in hallmark mappings table
 n_hallmarks <- c() # exploratory
 pooled_hallmarks <- c() # exploratory
@@ -278,9 +277,8 @@ for (feature in ftnames_order){
   n_hallmarks <- c(n_hallmarks, length(halls))
   pooled_hallmarks <- c(pooled_hallmarks, halls)
 }
-```
 
-```{r plotting explore hallmarks}
+
 # How many hallmarks is a feature associated with?
 # Set up saving fig packet
 setwd(outdir)
@@ -294,12 +292,9 @@ ggplot(data=df2, aes(x=nHallmarks, y=Freq, fill='blue')) +
   ggtitle('Histogram - How many hallmarks is a feature associated with?') +
   theme(legend.position = "none")
 dev.off()
-```
 
-```{r plotting 2 explore hallmarks}
 # What hallmarks are fts most often associated with?
 # Set up saving fig packet
-setwd(outdir)
 pdf(paste(cancer, 'hallmark_hist', unlist(strsplit(prefix, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
 
 df2 <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
