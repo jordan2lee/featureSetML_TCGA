@@ -56,7 +56,7 @@ mappings <- fread('../data/figure_panel_b/hallmarks.tsv') %>% as.data.frame()
 ######
 ```
 
-### Heatmaps for each data type
+### Section 1: Heatmaps for each data type
 
 Scaling data - METH, GEXP, and MIR
 
@@ -70,17 +70,12 @@ yes_scale <- c('N:METH' , 'N:GEXP','N:MIR') # which fts to scale
 #####
 ```
 
-<details><summary>Code and figures</summary><p>
+<details><summary>Functions</summary><p>
 
-```{r mixed scaled z score loop for all data types}
-# Set up saving fig packet
-setwd(outdir)
-####
-# Main
-####
-pre <- c('N:METH','N:MIR', 'I:CNVR', 'B:MUTA', 'N:GEXP') # GEXP must be last
+```{r functions}
+get_base_heatmap <- function(prefix){
 
-for (prefix in pre){
+  
   # A. Order by subtype
   df_transform <- df %>% arrange(Labels)
   
@@ -175,7 +170,7 @@ for (prefix in pre){
     SubSCOPE = subscope,
     SKGrid = skgrid,
     col = list(
-      JABIO = c('0' = "#333333", '1' = "palevioletred1"),
+      JADBIO = c('0' = "#333333", '1' = "palevioletred1"),
       CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
@@ -221,21 +216,53 @@ for (prefix in pre){
   assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', ftnames_order2 == ftnames_order)
   
   print(paste('Distance metric = ', fig@row_dend_param$distance, '. Method = ', fig@row_dend_param$method, sep=' '))
+  
+  # Assign to 'output' variables
+  return(list('results_matrix' = mat2, 'results_ft_order' = ftnames_order))
+}
+```
+
+</details>
+
+<details><summary>Code and figures for all data types</summary><p>
+
+```{r}
+##### Hardcoded
+platform_of_interest <- 'N:GEXP' # select data type to highlight for hallmarks heatmap
+#####
+```
+
+```{r mixed scaled z score loop for all data types}
+####
+# Create Heatmap for all data types
+####
+platforms <- c('N:METH','N:MIR', 'I:CNVR', 'B:MUTA', 'N:GEXP')
+
+# Set up saving fig packet
+setwd(outdir)
+for (prefix in platforms){
+  # Create Base Heatmap
+  results_list <- get_base_heatmap(prefix)
+  
+  # If platform for Hallmarks Heatmap then save global variables - input for Section 2
+  if (prefix == platform_of_interest){
+    print('want to use this one')
+    print(prefix)
+    mat2 <- results_list[['results_matrix']]
+    ftnames_order <- results_list[['results_ft_order']]  
+  }
 }
 ```
 
 </details>
 
 
-### Explore the hallmarks associated with GEXP features
+### Section 2: Explore the hallmarks associated with GEXP features
 
 One annotation bar (top hallmarks only, all others are not colored)
 
 
-
-
-
-<details><summary>1. Explore Hallmarks</summary><p>
+<details><summary>2. Explore Hallmarks</summary><p>
 
 ```{r explore hallmarks}
 # Prep
@@ -291,7 +318,7 @@ dev.off()
 
 </details>
 
-<details><summary>2. Heatmap with Hallmarks (Top 5)</summary><p>
+<details><summary>3. Heatmap with Hallmarks (Top 5)</summary><p>
 
 ```{r}
 ####
