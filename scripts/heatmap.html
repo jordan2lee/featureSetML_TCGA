@@ -412,15 +412,10 @@ mappings &lt;- fread(&#39;../data/figure_panel_b/hallmarks.tsv&#39;) %&gt;% as.d
 yes_scale &lt;- c(&#39;N:METH&#39; , &#39;N:GEXP&#39;,&#39;N:MIR&#39;) # which fts to scale
 #####</code></pre>
 <details>
-<summary>Code and figures for all data types</summary>
+<summary>Functions</summary>
 <p>
-<pre class="r"><code>####
-# Main
-####
-pre &lt;- c(&#39;N:METH&#39;,&#39;N:MIR&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;, &#39;N:GEXP&#39;) # GEXP must be last</code></pre>
-<pre class="r"><code>get_heatmap &lt;- function(outdir, prefix){
-  # Set up saving fig packet
-  setwd(outdir)
+<pre class="r"><code>get_base_heatmap &lt;- function(prefix, cancer){
+
   
   # A. Order by subtype
   df_transform &lt;- df %&gt;% arrange(Labels)
@@ -516,7 +511,7 @@ pre &lt;- c(&#39;N:METH&#39;,&#39;N:MIR&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;
     SubSCOPE = subscope,
     SKGrid = skgrid,
     col = list(
-      JABIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palevioletred1&quot;),
+      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palevioletred1&quot;),
       CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
       AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
       SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
@@ -528,7 +523,7 @@ pre &lt;- c(&#39;N:METH&#39;,&#39;N:MIR&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;
   
   # 3. Heatmap
   # Set up saving fig packet
-  pdf(paste(&#39;ht_base_&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;&#39;), onefile=FALSE)
+  pdf(paste(cancer, &#39;ht_base&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
   fig &lt;- Heatmap(
     mat2, #each col will have mean 0, sd 1
     name = prefix,
@@ -566,9 +561,32 @@ pre &lt;- c(&#39;N:METH&#39;,&#39;N:MIR&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;
   # Assign to &#39;output&#39; variables
   return(list(&#39;results_matrix&#39; = mat2, &#39;results_ft_order&#39; = ftnames_order))
 }</code></pre>
-<pre class="r"><code># Create Heatmap and assign output as global variables
-prefix &lt;- &#39;N:GEXP&#39;
-results_list &lt;- get_heatmap(outdir, prefix)</code></pre>
+</details>
+<details>
+<summary>Code and figures for all data types</summary>
+<p>
+<pre class="r"><code>##### Hardcoded
+platform_of_interest &lt;- &#39;N:GEXP&#39; # select data type to highlight for hallmarks heatmap
+#####</code></pre>
+<pre class="r"><code>####
+# Create Heatmap for all data types
+####
+platforms &lt;- c(&#39;N:METH&#39;,&#39;N:MIR&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;, &#39;N:GEXP&#39;)
+
+# Set up saving fig packet
+setwd(outdir)
+for (prefix in platforms){
+  # Create Base Heatmap
+  results_list &lt;- get_base_heatmap(prefix, cancer)
+  
+  # If platform for Hallmarks Heatmap then save global variables - input for Section 2
+  if (prefix == platform_of_interest){
+    print(&#39;want to use this one&#39;)
+    print(prefix)
+    mat2 &lt;- results_list[[&#39;results_matrix&#39;]]
+    ftnames_order &lt;- results_list[[&#39;results_ft_order&#39;]]  
+  }
+}</code></pre>
 <pre><code>## Warning: `funs()` is deprecated as of dplyr 0.8.0.
 ## Please use a list of either functions or lambdas: 
 ## 
@@ -582,171 +600,28 @@ results_list &lt;- get_heatmap(outdir, prefix)</code></pre>
 ##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
-<pre><code>## [1] &quot;N:GEXP&quot;
+<pre><code>## [1] &quot;N:METH&quot;
+## [1] 30</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;N:MIR&quot;
+## [1] 14</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;I:CNVR&quot;
+## [1] 18</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;B:MUTA&quot;
+## [1] 7</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;N:GEXP&quot;
 ## [1] 1682</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;</code></pre>
-<pre class="r"><code>mat2 &lt;- results_list[[&#39;results_matrix&#39;]]
-ftnames_order &lt;- results_list[[&#39;results_ft_order&#39;]]</code></pre>
-<pre><code># Set up saving fig packet
-setwd(outdir)
-####
-# Main
-####
-pre &lt;- c(&#39;N:METH&#39;,&#39;N:MIR&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;, &#39;N:GEXP&#39;) # GEXP must be last
-
-for (prefix in pre){
-  # A. Order by subtype
-  df_transform &lt;- df %&gt;% arrange(Labels)
-  
-  # B. Column annotation
-  # TODO hardcoded here
-  subtype_ha &lt;- rowAnnotation(
-    Subtype = 
-      select(df_transform, Labels) %&gt;%
-      mutate_all(funs(str_replace(., &quot;BRCA_&quot;, &quot;&quot;))) %&gt;%
-      as.matrix(), 
-    na_col = &#39;grey&#39;, 
-    col = list(
-      Subtype = c(
-      &quot;1&quot; = &#39;saddlebrown&#39;,
-      &quot;2&quot;=&#39;firebrick4&#39;,
-      &quot;3&quot;=&#39;firebrick3&#39;,
-      &quot;4&quot;=&#39;brown1&#39;
-      )
-    ),
-    show_annotation_name = FALSE,
-    simple_anno_size = unit(2, &quot;mm&quot;)
-  )
-  
-  # C. Select data type
-  df_transform &lt;- df_transform %&gt;%
-      select(-Labels) %&gt;%
-      select(-all_of(cancer)) %&gt;%
-      select(starts_with(prefix))
-  mat &lt;- df_transform %&gt;%
-      as.matrix() %&gt;%
-      t()
-  print(prefix)
-  n_fts &lt;- nrow(mat)
-  print(n_fts)
-  
-  # 1. Heatmap that applies clustering we want
-  #    second heatmap same row/col order but with added annotation bars
-  
-  # scale if appropriate 
-  if (prefix %in% yes_scale){
-    mat &lt;- scale(t(mat), center=TRUE, scale=TRUE) #z-scores == each ft row will have mean 0, sd 1. omit NAs
-  } else {
-    mat &lt;- t(mat) #flip for heatmap looks
-  }
-  
-  fig &lt;- Heatmap(
-    mat,
-    name = &#39;first heatmap&#39;,
-    cluster_rows = FALSE,
-    clustering_distance_columns = &quot;euclidean&quot;,
-    clustering_method_columns = &quot;ward.D&quot;,
-    cluster_columns = TRUE,
-    show_row_names = FALSE,
-    show_column_names = FALSE,
-    column_title = &#39;Samples&#39;,
-    row_title = &#39;Features&#39;,
-    right_annotation = subtype_ha
-  )
-  # draw(fig) # dont need to draw
-  
-  
-  #### 
-  # Add team annotation bar
-  ####
-  # Ordering
-  # 1. Get order of features post heatmap clustering
-  heatmap_order &lt;- column_order(fig) # index vector
-  ftnames_order &lt;- c() # featurename vector
-  for (i in heatmap_order){
-    add_ft &lt;- colnames(mat)[i]
-    ftnames_order &lt;- c(ftnames_order, add_ft)
-  }
-  # print(ftnames_order)
-  # 2. Get new matrix that is ordered by heatmap clustering
-  mat2 &lt;- mat[,match(ftnames_order, colnames(mat))]
-  
-  
-  
-  # Build annotation bars of teams feature sets. 
-  # 1. df of all teams. match ft order in heatmap
-  team_df&lt;- df_fts %&gt;% filter(featureID %in% ftnames_order) %&gt;% arrange(match(featureID, ftnames_order))
-  # 2. Pull just the team of interest
-  jadbio &lt;- team_df %&gt;% pull(&#39;gnosis_1_BRCA&#39;) %&gt;% as.character()
-  cforest &lt;- team_df %&gt;% pull(&#39;CF|All_Top 100_BRCA&#39;) %&gt;% as.character()
-  aklimate &lt;- team_df %&gt;% pull(&#39;AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA&#39;) %&gt;% as.character()
-  subscope &lt;- team_df %&gt;% pull(&#39;nn_jg_2020-03-20_top1kfreq:BRCA_BRCA&#39;) %&gt;% as.character()
-  skgrid &lt;- team_df %&gt;% pull(&#39;fbedeBIC_BRCA&#39;) %&gt;% as.character()
-  team_list &lt;- HeatmapAnnotation(
-    JADBIO = jadbio,
-    CForest = cforest,
-    AKLIMATE = aklimate,
-    SubSCOPE = subscope,
-    SKGrid = skgrid,
-    col = list(
-      JABIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palevioletred1&quot;),
-      CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
-      AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
-      SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
-      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;rosybrown2&quot;)
-    ),
-    show_legend = FALSE,
-    ct= anno_barplot(team_df$Total, bar_width = 1)
-  )
-  
-  # 3. Heatmap
-  # Set up saving fig packet
-  pdf(paste(&#39;ht_base_&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;&#39;), onefile=FALSE)
-  fig &lt;- Heatmap(
-    mat2, #each col will have mean 0, sd 1
-    name = prefix,
-    cluster_rows = FALSE,
-    clustering_distance_columns = &quot;euclidean&quot;,
-    clustering_method_columns = &quot;ward.D&quot;,
-    cluster_columns = TRUE,
-    show_row_names = FALSE,
-    show_column_names = FALSE,
-    column_title = &#39;Samples&#39;,
-    row_title = &#39;Features&#39;,
-    right_annotation = subtype_ha,
-    top_annotation = team_list,
-  )
-  draw(fig)
-  dev.off()
-  
-  
-  #####
-  # unit tests
-  #####
-  # sanity check 1 - that the row orders are the same in the two heatmaps
-  assert(&#39;Assertion Error: order of feature rows on heatmap and final heatmap not same&#39;, colnames(mat2) == ftnames_order)
-  # sanity check 2 - directly compare heatmap rows
-  heatmap_order &lt;- column_order(fig) # index vector
-  ftnames_order2 &lt;- c() # featurename vector
-  for (i in heatmap_order){
-    add_ft &lt;- colnames(mat2)[i]
-    ftnames_order2 &lt;- c(ftnames_order2, add_ft)
-  }
-  assert(&#39;Assertion Error: order of feature rows on heatmap and final heatmap not same&#39;, ftnames_order2 == ftnames_order)
-  
-  print(paste(&#39;Distance metric = &#39;, fig@row_dend_param$distance, &#39;. Method = &#39;, fig@row_dend_param$method, sep=&#39; &#39;))
-}</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;want to use this one&quot;
+## [1] &quot;N:GEXP&quot;</code></pre>
 </details>
 </div>
 <div id="section-2-explore-the-hallmarks-associated-with-gexp-features" class="section level3">
 <h3>Section 2: Explore the hallmarks associated with GEXP features</h3>
 <p>One annotation bar (top hallmarks only, all others are not colored)</p>
-<details>
-<summary>1. Get feature order of data type of interest</summary>
-<p>
-<p>Note this will rerun the above code so that we can get the correct variables specific to data type of interest (ex. GEXP)</p>
-<pre><code>TBD</code></pre>
-</details>
 <details>
 <summary>2. Explore Hallmarks</summary>
 <p>
@@ -768,7 +643,7 @@ for (feature in ftnames_order){
 <pre class="r"><code># How many hallmarks is a feature associated with?
 # Set up saving fig packet
 setwd(outdir)
-pdf(paste(&#39;hallmark_fts_&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;&#39;), onefile=FALSE)
+pdf(paste(cancer, &#39;hallmark_fts&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
 
 df2 &lt;- table(n_hallmarks) %&gt;% as.data.frame()
 colnames(df2)&lt;- c(&#39;nHallmarks&#39;, &#39;Freq&#39;)
@@ -783,7 +658,7 @@ dev.off()</code></pre>
 <pre class="r"><code># What hallmarks are fts most often associated with?
 # Set up saving fig packet
 setwd(outdir)
-pdf(paste(&#39;hallmark_hist_&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;&#39;), onefile=FALSE)
+pdf(paste(cancer, &#39;hallmark_hist&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
 
 df2 &lt;- sort(table(pooled_hallmarks), decreasing=T) %&gt;% as.data.frame()
 colnames(df2)&lt;- c(&#39;Hallmarks&#39;, &#39;Freq&#39;)
@@ -951,7 +826,7 @@ fig &lt;- Heatmap(
 )
 # Set up saving fig packet
 setwd(outdir)
-pdf(paste(&#39;ht_top5_&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;&#39;), onefile=FALSE)
+pdf(paste(cancer, &#39;ht_top5&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
 draw(fig)
 dev.off()</code></pre>
 <pre><code>## quartz_off_screen 
