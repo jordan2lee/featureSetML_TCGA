@@ -46,15 +46,12 @@ suppressPackageStartupMessages(library(ggplot2))
 
 ```{r}
 ###### Hardcoded 
-outdir ='../data/figure_panel_b/'
-# note hardcoded output file names for now
+cancer <- 'LGGGBM' # c('LGGGBM', 'BRCA')
 
-cancer <- 'BRCA'
+outdir ='../data/figure_panel_b/'
 df <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_VALUE.tsv', sep='')) %>% as.data.frame()
 df_fts <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_TEAM.tsv', sep=''))%>% as.data.frame()
 mappings <- fread('../data/figure_panel_b/hallmarks.tsv') %>% as.data.frame()
-
-platform_of_interest <- 'N:GEXP' # select data type to highlight for hallmarks heatmap
 ######
 ```
 
@@ -68,13 +65,78 @@ I want to see the differences between features. Data was scaled - all samples fo
 
 <details><summary>Functions</summary><p>
 
-```{r functions}
+```{r}
+model2team <- function(df){
+  # Read team model names and map to team name
+  headers_vector <- c()
+  names_vector <- c()
+  
+  models <- colnames(df)[!colnames(df) %in% c('featureID', 'Total')]
+  
+  for (header in models){
+    if (grepl('gnosis', header, fixed=TRUE)){
+      headers_vector <- c(headers_vector, header)
+      names_vector <- c(names_vector, 'JADBIO')
+    } 
+    else if (grepl('CF', header, fixed=TRUE)){
+      headers_vector <- c(headers_vector, header)
+      names_vector <- c(names_vector, 'CForest')
+    }
+    else if (grepl('nn_jg', header, fixed=TRUE)){
+      headers_vector <- c(headers_vector, header)
+      names_vector <- c(names_vector, 'SubSCOPE')
+    }
+    else if (grepl('AKLIMATE', header, fixed=TRUE)){
+      headers_vector <- c(headers_vector, header)
+      names_vector <- c(names_vector, 'AKLIMATE')
+    }
+    else {
+      headers_vector <- c(headers_vector, header)
+      names_vector <- c(names_vector, 'SKGrid')
+    }  
+  }
+  names(headers_vector) <- names_vector
+  return(headers_vector)
+}
+
+
+get_colors <- function(df){
+  # Pull color codes based on total number of subtypes
+  nsubs <- df %>% 
+    select(Labels) %>% 
+    unique() %>%
+    nrow() %>% 
+    as.integer()
+  if (nsubs == 4){
+    color_codes <- c(
+      "1" = 'saddlebrown',
+      "2"='firebrick4',
+      "3"='firebrick3',
+      "4"='brown1'
+    )
+  } else if (nsubs == 7){
+    color_codes <- c(
+      "1" = 'coral4',
+      "2" ='saddlebrown',
+      "3"='firebrick4',
+      "4"='firebrick3',
+      "5"='brown1',
+      "6"= 'tomato',
+      "7" = 'sandybrown'
+    )  
+  }
+  return(color_codes)
+}
+
+
+
 get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid){
   # A. Order by subtype
   df_transform <- df %>% arrange(Labels)
   
   # B. Column annotation
   subtypestring <- paste(cancer, '_', sep='')
+  
   subtype_ha <- rowAnnotation(
     Subtype = 
       select(df_transform, Labels) %>%
@@ -82,12 +144,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       as.matrix(), 
     na_col = 'grey', 
     col = list(
-      Subtype = c(
-      "1" = 'saddlebrown',
-      "2"='firebrick4',
-      "3"='firebrick3',
-      "4"='brown1'
-      )
+      Subtype = get_colors(df)
     ),
     show_annotation_name = FALSE,
     simple_anno_size = unit(2, "mm")
@@ -183,7 +240,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     cluster_rows = FALSE,
     clustering_distance_columns = "euclidean",
     clustering_method_columns = "ward.D",
-    cluster_columns = TRUE,
+    column_order = ftnames_order,
     show_row_names = FALSE,
     show_column_names = FALSE,
     column_title = 'Samples',
@@ -216,6 +273,10 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
 }
 ```
 
+
+
+
+
 </details>
 
 <details><summary>Code and figures for all data types</summary><p>
@@ -224,22 +285,41 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
 ####
 # Create Heatmap for all data types
 ####
-platforms <- c('N:METH','N:MIR', 'I:CNVR', 'B:MUTA', 'N:GEXP')
-yes_scale <- c('N:METH' , 'N:GEXP','N:MIR') # which fts to scale
+# Define platform for hallmark heatmap
+if (cancer == 'BRCA'){
+  platform_of_interest <- 'N:GEXP'
+} else if (cancer == 'LGGGBM'){
+  platform_of_interest <- 'N:METH'
+}
+
+
+# Build list of data types present
+if (cancer == 'BRCA'){
+  platforms <- c('N:METH', 'N:MIR', 'I:CNVR', 'B:MUTA', 'N:GEXP')
+} else if (cancer == 'LGGGBM'){
+  platforms <- c('N:METH', 'I:CNVR', 'B:MUTA', 'N:GEXP')
+}
+
+
+
+# Set which to scale
+yes_scale <- c('N:METH', 'N:GEXP','N:MIR') # which fts to scale
+
+# get models
+models <- model2team(df_fts)
 
 # Set up saving fig packet
 setwd(outdir)
 for (prefix in platforms){
   # Create Base Heatmap
-  # TODO change from hardcoded
   results_list <- get_base_heatmap(
     prefix, 
     cancer, 
-    'gnosis_1_BRCA',
-    'CF|All_Top 100_BRCA',
-    'AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA',
-    'nn_jg_2020-03-20_top1kfreq:BRCA_BRCA',
-    'fbedeBIC_BRCA'
+    models['JADBIO'],
+    models['CForest'],
+    models['AKLIMATE'],
+    models['SubSCOPE'],
+    models['SKGrid']
   )
   
   # If platform for Hallmarks Heatmap then save global variables - input for Section 2
@@ -250,7 +330,11 @@ for (prefix in platforms){
     ftnames_order <- results_list[['results_ft_order']]  
   }
 }
+
+
 ```
+
+
 
 </details>
 
@@ -263,20 +347,35 @@ One annotation bar (top hallmarks only, all others are not colored)
 <details><summary>2. Explore Hallmarks</summary><p>
 
 ```{r explore hallmarks}
+######
 # Prep
 # look up if in hallmark mappings table
 n_hallmarks <- c() # exploratory
 pooled_hallmarks <- c() # exploratory
-for (feature in ftnames_order){
-  # 1. Preprocess - to gene symbol
-  GENE <- unlist(strsplit(feature, '::'))[2]
-  GENE <- unlist(strsplit(GENE, ':'))[1]
-  # 2. Hallmark Mapping
-  halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
-  # Multiple Hallmarks
-  n_hallmarks <- c(n_hallmarks, length(halls))
-  pooled_hallmarks <- c(pooled_hallmarks, halls)
+
+if (platform_of_interest == 'N:GEXP'){
+  for (feature in ftnames_order){
+    # 1. Preprocess - to gene symbol
+    GENE <- unlist(strsplit(feature, '::'))[2]
+    GENE <- unlist(strsplit(GENE, ':'))[1]
+    # 2. Hallmark Mapping
+    halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
+    # Multiple Hallmarks
+    n_hallmarks <- c(n_hallmarks, length(halls))
+    pooled_hallmarks <- c(pooled_hallmarks, halls)
+  }  
+} else if (platform_of_interest == 'N:METH'){
+  for (feature in ftnames_order){
+    # 1. Preprocess - to gene symbol
+    GENE <- unlist(strsplit(feature, ':'))[4]
+    # 2. Hallmark Mapping
+    halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
+    # Multiple Hallmarks
+    n_hallmarks <- c(n_hallmarks, length(halls))
+    pooled_hallmarks <- c(pooled_hallmarks, halls)
+  }  
 }
+
 
 
 # How many hallmarks is a feature associated with?
@@ -317,14 +416,19 @@ dev.off()
 ####
 # function
 ####
-build_hallmark_vect <- function(hallmark, ftnames_order){
+build_hallmark_vect <- function(hallmark, ftnames_order, platform_of_interest){
   fts_checked <- c() # sanity check
   hallmark_present <- c()
+  
   for (feature in ftnames_order){
     # 1. Preprocess - to gene symbol
-    GENE <- unlist(strsplit(feature, '::'))[2]
-    GENE <- unlist(strsplit(GENE, ':'))[1]
-    
+    if (platform_of_interest == 'N:GEXP'){
+      GENE <- unlist(strsplit(feature, '::'))[2]
+      GENE <- unlist(strsplit(GENE, ':'))[1]
+    } else if (platform_of_interest == 'N:METH'){
+      GENE <- unlist(strsplit(feature, ':'))[4]
+    }
+
     # 2. Hallmark Mapping
     halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
     # If hallmark present
@@ -349,7 +453,6 @@ hallmark_data <- sort(table(pooled_hallmarks), decreasing=T)
 # Find top hallmarks
 print('Heatmap below will use these hallmarks (order matches with heatmap)')
 top <- hallmark_data[1:5]
-print(top)
 top <- names(top)
 ```
 
@@ -384,12 +487,7 @@ subtype_ha <- rowAnnotation(
     as.matrix(), 
   na_col = 'grey', 
   col = list(
-    Subtype = c(
-    "1" = 'saddlebrown',
-    "2"='firebrick4',
-    "3"='firebrick3',
-    "4"='brown1'
-    )
+    Subtype = get_colors(df)
   ),
   show_annotation_name = FALSE,
   simple_anno_size = unit(2, "mm")
@@ -398,11 +496,11 @@ subtype_ha <- rowAnnotation(
 
 
 ```{r}
-vals_1 <- build_hallmark_vect(top[1],ftnames_order)
-vals_2 <- build_hallmark_vect(top[2],ftnames_order)
-vals_3 <- build_hallmark_vect(top[3],ftnames_order)
-vals_4 <- build_hallmark_vect(top[4],ftnames_order)
-vals_5 <- build_hallmark_vect(top[5],ftnames_order)
+vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+vals_4 <- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+vals_5 <- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
 
 # Build annotation bars of teams feature sets. 
 # 1. df of all teams. match ft order in heatmap
