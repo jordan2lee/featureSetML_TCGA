@@ -35,7 +35,7 @@ Run feature sets through Sci-kit Grid classifiers. Combine prediction results wi
 
 ## 3. Exact Feature Name Overlap Upset Plot (Base Upset Plot)
 
-Last updated: 1/8/21
+Last updated: 1/22/21
 
 Purpose: create an upset plot that shows how much overlap there is between the feature sets of the best models
 
@@ -43,7 +43,7 @@ Methods: pull the best model per team (based on mean `overall weighted F1` score
 
 ```
 # Preprocessing and Upset Plot - in script/ it calls get_fts.py and upset_exactMatch.R
-bash RUN_UpsetPlot_Exact.sh
+bash RUN_UpsetPlot_Exact.sh <cancer>
 ```
 
 Outputs two files in `data/figure_panel_a/`:
@@ -53,7 +53,7 @@ Outputs two files in `data/figure_panel_a/`:
 
 ## 4. Exact Feature Overlap Heatmap - Clustering features
 
-Last updated: 1/20/21
+Last updated: 1/22/21
 
 Purpose: create heatmap of all features of best models and cluster based on original molecular tarball signatures
 
@@ -61,9 +61,18 @@ Methods: select a cancer cohort. pull the best model per team (based on mean `ov
 
 *Note: assumes you ran scripts from section* `2. Exact Feature Name Overlap Upset Plot (Base Upset Plot)`
 
+First, save a local file containing hallmark gene sets
+
+```
+# Run once. Does not need to be recalled for each cancer type
+bash RUN_Extract_Hallmark_file.sh
+```
+
+Second, create heatmap for each cancer cohort using the hallmark file from last step
+
 ```
 # Preprocessing - in scripts/ it calls get_fts.py, pull_grp_best.py, extract_hallmarks
-bash RUN_Heatmap_Exact.sh
+bash RUN_Heatmap_Exact.sh <cancer>
 
 # Create heatmaps
 ## run scripts/heatmap.Rmd

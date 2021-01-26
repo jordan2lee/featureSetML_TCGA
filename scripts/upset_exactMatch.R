@@ -38,7 +38,7 @@ ht = UpSet(
   pt_size = unit(3, "mm"),
   lwd = 3,
   top_annotation = upset_top_annotation(m, ylim = c(0, 1.1*max(cs))),
-  comb_col = c('black','orange','orange', "orange")[comb_degree(m)], # overlap =2 groups orange
+  comb_col = c('black','orange','orange', "orange","orange")[comb_degree(m)], # overlap =2 groups orange
   set_order = c("AKLIMATE", "SubSCOPE", "CForest", "JADBIO","SKGrid")
 )
 
