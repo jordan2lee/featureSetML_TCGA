@@ -53,11 +53,13 @@ Outputs two files in `data/figure_panel_a/`:
 
 ## 4. Exact Feature Overlap Heatmap - Clustering features
 
-Last updated: 1/22/21
+Last updated: 1/26/21
 
 Purpose: create heatmap of all features of best models and cluster based on original molecular tarball signatures
 
 Methods: select a cancer cohort. pull the best model per team (based on mean `overall weighted F1` score). Pull corresponding feature set for each model. Scale if needed (depends on data platform). Cluster features and show on heatmap.
+
+Cancers: BRCA, LGGGBM, GEA
 
 *Note: assumes you ran scripts from section* `2. Exact Feature Name Overlap Upset Plot (Base Upset Plot)`
 

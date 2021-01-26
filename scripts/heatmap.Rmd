@@ -46,7 +46,7 @@ suppressPackageStartupMessages(library(ggplot2))
 
 ```{r}
 ###### Hardcoded 
-cancer <- 'LGGGBM' # c('LGGGBM', 'BRCA')
+cancer <- 'GEA' # 'GEA', 'LGGGBM', 'BRCA'
 
 outdir ='../data/figure_panel_b/'
 df <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_VALUE.tsv', sep='')) %>% as.data.frame()
@@ -290,11 +290,13 @@ if (cancer == 'BRCA'){
   platform_of_interest <- 'N:GEXP'
 } else if (cancer == 'LGGGBM'){
   platform_of_interest <- 'N:METH'
+} else if (cancer == 'GEA'){
+  platform_of_interest <- 'N:METH'
 }
 
 
 # Build list of data types present
-if (cancer == 'BRCA'){
+if (cancer == 'BRCA' | cancer == 'GEA' ){
   platforms <- c('N:METH', 'N:MIR', 'I:CNVR', 'B:MUTA', 'N:GEXP')
 } else if (cancer == 'LGGGBM'){
   platforms <- c('N:METH', 'I:CNVR', 'B:MUTA', 'N:GEXP')
@@ -630,6 +632,76 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   pdf(paste(cancer, 'ht_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
   draw(fig)
   dev.off()
+} else if (cancer == 'GEA' & top == c("IL2_STAT5_SIGNALING", "APICAL_JUNCTION", "EPITHELIAL_MESENCHYMAL_TRANSITION", "HYPOXIA", "MYOGENESIS") ){
+  vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+  vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+  vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+  vals_4 <- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+  vals_5 <- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+  cforest <- team_df %>% pull(header_cforest) %>% as.character()
+  aklimate <- team_df %>% pull(header_aklimate) %>% as.character()
+  subscope <- team_df %>% pull(header_subscope) %>% as.character()
+  skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
+  
+  # Build annotation
+  col_annot <- HeatmapAnnotation(
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    CForest = cforest,
+    JADBIO = jadbio,
+    SKGrid = skgrid,
+    
+    nTeamSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill='blue', col='grey38') ),
+    
+    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    IL2STAT5Signaling_199 = vals_1,
+    ApicalJunction_200 = vals_2,
+    EpithelialMesenchymalTransition_200 = vals_3,
+    Hypoxia_200 = vals_4,
+    Myogenesis_200 = vals_5,  
+    
+    col = list(
+      AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
+      SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
+      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBIO = c('0' = "#333333", '1' = "palevioletred1"),
+      SKGrid =  c('0' = "#333333", '1' = "rosybrown2"),
+      IL2STAT5Signaling_199 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      ApicalJunction_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      EpithelialMesenchymalTransition_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      Hypoxia_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      Myogenesis_200 = c('0' = "#333333", '1' = "darkgoldenrod3")
+    ),
+    show_legend = FALSE,
+    gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
+  )
+  
+  # Plot
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    name = unlist(strsplit(platform_of_interest, ':'))[2],
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = 'Samples',
+    row_title = 'Features',
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    use_raster = TRUE
+  )
+  # Set up saving fig packet
+  setwd(outdir)
+  pdf(paste(cancer, 'ht_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+  draw(fig)
+  dev.off()
+  
 }
 ```
 
