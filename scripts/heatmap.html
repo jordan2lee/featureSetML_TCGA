@@ -394,7 +394,7 @@ summary {
 </ol>
 <p>Note in calculating z-scores, NAs were omitted</p>
 <pre class="r"><code>###### Hardcoded 
-cancer &lt;- &#39;BRCA&#39; # c(&#39;LGGGBM&#39;, &#39;BRCA&#39;)
+cancer &lt;- &#39;LGGGBM&#39; # c(&#39;LGGGBM&#39;, &#39;BRCA&#39;)
 
 outdir =&#39;../data/figure_panel_b/&#39;
 df &lt;- fread(paste(&#39;../data/figure_panel_b/&#39;, cancer, &#39;_fts_by_VALUE.tsv&#39;, sep=&#39;&#39;)) %&gt;% as.data.frame()
@@ -613,7 +613,7 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
   print(paste(&#39;Distance metric = &#39;, fig@row_dend_param$distance, &#39;. Method = &#39;, fig@row_dend_param$method, sep=&#39; &#39;))
   
   # Assign to &#39;output&#39; variables
-  return(list(&#39;results_matrix&#39; = mat2, &#39;results_ft_order&#39; = ftnames_order))
+  return(list(&#39;results_matrix&#39; = mat2, &#39;results_ft_order&#39; = ftnames_order, &#39;subtype_annotation&#39; = subtype_ha))
 }</code></pre>
 </details>
 <details>
@@ -665,6 +665,7 @@ for (prefix in platforms){
     print(prefix)
     mat2 &lt;- results_list[[&#39;results_matrix&#39;]]
     ftnames_order &lt;- results_list[[&#39;results_ft_order&#39;]]  
+    subtype_annotation &lt;- results_list[[&#39;subtype_annotation&#39;]]
   }
 }</code></pre>
 <pre><code>## Warning: `funs()` is deprecated as of dplyr 0.8.0.
@@ -681,22 +682,19 @@ for (prefix in platforms){
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## [1] &quot;N:METH&quot;
-## [1] 30</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
-## [1] &quot;N:MIR&quot;
-## [1] 14</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
-## [1] &quot;I:CNVR&quot;
-## [1] 18</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
-## [1] &quot;B:MUTA&quot;
-## [1] 7</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
-## [1] &quot;N:GEXP&quot;
-## [1] 1682</code></pre>
+## [1] 287</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
 ## [1] &quot;want to use this one&quot;
-## [1] &quot;N:GEXP&quot;</code></pre>
+## [1] &quot;N:METH&quot;
+## [1] &quot;I:CNVR&quot;
+## [1] 188</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;B:MUTA&quot;
+## [1] 16</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;N:GEXP&quot;
+## [1] 757</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;</code></pre>
 </details>
 </div>
 <div id="section-2-explore-the-hallmarks-associated-with-gexp-features" class="section level3">
@@ -739,7 +737,7 @@ if (platform_of_interest == &#39;N:GEXP&#39;){
 # How many hallmarks is a feature associated with?
 # Set up saving fig packet
 setwd(outdir)
-pdf(paste(cancer, &#39;hallmark_fts&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+pdf(paste(cancer, &#39;hallmark_fts&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
 
 df2 &lt;- table(n_hallmarks) %&gt;% as.data.frame()
 colnames(df2)&lt;- c(&#39;nHallmarks&#39;, &#39;Freq&#39;)
@@ -753,7 +751,7 @@ dev.off()</code></pre>
 ##                 2</code></pre>
 <pre class="r"><code># What hallmarks are fts most often associated with?
 # Set up saving fig packet
-pdf(paste(cancer, &#39;hallmark_hist&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+pdf(paste(cancer, &#39;hallmark_hist&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
 
 df2 &lt;- sort(table(pooled_hallmarks), decreasing=T) %&gt;% as.data.frame()
 colnames(df2)&lt;- c(&#39;Hallmarks&#39;, &#39;Freq&#39;)
@@ -826,98 +824,166 @@ for (h in top){
   print(h)
   print(gene_set_size(h))
 }</code></pre>
-<pre><code>## [1] &quot;ESTROGEN_RESPONSE_EARLY&quot;
-## [1] 200
-## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
-## [1] 200
-## [1] &quot;E2F_TARGETS&quot;
-## [1] 200
-## [1] &quot;G2M_CHECKPOINT&quot;
+<pre><code>## [1] &quot;INTERFERON_GAMMA_RESPONSE&quot;
 ## [1] 200
 ## [1] &quot;MTORC1_SIGNALING&quot;
+## [1] 200
+## [1] &quot;IL2_STAT5_SIGNALING&quot;
+## [1] 199
+## [1] &quot;INFLAMMATORY_RESPONSE&quot;
+## [1] 200
+## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
 ## [1] 200</code></pre>
-<pre class="r"><code>df_transform &lt;- df %&gt;% arrange(Labels)
+<pre class="r"><code># TODO add these as argument input into function
+header_jadbio &lt;- models[&#39;JADBIO&#39;]
+header_cforest &lt;- models[&#39;CForest&#39;]
+header_aklimate &lt;- models[&#39;AKLIMATE&#39;]
+header_subscope &lt;- models[&#39;SubSCOPE&#39;]
+header_skgrid &lt;- models[&#39;SKGrid&#39;]
 
-subtype_ha &lt;- rowAnnotation(
-  Subtype = 
-    select(df_transform, Labels) %&gt;%
-    mutate_all(funs(str_replace(., &quot;BRCA_&quot;, &quot;&quot;))) %&gt;%
-    as.matrix(), 
-  na_col = &#39;grey&#39;, 
-  col = list(
-    Subtype = get_colors(df)
-  ),
-  show_annotation_name = FALSE,
-  simple_anno_size = unit(2, &quot;mm&quot;)
-)</code></pre>
-<pre class="r"><code>vals_1 &lt;- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
-vals_2 &lt;- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
-vals_3 &lt;- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
-vals_4 &lt;- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
-vals_5 &lt;- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
-
-# Build annotation bars of teams feature sets. 
-# 1. df of all teams. match ft order in heatmap
-team_df&lt;- df_fts %&gt;% filter(featureID %in% ftnames_order) %&gt;% arrange(match(featureID, ftnames_order))
-# 2. Pull just the team of interest
-jadbio &lt;- team_df %&gt;% pull(&#39;gnosis_1_BRCA&#39;) %&gt;% as.character()
-cforest &lt;- team_df %&gt;% pull(&#39;CF|All_Top 100_BRCA&#39;) %&gt;% as.character()
-aklimate &lt;- team_df %&gt;% pull(&#39;AKLIMATE_BRCA_reduced_model_1000_feature_set_BRCA&#39;) %&gt;% as.character()
-subscope &lt;- team_df %&gt;% pull(&#39;nn_jg_2020-03-20_top1kfreq:BRCA_BRCA&#39;) %&gt;% as.character()
-skgrid &lt;- team_df %&gt;% pull(&#39;fbedeBIC_BRCA&#39;) %&gt;% as.character()
-
-# Build annotation
-col_annot &lt;- HeatmapAnnotation(
-  AKLIMATE = aklimate,
-  SubSCOPE = subscope,
-  CForest = cforest,
-  JADBIO = jadbio,
-  SKGrid = skgrid,
+subtype_ha &lt;- subtype_annotation</code></pre>
+<pre class="r"><code># TODO make less janky so autopopulates the annotation names 
+if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&quot;, &quot;MTORC1_SIGNALING&quot;, &quot;IL2_STAT5_SIGNALING&quot;, &quot;INFLAMMATORY_RESPONSE&quot;, &quot;ESTROGEN_RESPONSE_LATE&quot;) ){
+  vals_1 &lt;- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+  vals_2 &lt;- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+  vals_3 &lt;- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+  vals_4 &lt;- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+  vals_5 &lt;- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
   
-  nTeamSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;) ),
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df&lt;- df_fts %&gt;% filter(featureID %in% ftnames_order) %&gt;% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
+  cforest &lt;- team_df %&gt;% pull(header_cforest) %&gt;% as.character()
+  aklimate &lt;- team_df %&gt;% pull(header_aklimate) %&gt;% as.character()
+  subscope &lt;- team_df %&gt;% pull(header_subscope) %&gt;% as.character()
+  skgrid &lt;- team_df %&gt;% pull(header_skgrid) %&gt;% as.character()
   
-  # TODO need to manually update the name + gene set size of each hallmark name + color pallate
-  EstrogrenResponseEarly_200 = vals_1,
-  EstrogrenResponseLate_200 = vals_2,
-  E2FTargets_200 = vals_3,
-  G2MCheckpoint_200 = vals_4,
-  MTORC1Signaling_200 = vals_5,  
+  # Build annotation
+  col_annot &lt;- HeatmapAnnotation(
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    CForest = cforest,
+    JADBIO = jadbio,
+    SKGrid = skgrid,
+    
+    nTeamSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;) ),
+    
+    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    &#39;InterferonGammaResponse_200&#39; = vals_1,
+    MTORC1Signaling_200 = vals_2,
+    IL2STAT5Signaling_199 = vals_3,
+    InflammatoryResponse_200 = vals_4,
+    EstrogenResponseLate_200 = vals_5,  
+    
+    col = list(
+      AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
+      SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
+      CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
+      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palevioletred1&quot;),
+      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;rosybrown2&quot;),
+      &#39;InterferonGammaResponse_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      MTORC1Signaling_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      IL2STAT5Signaling_199 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      InflammatoryResponse_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      EstrogenResponseLate_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
+    ),
+    show_legend = FALSE,
+    gap = unit(c(0,0,0,0,1,1,0,0,0,0), &#39;mm&#39;)
+  )
   
-  col = list(
-    AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
-    SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
-    CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
-    JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palevioletred1&quot;),
-    SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;rosybrown2&quot;),
-    EstrogrenResponseEarly_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-    EstrogrenResponseLate_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-    E2FTargets_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-    G2MCheckpoint_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-    MTORC1Signaling_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
-  ),
-  show_legend = FALSE,
-  gap = unit(c(0,0,0,0,1,1,0,0,0,0), &#39;mm&#39;)
-)
-
-# Plot
-fig &lt;- Heatmap(
-  mat2, #each col will have mean 0, sd 1
-  name = unlist(strsplit(prefix, &#39;:&#39;))[2],
-  cluster_rows = FALSE,
-  cluster_columns = FALSE,
-  show_row_names = FALSE,
-  show_column_names = FALSE,
-  column_title = &#39;Samples&#39;,
-  row_title = &#39;Features&#39;,
-  right_annotation = subtype_ha,
-  bottom_annotation = col_annot,
-  use_raster = TRUE
-)
-# Set up saving fig packet
-setwd(outdir)
-pdf(paste(cancer, &#39;ht_top5&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
-draw(fig)
-dev.off()</code></pre>
+  # Plot
+  fig &lt;- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    name = unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = &#39;Samples&#39;,
+    row_title = &#39;Features&#39;,
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    use_raster = TRUE
+  )
+  # Set up saving fig packet
+  setwd(outdir)
+  pdf(paste(cancer, &#39;ht_top5&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+  draw(fig)
+  dev.off()
+} else if (cancer == &#39;BRCA&#39; &amp; top == c(&quot;ESTROGEN_RESPONSE_EARLY&quot;, &quot;ESTROGEN_RESPONSE_LATE&quot;, &quot;E2F_TARGETS&quot;, &quot;G2M_CHECKPOINT&quot;, &quot;MTORC1_SIGNALING&quot; ) ){
+  vals_1 &lt;- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+  vals_2 &lt;- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+  vals_3 &lt;- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+  vals_4 &lt;- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+  vals_5 &lt;- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df&lt;- df_fts %&gt;% filter(featureID %in% ftnames_order) %&gt;% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
+  cforest &lt;- team_df %&gt;% pull(header_cforest) %&gt;% as.character()
+  aklimate &lt;- team_df %&gt;% pull(header_aklimate) %&gt;% as.character()
+  subscope &lt;- team_df %&gt;% pull(header_subscope) %&gt;% as.character()
+  skgrid &lt;- team_df %&gt;% pull(header_skgrid) %&gt;% as.character()
+  
+  # Build annotation
+  col_annot &lt;- HeatmapAnnotation(
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    CForest = cforest,
+    JADBIO = jadbio,
+    SKGrid = skgrid,
+    
+    nTeamSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;) ),
+    
+    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    EstrogrenResponseEarly_200 = vals_1,
+    EstrogrenResponseLate_200 = vals_2,
+    E2FTargets_200 = vals_3,
+    G2MCheckpoint_200 = vals_4,
+    MTORC1Signaling_200 = vals_5,  
+    
+    col = list(
+      AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
+      SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
+      CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
+      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palevioletred1&quot;),
+      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;rosybrown2&quot;),
+      EstrogrenResponseEarly_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      EstrogrenResponseLate_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      E2FTargets_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      G2MCheckpoint_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      MTORC1Signaling_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
+    ),
+    show_legend = FALSE,
+    gap = unit(c(0,0,0,0,1,1,0,0,0,0), &#39;mm&#39;)
+  )
+  
+  # Plot
+  fig &lt;- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    name = unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = &#39;Samples&#39;,
+    row_title = &#39;Features&#39;,
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    use_raster = TRUE
+  )
+  # Set up saving fig packet
+  setwd(outdir)
+  pdf(paste(cancer, &#39;ht_top5&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+  draw(fig)
+  dev.off()
+}</code></pre>
+<pre><code>## Warning in if (cancer == &quot;LGGGBM&quot; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&quot;, : the
+## condition has length &gt; 1 and only the first element will be used</code></pre>
 <pre><code>## quartz_off_screen 
 ##                 2</code></pre>
 </details>
