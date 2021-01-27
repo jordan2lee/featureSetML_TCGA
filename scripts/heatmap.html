@@ -394,7 +394,7 @@ summary {
 </ol>
 <p>Note in calculating z-scores, NAs were omitted</p>
 <pre class="r"><code>###### Hardcoded 
-cancer &lt;- &#39;GEA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
+cancer &lt;- &#39;BRCA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
 
 outdir =&#39;../data/figure_panel_b/&#39;
 df &lt;- fread(paste(&#39;../data/figure_panel_b/&#39;, cancer, &#39;_fts_by_VALUE.tsv&#39;, sep=&#39;&#39;)) %&gt;% as.data.frame()
@@ -453,20 +453,20 @@ get_colors &lt;- function(df){
     as.integer()
   if (nsubs == 4){
     color_codes &lt;- c(
-      &quot;1&quot; = &#39;saddlebrown&#39;,
-      &quot;2&quot;=&#39;firebrick4&#39;,
-      &quot;3&quot;=&#39;firebrick3&#39;,
-      &quot;4&quot;=&#39;brown1&#39;
+      &quot;1&quot; = &#39;salmon4&#39;,
+      &quot;2&quot;=&#39;red3&#39;,
+      &quot;3&quot;=&#39;orangered&#39;,
+      &quot;4&quot;=&#39;orange1&#39;
     )
   } else if (nsubs == 7){
     color_codes &lt;- c(
-      &quot;1&quot; = &#39;coral4&#39;,
-      &quot;2&quot; =&#39;saddlebrown&#39;,
-      &quot;3&quot;=&#39;firebrick4&#39;,
-      &quot;4&quot;=&#39;firebrick3&#39;,
-      &quot;5&quot;=&#39;brown1&#39;,
-      &quot;6&quot;= &#39;tomato&#39;,
-      &quot;7&quot; = &#39;sandybrown&#39;
+      &quot;1&quot; = &#39;#F58748&#39;,
+      &quot;2&quot; =&#39;#A95757&#39;,
+      &quot;3&quot;=&#39;#4A2918&#39;,
+      &quot;4&quot;=&#39;red3&#39;,
+      &quot;5&quot;=&#39;orangered&#39;,
+      &quot;6&quot;= &#39;salmon&#39;,
+      &quot;7&quot; = &#39;orange1&#39;
     )  
   }
   return(color_codes)
@@ -572,7 +572,7 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
       SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;rosybrown2&quot;)
     ),
     show_legend = FALSE,
-    ct= anno_barplot(team_df$Total, bar_width = 1)
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1)
   )
   
   # 3. Heatmap
@@ -684,22 +684,22 @@ for (prefix in platforms){
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## [1] &quot;N:METH&quot;
-## [1] 788</code></pre>
+## [1] 30</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
-## [1] &quot;want to use this one&quot;
-## [1] &quot;N:METH&quot;
 ## [1] &quot;N:MIR&quot;
-## [1] 15</code></pre>
+## [1] 14</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
 ## [1] &quot;I:CNVR&quot;
-## [1] 47</code></pre>
+## [1] 18</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
 ## [1] &quot;B:MUTA&quot;
-## [1] 37</code></pre>
+## [1] 7</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
 ## [1] &quot;N:GEXP&quot;
-## [1] 586</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;</code></pre>
+## [1] 1682</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+## [1] &quot;want to use this one&quot;
+## [1] &quot;N:GEXP&quot;</code></pre>
 </details>
 </div>
 <div id="section-2-explore-the-hallmarks-associated-with-gexp-features" class="section level3">
@@ -829,15 +829,15 @@ for (h in top){
   print(h)
   print(gene_set_size(h))
 }</code></pre>
-<pre><code>## [1] &quot;IL2_STAT5_SIGNALING&quot;
-## [1] 199
-## [1] &quot;APICAL_JUNCTION&quot;
+<pre><code>## [1] &quot;ESTROGEN_RESPONSE_EARLY&quot;
 ## [1] 200
-## [1] &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;
+## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
 ## [1] 200
-## [1] &quot;HYPOXIA&quot;
+## [1] &quot;E2F_TARGETS&quot;
 ## [1] 200
-## [1] &quot;MYOGENESIS&quot;
+## [1] &quot;G2M_CHECKPOINT&quot;
+## [1] 200
+## [1] &quot;MTORC1_SIGNALING&quot;
 ## [1] 200</code></pre>
 <pre class="r"><code># TODO add these as argument input into function
 header_jadbio &lt;- models[&#39;JADBIO&#39;]
@@ -873,7 +873,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    nTeamSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;) ),
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;) ),
     
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
     &#39;InterferonGammaResponse_200&#39; = vals_1,
@@ -942,7 +942,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    nTeamSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;) ),
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;) ),
     
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
     EstrogrenResponseEarly_200 = vals_1,
@@ -1011,7 +1011,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    nTeamSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;) ),
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;) ),
     
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
     IL2STAT5Signaling_199 = vals_1,
@@ -1062,9 +1062,6 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
 <pre><code>## Warning in if (cancer == &quot;BRCA&quot; &amp; top == c(&quot;ESTROGEN_RESPONSE_EARLY&quot;,
 ## &quot;ESTROGEN_RESPONSE_LATE&quot;, : the condition has length &gt; 1 and only the first
 ## element will be used</code></pre>
-<pre><code>## Warning in if (cancer == &quot;GEA&quot; &amp; top == c(&quot;IL2_STAT5_SIGNALING&quot;,
-## &quot;APICAL_JUNCTION&quot;, : the condition has length &gt; 1 and only the first element
-## will be used</code></pre>
 <pre><code>## quartz_off_screen 
 ##                 2</code></pre>
 </details>
