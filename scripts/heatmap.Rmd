@@ -244,7 +244,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     show_row_names = FALSE,
     show_column_names = FALSE,
     column_title = 'Samples',
-    row_title = 'Features',
+    row_title = paste('Features (', n_fts, ')', sep=''),
     right_annotation = subtype_ha,
     top_annotation = team_list,
   )
