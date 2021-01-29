@@ -46,7 +46,7 @@ suppressPackageStartupMessages(library(ggplot2))
 
 ```{r}
 ###### Hardcoded 
-cancer <- 'BRCA' # 'GEA', 'LGGGBM', 'BRCA'
+cancer <- 'GEA' # 'GEA', 'LGGGBM', 'BRCA'
 
 outdir ='../data/figure_panel_b/'
 df <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_VALUE.tsv', sep='')) %>% as.data.frame()
@@ -221,11 +221,11 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     SubSCOPE = subscope,
     SKGrid = skgrid,
     col = list(
-      JADBIO = c('0' = "#333333", '1' = "palevioletred1"),
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
       CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
-      SKGrid =  c('0' = "#333333", '1' = "rosybrown2")
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9")
     ),
     show_legend = FALSE,
     nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1)
@@ -237,8 +237,8 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
   fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
     name = prefix,
-    width = unit(12, 'cm'),
-    height = unit(12, 'cm'),
+    # width = unit(12, 'cm'),
+    # height = unit(12, 'cm'),
     cluster_rows = FALSE,
     clustering_distance_columns = "euclidean",
     clustering_method_columns = "ward.D",
@@ -535,8 +535,8 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
       CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
-      JADBIO = c('0' = "#333333", '1' = "palevioletred1"),
-      SKGrid =  c('0' = "#333333", '1' = "rosybrown2"),
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       'InterferonGammaResponse_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       MTORC1Signaling_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
       IL2STAT5Signaling_199 = c('0' = "#333333", '1' = "darkgoldenrod3"),
@@ -604,8 +604,8 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
       CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
-      JADBIO = c('0' = "#333333", '1' = "palevioletred1"),
-      SKGrid =  c('0' = "#333333", '1' = "rosybrown2"),
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       EstrogrenResponseEarly_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
       EstrogrenResponseLate_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
       E2FTargets_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
@@ -673,8 +673,8 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
       CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
-      JADBIO = c('0' = "#333333", '1' = "palevioletred1"),
-      SKGrid =  c('0' = "#333333", '1' = "rosybrown2"),
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       IL2STAT5Signaling_199 = c('0' = "#333333", '1' = "darkgoldenrod3"),
       ApicalJunction_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
       EpithelialMesenchymalTransition_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
@@ -688,8 +688,8 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   # Plot
   fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
-    width = unit(10, 'cm'),
-    height = unit(10, 'cm'),
+    # width = unit(10, 'cm'),
+    # height = unit(10, 'cm'),
     name = unlist(strsplit(platform_of_interest, ':'))[2],
     cluster_rows = FALSE,
     cluster_columns = FALSE,

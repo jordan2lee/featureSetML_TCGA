@@ -394,7 +394,7 @@ summary {
 </ol>
 <p>Note in calculating z-scores, NAs were omitted</p>
 <pre class="r"><code>###### Hardcoded 
-cancer &lt;- &#39;BRCA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
+cancer &lt;- &#39;GEA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
 
 outdir =&#39;../data/figure_panel_b/&#39;
 df &lt;- fread(paste(&#39;../data/figure_panel_b/&#39;, cancer, &#39;_fts_by_VALUE.tsv&#39;, sep=&#39;&#39;)) %&gt;% as.data.frame()
@@ -565,11 +565,11 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
     SubSCOPE = subscope,
     SKGrid = skgrid,
     col = list(
-      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palevioletred1&quot;),
+      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
       CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
       AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
       SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
-      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;rosybrown2&quot;)
+      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;)
     ),
     show_legend = FALSE,
     nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1)
@@ -581,8 +581,8 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
   fig &lt;- Heatmap(
     mat2, #each col will have mean 0, sd 1
     name = prefix,
-    width = unit(12, &#39;cm&#39;),
-    height = unit(12, &#39;cm&#39;),
+    # width = unit(12, &#39;cm&#39;),
+    # height = unit(12, &#39;cm&#39;),
     cluster_rows = FALSE,
     clustering_distance_columns = &quot;euclidean&quot;,
     clustering_method_columns = &quot;ward.D&quot;,
@@ -687,22 +687,22 @@ for (prefix in platforms){
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## [1] &quot;N:METH&quot;
-## [1] 30</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;N:MIR&quot;
-## [1] 14</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;I:CNVR&quot;
-## [1] 18</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;B:MUTA&quot;
-## [1] 7</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;N:GEXP&quot;
-## [1] 1682</code></pre>
+## [1] 788</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;want to use this one&quot;
-## [1] &quot;N:GEXP&quot;</code></pre>
+## [1] &quot;N:METH&quot;
+## [1] &quot;N:MIR&quot;
+## [1] 15</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
+## [1] &quot;I:CNVR&quot;
+## [1] 47</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
+## [1] &quot;B:MUTA&quot;
+## [1] 37</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
+## [1] &quot;N:GEXP&quot;
+## [1] 586</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;</code></pre>
 </details>
 </div>
 <div id="section-2-explore-the-hallmarks-associated-with-gexp-features" class="section level3">
@@ -832,15 +832,15 @@ for (h in top){
   print(h)
   print(gene_set_size(h))
 }</code></pre>
-<pre><code>## [1] &quot;ESTROGEN_RESPONSE_EARLY&quot;
+<pre><code>## [1] &quot;IL2_STAT5_SIGNALING&quot;
+## [1] 199
+## [1] &quot;APICAL_JUNCTION&quot;
 ## [1] 200
-## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
+## [1] &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;
 ## [1] 200
-## [1] &quot;E2F_TARGETS&quot;
+## [1] &quot;HYPOXIA&quot;
 ## [1] 200
-## [1] &quot;G2M_CHECKPOINT&quot;
-## [1] 200
-## [1] &quot;MTORC1_SIGNALING&quot;
+## [1] &quot;MYOGENESIS&quot;
 ## [1] 200</code></pre>
 <pre class="r"><code># TODO add these as argument input into function
 header_jadbio &lt;- models[&#39;JADBIO&#39;]
@@ -889,8 +889,8 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
       AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
       SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
       CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
-      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palevioletred1&quot;),
-      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;rosybrown2&quot;),
+      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
+      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       &#39;InterferonGammaResponse_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       MTORC1Signaling_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       IL2STAT5Signaling_199 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
@@ -958,8 +958,8 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
       AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
       SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
       CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
-      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palevioletred1&quot;),
-      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;rosybrown2&quot;),
+      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
+      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       EstrogrenResponseEarly_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       EstrogrenResponseLate_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       E2FTargets_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
@@ -1027,8 +1027,8 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
       AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
       SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
       CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
-      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palevioletred1&quot;),
-      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;rosybrown2&quot;),
+      JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
+      SKGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       IL2STAT5Signaling_199 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       ApicalJunction_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       EpithelialMesenchymalTransition_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
@@ -1042,8 +1042,8 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   # Plot
   fig &lt;- Heatmap(
     mat2, #each col will have mean 0, sd 1
-    width = unit(10, &#39;cm&#39;),
-    height = unit(10, &#39;cm&#39;),
+    # width = unit(10, &#39;cm&#39;),
+    # height = unit(10, &#39;cm&#39;),
     name = unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],
     cluster_rows = FALSE,
     cluster_columns = FALSE,
@@ -1067,6 +1067,9 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
 <pre><code>## Warning in if (cancer == &quot;BRCA&quot; &amp; top == c(&quot;ESTROGEN_RESPONSE_EARLY&quot;,
 ## &quot;ESTROGEN_RESPONSE_LATE&quot;, : the condition has length &gt; 1 and only the first
 ## element will be used</code></pre>
+<pre><code>## Warning in if (cancer == &quot;GEA&quot; &amp; top == c(&quot;IL2_STAT5_SIGNALING&quot;,
+## &quot;APICAL_JUNCTION&quot;, : the condition has length &gt; 1 and only the first element
+## will be used</code></pre>
 <pre><code>## quartz_off_screen 
 ##                 2</code></pre>
 </details>
