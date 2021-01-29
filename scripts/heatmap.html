@@ -612,7 +612,7 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
   }
   assert(&#39;Assertion Error: order of feature rows on heatmap and final heatmap not same&#39;, ftnames_order2 == ftnames_order)
   
-  print(paste(&#39;Distance metric = &#39;, fig@row_dend_param$distance, &#39;. Method = &#39;, fig@row_dend_param$method, sep=&#39; &#39;))
+  print(paste(&#39;Distance metric = &#39;, fig@column_dend_param$distance, &#39;. Method = &#39;, fig@column_dend_param$method, sep=&#39; &#39;))
   
   # Assign to &#39;output&#39; variables
   return(list(&#39;results_matrix&#39; = mat2, &#39;results_ft_order&#39; = ftnames_order, &#39;subtype_annotation&#39; = subtype_ha))
@@ -688,19 +688,19 @@ for (prefix in platforms){
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## [1] &quot;N:METH&quot;
 ## [1] 30</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;N:MIR&quot;
 ## [1] 14</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;I:CNVR&quot;
 ## [1] 18</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;B:MUTA&quot;
 ## [1] 7</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;N:GEXP&quot;
 ## [1] 1682</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  complete&quot;
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;want to use this one&quot;
 ## [1] &quot;N:GEXP&quot;</code></pre>
 </details>
