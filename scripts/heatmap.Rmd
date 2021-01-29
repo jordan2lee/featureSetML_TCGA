@@ -268,7 +268,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
   }
   assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', ftnames_order2 == ftnames_order)
   
-  print(paste('Distance metric = ', fig@row_dend_param$distance, '. Method = ', fig@row_dend_param$method, sep=' '))
+  print(paste('Distance metric = ', fig@column_dend_param$distance, '. Method = ', fig@column_dend_param$method, sep=' '))
   
   # Assign to 'output' variables
   return(list('results_matrix' = mat2, 'results_ft_order' = ftnames_order, 'subtype_annotation' = subtype_ha))
