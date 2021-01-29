@@ -525,8 +525,8 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
     cluster_columns = TRUE,
     show_row_names = FALSE,
     show_column_names = FALSE,
-    column_title = &#39;Samples&#39;,
-    row_title = &#39;Features&#39;,
+    column_title = paste(&#39;Features (n=&#39;, n_fts, &#39;)&#39;, sep=&#39;&#39;),
+    row_title = paste(&#39;Samples (n=&#39;, nrow(mat), &#39;)&#39;, sep=&#39;&#39;),
     right_annotation = subtype_ha
   )
   # draw(fig) # dont need to draw
@@ -587,10 +587,10 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
     column_order = ftnames_order,
     show_row_names = FALSE,
     show_column_names = FALSE,
-    column_title = &#39;Samples&#39;,
-    row_title = paste(&#39;Features (&#39;, n_fts, &#39;)&#39;, sep=&#39;&#39;),
+    column_title = paste(&#39;Features (n=&#39;, n_fts, &#39;)&#39;, sep=&#39;&#39;),
+    row_title = paste(&#39;Samples (n=&#39;, nrow(mat2), &#39;)&#39;, sep=&#39;&#39;),
     right_annotation = subtype_ha,
-    top_annotation = team_list,
+    bottom_annotation = team_list,
   )
   draw(fig)
   dev.off()
@@ -668,6 +668,7 @@ for (prefix in platforms){
     mat2 &lt;- results_list[[&#39;results_matrix&#39;]]
     ftnames_order &lt;- results_list[[&#39;results_ft_order&#39;]]  
     subtype_annotation &lt;- results_list[[&#39;subtype_annotation&#39;]]
+    n_fts &lt;- length(ftnames_order)
   }
 }</code></pre>
 <pre><code>## Warning: `funs()` is deprecated as of dplyr 0.8.0.
@@ -906,8 +907,8 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     cluster_columns = FALSE,
     show_row_names = FALSE,
     show_column_names = FALSE,
-    column_title = &#39;Samples&#39;,
-    row_title = &#39;Features&#39;,
+    column_title = paste(&#39;Features (n=&#39;, n_fts, &#39;)&#39;, sep=&#39;&#39;),
+    row_title = paste(&#39;Samples (n=&#39;, nrow(mat2), &#39;)&#39;, sep=&#39;&#39;),
     right_annotation = subtype_ha,
     bottom_annotation = col_annot,
     use_raster = TRUE
@@ -975,8 +976,8 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     cluster_columns = FALSE,
     show_row_names = FALSE,
     show_column_names = FALSE,
-    column_title = &#39;Samples&#39;,
-    row_title = &#39;Features&#39;,
+    column_title = paste(&#39;Features (n=&#39;, n_fts, &#39;)&#39;, sep=&#39;&#39;),
+    row_title = paste(&#39;Samples (n=&#39;, nrow(mat2), &#39;)&#39;, sep=&#39;&#39;),
     right_annotation = subtype_ha,
     bottom_annotation = col_annot,
     use_raster = TRUE
@@ -1044,8 +1045,8 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     cluster_columns = FALSE,
     show_row_names = FALSE,
     show_column_names = FALSE,
-    column_title = &#39;Samples&#39;,
-    row_title = &#39;Features&#39;,
+    column_title = paste(&#39;Features (n=&#39;, n_fts, &#39;)&#39;, sep=&#39;&#39;),
+    row_title = paste(&#39;Samples (n=&#39;, nrow(mat2), &#39;)&#39;, sep=&#39;&#39;),
     right_annotation = subtype_ha,
     bottom_annotation = col_annot,
     use_raster = TRUE
