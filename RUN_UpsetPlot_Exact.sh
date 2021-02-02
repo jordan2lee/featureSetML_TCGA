@@ -16,7 +16,7 @@ echo 'completed ft list formatting'
 # Note that --headers must match order of --infile headers
 if [[ ${tumor_cohort} == 'LGGGBM' ]]
 then
-    msize='800'
+    msize='900'
 elif [[ ${tumor_cohort} == 'BRCA' || ${tumor_cohort} == 'GEA' ]]
 then
     msize='1300'
