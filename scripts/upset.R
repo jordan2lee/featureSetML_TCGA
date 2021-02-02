@@ -32,22 +32,22 @@ upset(
   data = df_fts,
   intersect = model_headers,
   mode = 'distinct',
-  name='Top Model',
-  width_ratio=0.2,
-  height_ratio = 0.3,
+  name='',
+  width_ratio=0.3,
+  height_ratio = 0.75,
   wrap=TRUE,
   # Set Size plot
   set_sizes=(
     upset_set_size(position = 'right') +
     theme(axis.ticks.x=element_line()) +
-    geom_text(aes(label=..count..), hjust = -0.25,  size=rel(2),stat='count') + # Bar counts
-    theme(axis.text.x=element_text(size=rel(0.75))) +  # set size x axis
+    geom_text(aes(label=..count..), hjust = -0.25,  size=rel(3),stat='count') + # Bar counts
+    theme(axis.text.x=element_text(size=rel(1.125))) +  # set size x axis
     expand_limits(y=args$max_ftsize) # set max x value
   ),
   # Intersection matrix
   encode_sets = FALSE,
   matrix=(
-    intersection_matrix((geom=geom_point(size = 2)))
+    intersection_matrix(geom=geom_point(size = 1.75)) # Circle size
   )
   ) +
   ggtitle(paste('Feature Overlap Between Top ', args$cancer, ' Models', sep = ''))
