@@ -1,0 +1,1067 @@
+---
+title: "Molecular Heatmap - Exact Feature Match"
+author: "Jordan Lee"
+date: "2/2/2021"
+output: html_document
+---
+
+# TMP GDAN working group 
+## Figure 4 Suggestion
+
+### Question
+
+We see (in other figures) that different teams have similar high classification performance. Is this similar performance due to selection of the same feature sets?
+
+### Rationale
+
+If we see teams picking different features, this suggests that there are multiple biomarkers that can predict cancer subtype well. An alternative explanation if we see teams picking different features, is that perhaps there is some relationship (correlation, biological pathway connection, etc.) between features so in a sense the teams are picking the "same" features if they are correlated.
+
+In this analysis we will address: are groups picking the same features? What is the relationship?
+
+
+### Analysis
+
+The preprocessing and generation of these files was conducted in a custom python pipeline. A summary of the pipeline is:
+
+1. Pick a cancer cohort (here we picked breast cancer)
+2. Select the best model from each of the 5 teams (JadBIO, SubSCOPE, AKLIMATE, Sci-Kit Grid, and Cloud Forest). Based on highest mean overall weighted F1 score
+3. Pull the corresponding feature set from each model
+4. Map features to molecular file (based on Theo's tarball)
+5. Cluster feature columns, no clustering of sample rows Clustering done on molecular file
+
+Note in calculating z-scores, NAs were omitted
+
+```{r, echo = FALSE}
+
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ComplexHeatmap))
+suppressPackageStartupMessages(library(stringr))
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(testit))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(circlize)) # ft importance continuous color band
+
+```
+
+```{r}
+###### Hardcoded 
+cancer <- 'BRCA' # 'GEA', 'LGGGBM', 'BRCA'
+
+outdir ='../data/figure_panel_b/'
+df <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_VALUE.tsv', sep='')) %>% as.data.frame()
+df_fts <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_TEAM.tsv', sep=''))%>% as.data.frame()
+mappings <- fread('../data/figure_panel_b/hallmarks.tsv') %>% as.data.frame()
+######
+```
+
+### Section 1: Heatmaps for each data type
+
+Scaling data - METH, GEXP, and MIR
+
+Non-scaled data - MUTA, CNVR
+
+I want to see the differences between features. Data was scaled - all samples for a given feature have mean 0 and sd 1. then ran through normal pipeline
+
+<details><summary>Functions</summary><p>
+
+```{r}
+model2team <- function(df){
+  # Read team model names and map to team name
+  headers_vector <- c()
+  names_vector <- c()
+  
+  models <- colnames(df)[!colnames(df) %in% c('featureID', 'Total')]
+  
+  for (header in models){
+    if (grepl('gnosis', header, fixed=TRUE)){
+      headers_vector <- c(headers_vector, header)
+      names_vector <- c(names_vector, 'JADBIO')
+    } 
+    else if (grepl('CF', header, fixed=TRUE)){
+      headers_vector <- c(headers_vector, header)
+      names_vector <- c(names_vector, 'CForest')
+    }
+    else if (grepl('nn_jg', header, fixed=TRUE)){
+      headers_vector <- c(headers_vector, header)
+      names_vector <- c(names_vector, 'SubSCOPE')
+    }
+    else if (grepl('AKLIMATE', header, fixed=TRUE)){
+      headers_vector <- c(headers_vector, header)
+      names_vector <- c(names_vector, 'AKLIMATE')
+    }
+    else {
+      headers_vector <- c(headers_vector, header)
+      names_vector <- c(names_vector, 'SKGrid')
+    }  
+  }
+  names(headers_vector) <- names_vector
+  return(headers_vector)
+}
+
+
+get_colors <- function(df){
+  # Pull color codes based on total number of subtypes
+  nsubs <- df %>% 
+    select(Labels) %>% 
+    unique() %>%
+    nrow() %>% 
+    as.integer()
+  if (nsubs == 4){
+    color_codes <- c(
+      "1" = 'salmon4',
+      "2"='red3',
+      "3"='orangered',
+      "4"='orange1'
+    )
+  } else if (nsubs == 7){
+    color_codes <- c(
+      "1" = '#F58748',
+      "2" ='#A95757',
+      "3"='#4A2918',
+      "4"='red3',
+      "5"='orangered',
+      "6"= 'salmon',
+      "7" = 'orange1'
+    )  
+  }
+  return(color_codes)
+}
+
+
+
+get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid){
+  # A. Order by subtype
+  df_transform <- df %>% arrange(Labels)
+  
+  # B. Column annotation
+  subtypestring <- paste(cancer, '_', sep='')
+  
+  subtype_ha <- rowAnnotation(
+    Subtype = 
+      select(df_transform, Labels) %>%
+      mutate_all(funs(str_replace(., subtypestring, ""))) %>%
+      as.matrix(), 
+    na_col = 'grey', 
+    col = list(
+      Subtype = get_colors(df)
+    ),
+    show_annotation_name = FALSE,
+    simple_anno_size = unit(2, "mm")
+  )
+  
+  # C. Select data type
+  df_transform <- df_transform %>%
+      select(-Labels) %>%
+      select(-all_of(cancer)) %>%
+      select(starts_with(prefix))
+  mat <- df_transform %>%
+      as.matrix() %>%
+      t()
+  print(prefix)
+  n_fts <- nrow(mat)
+  print(n_fts)
+  
+  # 1. Heatmap that applies clustering we want
+  #    second heatmap same row/col order but with added annotation bars
+  
+  # scale if appropriate 
+  if (prefix %in% yes_scale){
+    mat <- scale(t(mat), center=TRUE, scale=TRUE) #z-scores == each ft row will have mean 0, sd 1. omit NAs
+  } else {
+    mat <- t(mat) #flip for heatmap looks
+  }
+  
+  fig <- Heatmap(
+    mat,
+    name = 'first heatmap',
+    cluster_rows = FALSE,
+    clustering_distance_columns = "euclidean",
+    clustering_method_columns = "ward.D",
+    cluster_columns = TRUE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    row_title = paste('Samples (n=', nrow(mat), ')', sep=''),
+    right_annotation = subtype_ha
+  )
+  # draw(fig) # dont need to draw
+  
+  
+  #### 
+  # Add team annotation bar
+  ####
+  # Ordering
+  # 1. Get order of features post heatmap clustering
+  heatmap_order <- column_order(fig) # index vector
+  ftnames_order <- c() # featurename vector
+  for (i in heatmap_order){
+    add_ft <- colnames(mat)[i]
+    ftnames_order <- c(ftnames_order, add_ft)
+  }
+  # print(ftnames_order)
+  # 2. Get new matrix that is ordered by heatmap clustering
+  mat2 <- mat[,match(ftnames_order, colnames(mat))]
+  
+  
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+  cforest <- team_df %>% pull(header_cforest) %>% as.character()
+  aklimate <- team_df %>% pull(header_aklimate) %>% as.character()
+  subscope <- team_df %>% pull(header_subscope) %>% as.character()
+  skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
+  team_list <- HeatmapAnnotation(
+    JADBIO = jadbio,
+    CForest = cforest,
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    SKGrid = skgrid,
+    col = list(
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
+      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
+      SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9")
+    ),
+    show_legend = FALSE,
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1)
+  )
+  
+  # 3. Heatmap
+  # Set up saving fig packet
+  pdf(paste(cancer, 'ht_base', unlist(strsplit(prefix, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    name = prefix,
+    # width = unit(12, 'cm'),
+    # height = unit(12, 'cm'),
+    cluster_rows = FALSE,
+    clustering_distance_columns = "euclidean",
+    clustering_method_columns = "ward.D",
+    column_order = ftnames_order,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    right_annotation = subtype_ha,
+    bottom_annotation = team_list,
+  )
+  draw(fig)
+  dev.off()
+  
+  
+  #####
+  # unit tests
+  #####
+  # sanity check 1 - that the row orders are the same in the two heatmaps
+  assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', colnames(mat2) == ftnames_order)
+  # sanity check 2 - directly compare heatmap rows
+  heatmap_order <- column_order(fig) # index vector
+  ftnames_order2 <- c() # featurename vector
+  for (i in heatmap_order){
+    add_ft <- colnames(mat2)[i]
+    ftnames_order2 <- c(ftnames_order2, add_ft)
+  }
+  assert('Assertion Error: order of feature rows on heatmap and final heatmap not same', ftnames_order2 == ftnames_order)
+  
+  print(paste('Distance metric = ', fig@column_dend_param$distance, '. Method = ', fig@column_dend_param$method, sep=' '))
+  
+  # Assign to 'output' variables
+  return(list('results_matrix' = mat2, 'results_ft_order' = ftnames_order, 'subtype_annotation' = subtype_ha))
+}
+```
+
+
+
+
+
+</details>
+
+<details><summary>Code and figures for all data types</summary><p>
+
+```{r mixed scaled z score loop for all data types}
+####
+# Create Heatmap for all data types
+####
+# Define platform for hallmark heatmap
+if (cancer == 'BRCA'){
+  platform_of_interest <- 'N:GEXP'
+} else if (cancer == 'LGGGBM'){
+  platform_of_interest <- 'N:METH'
+} else if (cancer == 'GEA'){
+  platform_of_interest <- 'N:METH'
+}
+
+
+# Build list of data types present
+if (cancer == 'BRCA' | cancer == 'GEA' ){
+  platforms <- c('N:METH', 'N:MIR', 'I:CNVR', 'B:MUTA', 'N:GEXP')
+} else if (cancer == 'LGGGBM'){
+  platforms <- c('N:METH', 'I:CNVR', 'B:MUTA', 'N:GEXP')
+}
+
+
+
+# Set which to scale
+yes_scale <- c('N:METH', 'N:GEXP','N:MIR') # which fts to scale
+
+# get models
+models <- model2team(df_fts)
+
+# Set up saving fig packet
+setwd(outdir)
+for (prefix in platforms){
+  # Create Base Heatmap
+  results_list <- get_base_heatmap(
+    prefix, 
+    cancer, 
+    models['JADBIO'],
+    models['CForest'],
+    models['AKLIMATE'],
+    models['SubSCOPE'],
+    models['SKGrid']
+  )
+  
+  # If platform for Hallmarks Heatmap then save global variables - input for Section 2
+  if (prefix == platform_of_interest){
+    print('want to use this one')
+    print(prefix)
+    mat2 <- results_list[['results_matrix']]
+    ftnames_order <- results_list[['results_ft_order']]  
+    subtype_annotation <- results_list[['subtype_annotation']]
+    n_fts <- length(ftnames_order)
+  }
+}
+
+
+```
+
+
+
+</details>
+
+
+### Section 2: Explore the hallmarks associated with GEXP features
+
+One annotation bar (top hallmarks only, all others are not colored)
+
+
+<details><summary>2. Explore Hallmarks</summary><p>
+
+```{r explore hallmarks}
+######
+# Prep
+# look up if in hallmark mappings table
+n_hallmarks <- c() # exploratory
+pooled_hallmarks <- c() # exploratory
+
+if (platform_of_interest == 'N:GEXP'){
+  for (feature in ftnames_order){
+    # 1. Preprocess - to gene symbol
+    GENE <- unlist(strsplit(feature, '::'))[2]
+    GENE <- unlist(strsplit(GENE, ':'))[1]
+    # 2. Hallmark Mapping
+    halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
+    # Multiple Hallmarks
+    n_hallmarks <- c(n_hallmarks, length(halls))
+    pooled_hallmarks <- c(pooled_hallmarks, halls)
+  }  
+} else if (platform_of_interest == 'N:METH'){
+  for (feature in ftnames_order){
+    # 1. Preprocess - to gene symbol
+    GENE <- unlist(strsplit(feature, ':'))[4]
+    # 2. Hallmark Mapping
+    halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
+    # Multiple Hallmarks
+    n_hallmarks <- c(n_hallmarks, length(halls))
+    pooled_hallmarks <- c(pooled_hallmarks, halls)
+  }  
+}
+
+
+
+# How many hallmarks is a feature associated with?
+# Set up saving fig packet
+setwd(outdir)
+pdf(paste(cancer, 'hallmark_fts', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+
+df2 <- table(n_hallmarks) %>% as.data.frame()
+colnames(df2)<- c('nHallmarks', 'Freq')
+ggplot(data=df2, aes(x=nHallmarks, y=Freq, fill='blue')) + 
+  geom_bar(stat='identity') +
+  geom_text(aes(label=Freq), vjust=-0.3, size=3.5) +
+  ggtitle('Histogram - How many hallmarks is a feature associated with?') +
+  theme(legend.position = "none")
+dev.off()
+
+# What hallmarks are fts most often associated with?
+# Set up saving fig packet
+pdf(paste(cancer, 'hallmark_hist', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+
+df2 <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
+colnames(df2)<- c('Hallmarks', 'Freq')
+ggplot(data=df2, aes(x=Hallmarks, y=Freq, fill='blue')) + 
+  geom_bar(stat='identity') +
+  geom_text(aes(label=Freq), hjust=-0.5, size=1.5) +
+  ggtitle('What hallmarks are fts most often associated with') +
+  theme(text = element_text(size=6)) +
+  theme(legend.position = "none") +
+  coord_flip()
+dev.off()
+```
+
+</details>
+
+<details><summary>3. Heatmap with Hallmarks (Top 5)</summary><p>
+
+```{r}
+####
+# function
+####
+build_hallmark_vect <- function(hallmark, ftnames_order, platform_of_interest){
+  fts_checked <- c() # sanity check
+  hallmark_present <- c()
+  
+  for (feature in ftnames_order){
+    # 1. Preprocess - to gene symbol
+    if (platform_of_interest == 'N:GEXP'){
+      GENE <- unlist(strsplit(feature, '::'))[2]
+      GENE <- unlist(strsplit(GENE, ':'))[1]
+    } else if (platform_of_interest == 'N:METH'){
+      GENE <- unlist(strsplit(feature, ':'))[4]
+    }
+
+    # 2. Hallmark Mapping
+    halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
+    # If hallmark present
+    if (hallmark %in% halls){
+      i <- match(hallmark, halls)
+      hallmark_present <- c(hallmark_present, 1)
+      fts_checked <- c(fts_checked, feature)
+    }
+    else {
+      hallmark_present <- c(hallmark_present, 0)
+      fts_checked <- c(fts_checked, feature)
+    }
+  }
+  return(hallmark_present)
+}
+```
+
+```{r}
+# Get top data
+hallmark_data <- sort(table(pooled_hallmarks), decreasing=T)
+
+# Find top hallmarks
+print('Heatmap below will use these hallmarks (order matches with heatmap)')
+top <- hallmark_data[1:5]
+top <- names(top)
+```
+
+#### Need to manually update this code chunk
+
+```{r}
+print('need to manually update this')
+
+
+gene_set_size <- function(input_hallmark){
+  # subset for hallmark rows
+  tab<- mappings[mappings['gs_name']==input_hallmark,]
+  # count unique gene symbols
+  genes <- unique(unlist(tab['human_gene_symbol']))
+  return(length(genes))
+}
+
+for (h in top){
+  print(h)
+  print(gene_set_size(h))
+}
+
+```
+
+```{r to update}
+# TODO add these as argument input into function
+header_jadbio <- models['JADBIO']
+header_cforest <- models['CForest']
+header_aklimate <- models['AKLIMATE']
+header_subscope <- models['SubSCOPE']
+header_skgrid <- models['SKGrid']
+
+subtype_ha <- subtype_annotation
+
+```
+
+```{r hallmarks}
+# TODO make less janky so autopopulates the annotation names 
+if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING", "IL2_STAT5_SIGNALING", "INFLAMMATORY_RESPONSE", "ESTROGEN_RESPONSE_LATE") ){
+  vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+  vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+  vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+  vals_4 <- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+  vals_5 <- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+  cforest <- team_df %>% pull(header_cforest) %>% as.character()
+  aklimate <- team_df %>% pull(header_aklimate) %>% as.character()
+  subscope <- team_df %>% pull(header_subscope) %>% as.character()
+  skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
+  
+  # Build annotation
+  col_annot <- HeatmapAnnotation(
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    CForest = cforest,
+    JADBIO = jadbio,
+    SKGrid = skgrid,
+    
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill='blue', col='grey38') ),
+    
+    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    'InterferonGammaResponse_200' = vals_1,
+    MTORC1Signaling_200 = vals_2,
+    IL2STAT5Signaling_199 = vals_3,
+    InflammatoryResponse_200 = vals_4,
+    EstrogenResponseLate_200 = vals_5,  
+    
+    col = list(
+      AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
+      SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
+      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      'InterferonGammaResponse_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      MTORC1Signaling_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      IL2STAT5Signaling_199 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      InflammatoryResponse_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      EstrogenResponseLate_200 = c('0' = "#333333", '1' = "darkgoldenrod3")
+    ),
+    show_legend = FALSE,
+    gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
+  )
+  
+  # Plot
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    name = unlist(strsplit(platform_of_interest, ':'))[2],
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    use_raster = TRUE
+  )
+  # Set up saving fig packet
+  setwd(outdir)
+  pdf(paste(cancer, 'ht_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+  draw(fig)
+  dev.off()
+} else if (cancer == 'BRCA' & top == c("ESTROGEN_RESPONSE_EARLY", "ESTROGEN_RESPONSE_LATE", "E2F_TARGETS", "G2M_CHECKPOINT", "MTORC1_SIGNALING" ) ){
+  vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+  vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+  vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+  vals_4 <- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+  vals_5 <- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+  cforest <- team_df %>% pull(header_cforest) %>% as.character()
+  aklimate <- team_df %>% pull(header_aklimate) %>% as.character()
+  subscope <- team_df %>% pull(header_subscope) %>% as.character()
+  skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
+  
+  # Build annotation
+  col_annot <- HeatmapAnnotation(
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    CForest = cforest,
+    JADBIO = jadbio,
+    SKGrid = skgrid,
+    
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill='blue', col='grey38') ),
+    
+    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    EstrogrenResponseEarly_200 = vals_1,
+    EstrogrenResponseLate_200 = vals_2,
+    E2FTargets_200 = vals_3,
+    G2MCheckpoint_200 = vals_4,
+    MTORC1Signaling_200 = vals_5,  
+    
+    col = list(
+      AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
+      SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
+      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      EstrogrenResponseEarly_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      EstrogrenResponseLate_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      E2FTargets_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      G2MCheckpoint_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      MTORC1Signaling_200 = c('0' = "#333333", '1' = "darkgoldenrod3")
+    ),
+    show_legend = FALSE,
+    gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
+  )
+  
+  # Plot
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    name = unlist(strsplit(platform_of_interest, ':'))[2],
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    use_raster = TRUE
+  )
+  # Set up saving fig packet
+  setwd(outdir)
+  pdf(paste(cancer, 'ht_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+  draw(fig)
+  dev.off()
+} else if (cancer == 'GEA' & top == c("IL2_STAT5_SIGNALING", "APICAL_JUNCTION", "EPITHELIAL_MESENCHYMAL_TRANSITION", "HYPOXIA", "MYOGENESIS") ){
+  vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+  vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+  vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+  vals_4 <- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+  vals_5 <- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+  cforest <- team_df %>% pull(header_cforest) %>% as.character()
+  aklimate <- team_df %>% pull(header_aklimate) %>% as.character()
+  subscope <- team_df %>% pull(header_subscope) %>% as.character()
+  skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
+  
+  # Build annotation
+  col_annot <- HeatmapAnnotation(
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    CForest = cforest,
+    JADBIO = jadbio,
+    SKGrid = skgrid,
+    
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill='blue', col='grey38') ),
+    
+    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    IL2STAT5Signaling_199 = vals_1,
+    ApicalJunction_200 = vals_2,
+    EpithelialMesenchymalTransition_200 = vals_3,
+    Hypoxia_200 = vals_4,
+    Myogenesis_200 = vals_5,  
+    
+    col = list(
+      AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
+      SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
+      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      IL2STAT5Signaling_199 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      ApicalJunction_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      EpithelialMesenchymalTransition_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      Hypoxia_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      Myogenesis_200 = c('0' = "#333333", '1' = "darkgoldenrod3")
+    ),
+    show_legend = FALSE,
+    gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
+  )
+  
+  # Plot
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    # width = unit(10, 'cm'),
+    # height = unit(10, 'cm'),
+    name = unlist(strsplit(platform_of_interest, ':'))[2],
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    use_raster = TRUE
+  )
+  # Set up saving fig packet
+  setwd(outdir)
+  pdf(paste(cancer, 'ht_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+  draw(fig)
+  dev.off()
+  
+}
+```
+
+</details>
+
+<details><summary>4. WIP Heatmap with Hallmarks and Feature Importance (Top 5)</summary><p>
+
+
+```{r}
+####
+# function
+####
+build_hallmark_vect <- function(hallmark, ftnames_order, platform_of_interest){
+  fts_checked <- c() # sanity check
+  hallmark_present <- c()
+  
+  for (feature in ftnames_order){
+    # 1. Preprocess - to gene symbol
+    if (platform_of_interest == 'N:GEXP'){
+      GENE <- unlist(strsplit(feature, '::'))[2]
+      GENE <- unlist(strsplit(GENE, ':'))[1]
+    } else if (platform_of_interest == 'N:METH'){
+      GENE <- unlist(strsplit(feature, ':'))[4]
+    }
+
+    # 2. Hallmark Mapping
+    halls <- mappings[mappings$human_gene_symbol==GENE,]$gs_name %>% as.vector()
+    # If hallmark present
+    if (hallmark %in% halls){
+      i <- match(hallmark, halls)
+      hallmark_present <- c(hallmark_present, 1)
+      fts_checked <- c(fts_checked, feature)
+    }
+    else {
+      hallmark_present <- c(hallmark_present, 0)
+      fts_checked <- c(fts_checked, feature)
+    }
+  }
+  return(hallmark_present)
+}
+```
+
+```{r}
+# Get top data
+hallmark_data <- sort(table(pooled_hallmarks), decreasing=T)
+
+# Find top hallmarks
+print('Heatmap below will use these hallmarks (order matches with heatmap)')
+top <- hallmark_data[1:5]
+top <- names(top)
+```
+
+#### Need to manually update this code chunk
+
+```{r}
+print('need to manually update this')
+
+
+gene_set_size <- function(input_hallmark){
+  # subset for hallmark rows
+  tab<- mappings[mappings['gs_name']==input_hallmark,]
+  # count unique gene symbols
+  genes <- unique(unlist(tab['human_gene_symbol']))
+  return(length(genes))
+}
+
+for (h in top){
+  print(h)
+  print(gene_set_size(h))
+}
+
+```
+
+```{r}
+# TODO add these as argument input into function
+header_jadbio <- models['JADBIO']
+header_cforest <- models['CForest']
+header_aklimate <- models['AKLIMATE']
+header_subscope <- models['SubSCOPE']
+header_skgrid <- models['SKGrid']
+
+subtype_ha <- subtype_annotation
+```
+
+
+```{r adding in ft importances}
+#######
+file_imp_aklimate <- paste('../src/aklimate_feature_importance_scores_20200807/AKLIMATE_TEMPLATE_FULLY_TRAINED_', cancer, '_20200423_aklimate_ranked_feature_importance.tsv', sep='')
+
+
+####### note this needs to be run first, once complete can insert this below the next code chunk that create this
+team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+######
+#######
+
+# Normalize function
+mm_normal <- function(x) {
+return ((x - min(x)) / (max(x) - min(x)))
+}
+
+# Read importance file and subset 
+imp_mat <- fread(file_imp_aklimate) %>% as.data.frame()
+s_imp_mat <- imp_mat[,c('features', 'importance')]
+s_imp_mat
+
+# Min max normalize importance scores
+minmax_vals <- mm_normal(s_imp_mat$importance)
+s_imp_mat <- cbind(s_imp_mat, minmax_vals)
+
+
+# Map and order ft importances to pooled ft order
+aklimate_minmax <- c()
+sanity_check_fts <- c()
+aklimate_importance_fts <- s_imp_mat$features
+for (pooled_ft in team_df$featureID){
+  # Need this check if pulled aklimate model that is less than largest aklimate ft set (1k)
+  if (pooled_ft %in% aklimate_importance_fts){
+    mm <- s_imp_mat[s_imp_mat$'features'==pooled_ft,]$minmax_vals
+    aklimate_minmax <- c(aklimate_minmax, mm)
+    sanity_check_fts <- c(sanity_check_fts, pooled_ft)
+  }
+}
+
+```
+
+
+
+
+```{r}
+# TODO make less janky so autopopulates the annotation names 
+if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING", "IL2_STAT5_SIGNALING", "INFLAMMATORY_RESPONSE", "ESTROGEN_RESPONSE_LATE") ){
+  vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+  vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+  vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+  vals_4 <- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+  vals_5 <- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+  cforest <- team_df %>% pull(header_cforest) %>% as.character()
+  aklimate <- aklimate_minmax
+  subscope <- team_df %>% pull(header_subscope) %>% as.character()
+  skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
+  
+  # Build annotation
+  col_annot <- HeatmapAnnotation(
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    CForest = cforest,
+    JADBIO = jadbio,
+    SKGrid = skgrid,
+    
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill='blue', col='grey38') ),
+    
+    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    InterferonGammaResponse_200 = vals_1,
+    MTORC1Signaling_200 = vals_2,
+    IL2STAT5Signaling_199 = vals_3,
+    InflammatoryResponse_200 = vals_4,
+    EstrogenResponseLate_200 = vals_5,  
+    
+    col = list(
+      AKLIMATE = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
+      SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
+      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      InterferonGammaResponse_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      MTORC1Signaling_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      IL2STAT5Signaling_199 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      InflammatoryResponse_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      EstrogenResponseLate_200 = c('0' = "#333333", '1' = "darkgoldenrod3")
+    ),
+    show_legend = FALSE,
+    gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
+  )
+  
+  # Plot
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    name = unlist(strsplit(platform_of_interest, ':'))[2],
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    use_raster = TRUE
+  )
+  # Set up saving fig packet
+  setwd(outdir)
+  pdf(paste(cancer, 'ht_ftimportance_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+  draw(fig)
+  dev.off()
+
+  
+  
+  
+  
+  
+
+  
+  
+  
+
+  
+  
+} else if (cancer == 'BRCA' & top == c("ESTROGEN_RESPONSE_EARLY", "ESTROGEN_RESPONSE_LATE", "E2F_TARGETS", "G2M_CHECKPOINT", "MTORC1_SIGNALING" ) ){
+  vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+  vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+  vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+  vals_4 <- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+  vals_5 <- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+  cforest <- team_df %>% pull(header_cforest) %>% as.character()
+  aklimate <- team_df %>% pull(header_aklimate) %>% as.character()
+  subscope <- team_df %>% pull(header_subscope) %>% as.character()
+  skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
+  
+  # Build annotation
+  col_annot <- HeatmapAnnotation(
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    CForest = cforest,
+    JADBIO = jadbio,
+    SKGrid = skgrid,
+    
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill='blue', col='grey38') ),
+    
+    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    EstrogrenResponseEarly_200 = vals_1,
+    EstrogrenResponseLate_200 = vals_2,
+    E2FTargets_200 = vals_3,
+    G2MCheckpoint_200 = vals_4,
+    MTORC1Signaling_200 = vals_5,  
+    
+    col = list(
+      AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
+      SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
+      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      EstrogrenResponseEarly_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      EstrogrenResponseLate_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      E2FTargets_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      G2MCheckpoint_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      MTORC1Signaling_200 = c('0' = "#333333", '1' = "darkgoldenrod3")
+    ),
+    show_legend = FALSE,
+    gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
+  )
+  
+  # Plot
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    name = unlist(strsplit(platform_of_interest, ':'))[2],
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    use_raster = TRUE
+  )
+  # Set up saving fig packet
+  setwd(outdir)
+  pdf(paste(cancer, 'ht_ftimportance_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+  draw(fig)
+  dev.off()
+} else if (cancer == 'GEA' & top == c("IL2_STAT5_SIGNALING", "APICAL_JUNCTION", "EPITHELIAL_MESENCHYMAL_TRANSITION", "HYPOXIA", "MYOGENESIS") ){
+  vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+  vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+  vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+  vals_4 <- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+  vals_5 <- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  
+  # Build annotation bars of teams feature sets. 
+  # 1. df of all teams. match ft order in heatmap
+  team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  # 2. Pull just the team of interest
+  jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+  cforest <- team_df %>% pull(header_cforest) %>% as.character()
+  aklimate <- team_df %>% pull(header_aklimate) %>% as.character()
+  subscope <- team_df %>% pull(header_subscope) %>% as.character()
+  skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
+  
+  # Build annotation
+  col_annot <- HeatmapAnnotation(
+    AKLIMATE = aklimate,
+    SubSCOPE = subscope,
+    CForest = cforest,
+    JADBIO = jadbio,
+    SKGrid = skgrid,
+    
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill='blue', col='grey38') ),
+    
+    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    IL2STAT5Signaling_199 = vals_1,
+    ApicalJunction_200 = vals_2,
+    EpithelialMesenchymalTransition_200 = vals_3,
+    Hypoxia_200 = vals_4,
+    Myogenesis_200 = vals_5,  
+    
+    col = list(
+      AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
+      SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
+      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
+      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      IL2STAT5Signaling_199 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      ApicalJunction_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      EpithelialMesenchymalTransition_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      Hypoxia_200 = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      Myogenesis_200 = c('0' = "#333333", '1' = "darkgoldenrod3")
+    ),
+    show_legend = FALSE,
+    gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
+  )
+  
+  # Plot
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    # width = unit(10, 'cm'),
+    # height = unit(10, 'cm'),
+    name = unlist(strsplit(platform_of_interest, ':'))[2],
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    use_raster = TRUE
+  )
+  # Set up saving fig packet
+  setwd(outdir)
+  pdf(paste(cancer, 'ht_ftimportance_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+  draw(fig)
+  dev.off()
+  
+}
+```
+
+</details>
