@@ -616,6 +616,37 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
   
   # Assign to &#39;output&#39; variables
   return(list(&#39;results_matrix&#39; = mat2, &#39;results_ft_order&#39; = ftnames_order, &#39;subtype_annotation&#39; = subtype_ha))
+}
+
+
+build_hallmark_vect &lt;- function(hallmark, ftnames_order, platform_of_interest){
+  # For builidng hallmark heatmap
+  fts_checked &lt;- c() # sanity check
+  hallmark_present &lt;- c()
+  
+  for (feature in ftnames_order){
+    # 1. Preprocess - to gene symbol
+    if (platform_of_interest == &#39;N:GEXP&#39;){
+      GENE &lt;- unlist(strsplit(feature, &#39;::&#39;))[2]
+      GENE &lt;- unlist(strsplit(GENE, &#39;:&#39;))[1]
+    } else if (platform_of_interest == &#39;N:METH&#39;){
+      GENE &lt;- unlist(strsplit(feature, &#39;:&#39;))[4]
+    }
+
+    # 2. Hallmark Mapping
+    halls &lt;- mappings[mappings$human_gene_symbol==GENE,]$gs_name %&gt;% as.vector()
+    # If hallmark present
+    if (hallmark %in% halls){
+      i &lt;- match(hallmark, halls)
+      hallmark_present &lt;- c(hallmark_present, 1)
+      fts_checked &lt;- c(fts_checked, feature)
+    }
+    else {
+      hallmark_present &lt;- c(hallmark_present, 0)
+      fts_checked &lt;- c(fts_checked, feature)
+    }
+  }
+  return(hallmark_present)
 }</code></pre>
 </details>
 <details>
@@ -774,37 +805,6 @@ dev.off()</code></pre>
 <details>
 <summary>3. Heatmap with Hallmarks (Top 5)</summary>
 <p>
-<pre class="r"><code>####
-# function
-####
-build_hallmark_vect &lt;- function(hallmark, ftnames_order, platform_of_interest){
-  fts_checked &lt;- c() # sanity check
-  hallmark_present &lt;- c()
-  
-  for (feature in ftnames_order){
-    # 1. Preprocess - to gene symbol
-    if (platform_of_interest == &#39;N:GEXP&#39;){
-      GENE &lt;- unlist(strsplit(feature, &#39;::&#39;))[2]
-      GENE &lt;- unlist(strsplit(GENE, &#39;:&#39;))[1]
-    } else if (platform_of_interest == &#39;N:METH&#39;){
-      GENE &lt;- unlist(strsplit(feature, &#39;:&#39;))[4]
-    }
-
-    # 2. Hallmark Mapping
-    halls &lt;- mappings[mappings$human_gene_symbol==GENE,]$gs_name %&gt;% as.vector()
-    # If hallmark present
-    if (hallmark %in% halls){
-      i &lt;- match(hallmark, halls)
-      hallmark_present &lt;- c(hallmark_present, 1)
-      fts_checked &lt;- c(fts_checked, feature)
-    }
-    else {
-      hallmark_present &lt;- c(hallmark_present, 0)
-      fts_checked &lt;- c(fts_checked, feature)
-    }
-  }
-  return(hallmark_present)
-}</code></pre>
 <pre class="r"><code># Get top data
 hallmark_data &lt;- sort(table(pooled_hallmarks), decreasing=T)
 
@@ -1065,37 +1065,6 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
 <details>
 <summary>4. WIP Heatmap with Hallmarks and Feature Importance (Top 5)</summary>
 <p>
-<pre class="r"><code>####
-# function
-####
-build_hallmark_vect &lt;- function(hallmark, ftnames_order, platform_of_interest){
-  fts_checked &lt;- c() # sanity check
-  hallmark_present &lt;- c()
-  
-  for (feature in ftnames_order){
-    # 1. Preprocess - to gene symbol
-    if (platform_of_interest == &#39;N:GEXP&#39;){
-      GENE &lt;- unlist(strsplit(feature, &#39;::&#39;))[2]
-      GENE &lt;- unlist(strsplit(GENE, &#39;:&#39;))[1]
-    } else if (platform_of_interest == &#39;N:METH&#39;){
-      GENE &lt;- unlist(strsplit(feature, &#39;:&#39;))[4]
-    }
-
-    # 2. Hallmark Mapping
-    halls &lt;- mappings[mappings$human_gene_symbol==GENE,]$gs_name %&gt;% as.vector()
-    # If hallmark present
-    if (hallmark %in% halls){
-      i &lt;- match(hallmark, halls)
-      hallmark_present &lt;- c(hallmark_present, 1)
-      fts_checked &lt;- c(fts_checked, feature)
-    }
-    else {
-      hallmark_present &lt;- c(hallmark_present, 0)
-      fts_checked &lt;- c(fts_checked, feature)
-    }
-  }
-  return(hallmark_present)
-}</code></pre>
 <pre class="r"><code># Get top data
 hallmark_data &lt;- sort(table(pooled_hallmarks), decreasing=T)
 
