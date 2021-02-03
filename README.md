@@ -53,7 +53,7 @@ Outputs two files in `data/figure_panel_a/`:
 
 ## 4. Exact Feature Overlap Heatmap - Clustering features
 
-Last updated: 2/2/21
+Last updated: 2/3/21
 
 Purpose: create heatmap of all features of best models and cluster based on original molecular tarball signatures
 
@@ -80,4 +80,4 @@ bash RUN_Heatmap_Exact.sh <cancer>
 ## run scripts/heatmap.Rmd
 ```
 
-**WIP 2/2/21 - will be tweaking heatmap annotations to show feature importances instead (for models that provide importance scores) `heatmap_importance.Rmd`**
+**WIP 2/3/21 - will be tweaking heatmap annotations to show feature importances instead (for models that provide importance scores) `heatmap_importance.Rmd`**
