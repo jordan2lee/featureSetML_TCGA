@@ -53,6 +53,9 @@ outdir ='../data/figure_panel_b/'
 df <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_VALUE.tsv', sep='')) %>% as.data.frame()
 df_fts <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_TEAM.tsv', sep=''))%>% as.data.frame()
 mappings <- fread('../data/figure_panel_b/hallmarks.tsv') %>% as.data.frame()
+
+file_imp_aklimate <- paste('../src/aklimate_feature_importance_scores_20200807/AKLIMATE_TEMPLATE_FULLY_TRAINED_', cancer, '_20200423_aklimate_ranked_feature_importance.tsv', sep='')
+imp_mat <- fread(file_imp_aklimate) %>% as.data.frame()
 ######
 ```
 
@@ -304,6 +307,11 @@ build_hallmark_vect <- function(hallmark, ftnames_order, platform_of_interest){
     }
   }
   return(hallmark_present)
+}
+
+# Minmax normalize function
+mm_normal <- function(x) {
+return ((x - min(x)) / (max(x) - min(x)))
 }
 ```
 
@@ -753,52 +761,6 @@ subtype_ha <- subtype_annotation
 ```
 
 
-```{r adding in ft importances}
-#######
-file_imp_aklimate <- paste('../src/aklimate_feature_importance_scores_20200807/AKLIMATE_TEMPLATE_FULLY_TRAINED_', cancer, '_20200423_aklimate_ranked_feature_importance.tsv', sep='')
-
-
-####### note this needs to be run first, once complete can insert this below the next code chunk that create this
-team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
-######
-#######
-
-# Normalize function
-mm_normal <- function(x) {
-return ((x - min(x)) / (max(x) - min(x)))
-}
-
-# Read importance file and subset 
-imp_mat <- fread(file_imp_aklimate) %>% as.data.frame()
-s_imp_mat <- imp_mat[,c('features', 'importance')]
-s_imp_mat
-
-# Min max normalize importance scores
-minmax_vals <- mm_normal(s_imp_mat$importance)
-s_imp_mat <- cbind(s_imp_mat, minmax_vals)
-
-
-# Map and order ft importances to pooled ft order
-aklimate_minmax <- c()
-sanity_check_fts <- c()
-aklimate_importance_fts <- s_imp_mat$features
-for (pooled_ft in team_df$featureID){
-  # Need this check if pulled aklimate model that is less than largest aklimate ft set (1k)
-  if (pooled_ft %in% aklimate_importance_fts){
-    mm <- s_imp_mat[s_imp_mat$'features'==pooled_ft,]$minmax_vals
-    aklimate_minmax <- c(aklimate_minmax, mm)
-    sanity_check_fts <- c(sanity_check_fts, pooled_ft)
-  } else {
-    aklimate_minmax <- c(aklimate_minmax, 0)
-    sanity_check_fts <- c(sanity_check_fts, pooled_ft)
-  }
-}
-
-```
-
-
-
-
 ```{r}
 setwd(outdir)
 
@@ -811,8 +773,35 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   vals_5 <- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
   
   # Build annotation bars of teams feature sets. 
-  # 1. df of all teams. match ft order in heatmap
+  # 1A. df of all teams. match ft order in heatmap
   team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
+  
+  
+  ########
+  # 1B. Create MinMax Values - for AKLIMATE only
+  ########
+  # Read importance file and subset 
+  s_imp_mat <- imp_mat[,c('features', 'importance')]
+  # Min max normalize importance scores
+  minmax_vals <- mm_normal(s_imp_mat$importance)
+  s_imp_mat <- cbind(s_imp_mat, minmax_vals)
+  # Map and order ft importances to pooled ft order
+  aklimate_minmax <- c()
+  sanity_check_fts <- c()
+  aklimate_importance_fts <- s_imp_mat$features
+  for (pooled_ft in team_df$featureID){
+    # Need this check if pulled aklimate model that is less than largest aklimate ft set (1k)
+    if (pooled_ft %in% aklimate_importance_fts){
+      mm <- s_imp_mat[s_imp_mat$'features'==pooled_ft,]$minmax_vals
+      aklimate_minmax <- c(aklimate_minmax, mm)
+      sanity_check_fts <- c(sanity_check_fts, pooled_ft)
+    } else {
+      aklimate_minmax <- c(aklimate_minmax, 0)
+      sanity_check_fts <- c(sanity_check_fts, pooled_ft)
+    }
+  }
+
+
   # 2. Pull just the team of interest
   jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
   cforest <- team_df %>% pull(header_cforest) %>% as.character()
