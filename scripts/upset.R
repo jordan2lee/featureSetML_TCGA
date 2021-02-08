@@ -26,7 +26,7 @@ df_fts[model_headers] = df_fts[model_headers] == 1
 
 # Plot
 setwd(args$outdir)
-pdf(args$outname, onefile=TRUE)
+pdf(args$outname, onefile=TRUE, width=10)
 upset(
   # Main plot
   data = df_fts,
@@ -48,7 +48,7 @@ upset(
   encode_sets = FALSE,
   matrix=(
     intersection_matrix(geom=geom_point(size = 1.75)) # Circle size
-  )
-  ) +
-  ggtitle(paste('Feature Overlap Between Top ', args$cancer, ' Models', sep = ''))
+    )
+) +
+ggtitle(paste('Feature Overlap Between Top ', args$cancer, ' Models', sep = ''))
 dev.off()
