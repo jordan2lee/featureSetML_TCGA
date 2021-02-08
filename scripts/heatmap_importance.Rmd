@@ -151,7 +151,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       Subtype = get_colors(df)
     ),
     show_annotation_name = FALSE,
-    simple_anno_size = unit(2, "mm")
+    simple_anno_size = unit(3, "mm") # width
   )
   
   # C. Select data type
@@ -232,19 +232,25 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       SKGrid =  c('0' = "#333333", '1' = "#EFA9A9")
     ),
     show_legend = FALSE,
-    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1),
-    simple_anno_size = unit(2, 'mm')
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1)
+    # simple_anno_size = unit(2, 'mm') # height
   )
   
   # 3. Heatmap
   # Set up saving fig packet
-  # tiff(
-  #   paste(cancer, 'ht_base', unlist(strsplit(prefix, ':'))[2],'.tiff',sep='_'),
-  #   width = 800,
-  #   height = 800,
-  #   res = 200,
-  #   compression = "none"
-  # )
+  tiff(
+    paste(
+      cancer,
+      '_ht_base_', 
+      unlist(strsplit(prefix, ':'))[2],
+      '.tiff',
+      sep=''
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = "none"
+  )
   fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
     name = prefix,
@@ -261,15 +267,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     right_annotation = subtype_ha,
     bottom_annotation = team_list,
   )
-  
-  image <- anno(
-    paste(cancer, 'TEST_ht_base', unlist(strsplit(prefix, ':'))[2],'.pdf',sep='_'),
-    full.names=TRUE, 
-    10
-    )
-  anno = anno_image(image)
-  draw(fig, adjust_annotation_extension = FALSE)
-  # draw(fig, adjust_annotation_extension = FALSE)
+  draw(fig)
   dev.off()
   
   
