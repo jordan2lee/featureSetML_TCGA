@@ -47,7 +47,7 @@ suppressPackageStartupMessages(library(circlize)) # ft importance continuous col
 
 ```{r}
 ###### Hardcoded 
-cancer <- 'LGGGBM' # 'GEA', 'LGGGBM', 'BRCA'
+cancer <- 'GEA' # 'GEA', 'LGGGBM', 'BRCA'
 
 outdir ='../data/figure_panel_b/'
 df <- fread(paste('../data/figure_panel_b/', cancer, '_fts_by_VALUE.tsv', sep='')) %>% as.data.frame()
@@ -439,8 +439,19 @@ if (platform_of_interest == 'N:GEXP'){
 # How many hallmarks is a feature associated with?
 # Set up saving fig packet
 setwd(outdir)
-pdf(paste(cancer, 'hallmark_fts', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
-
+tiff(
+  paste(
+    cancer,
+    'hallmark_fts', 
+    unlist(strsplit(prefix, ':'))[2],
+    '.tiff',
+    sep=''
+  ),
+  width = 1400,
+  height = 1200,
+  res = 200,
+  compression = "none"
+)
 df2 <- table(n_hallmarks) %>% as.data.frame()
 colnames(df2)<- c('nHallmarks', 'Freq')
 ggplot(data=df2, aes(x=nHallmarks, y=Freq, fill='blue')) + 
@@ -452,8 +463,19 @@ dev.off()
 
 # What hallmarks are fts most often associated with?
 # Set up saving fig packet
-pdf(paste(cancer, 'hallmark_hist', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
-
+tiff(
+  paste(
+    cancer,
+    'hallmark_hist', 
+    unlist(strsplit(prefix, ':'))[2],
+    '.tiff',
+    sep=''
+  ),
+  width = 1400,
+  height = 1200,
+  res = 200,
+  compression = "none"
+)
 df2 <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
 colnames(df2)<- c('Hallmarks', 'Freq')
 ggplot(data=df2, aes(x=Hallmarks, y=Freq, fill='blue')) + 
@@ -580,8 +602,20 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, 'ht_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
-  draw(fig, adjust_annotation_extension = FALSE)
+  tiff(
+    paste(
+      cancer,
+      '_ht_top5_', 
+      unlist(strsplit(prefix, ':'))[2],
+      '.tiff',
+      sep=''
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = "none"
+  )
+  draw(fig)
   dev.off()
 } else if (cancer == 'BRCA' & top == c("ESTROGEN_RESPONSE_EARLY", "ESTROGEN_RESPONSE_LATE", "E2F_TARGETS", "G2M_CHECKPOINT", "MTORC1_SIGNALING" ) ){
   vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
@@ -648,8 +682,20 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, 'ht_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
-  draw(fig, adjust_annotation_extension = FALSE)
+  tiff(
+    paste(
+      cancer,
+      '_ht_top5_', 
+      unlist(strsplit(prefix, ':'))[2],
+      '.tiff',
+      sep=''
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = "none"
+  )
+  draw(fig)
   dev.off()
 } else if (cancer == 'GEA' & top == c("IL2_STAT5_SIGNALING", "APICAL_JUNCTION", "EPITHELIAL_MESENCHYMAL_TRANSITION", "HYPOXIA", "MYOGENESIS") ){
   vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
@@ -718,8 +764,20 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, 'ht_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
-  draw(fig, adjust_annotation_extension = FALSE)
+  tiff(
+    paste(
+      cancer,
+      '_ht_top5_', 
+      unlist(strsplit(prefix, ':'))[2],
+      '.tiff',
+      sep=''
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = "none"
+  )
+  draw(fig)
   dev.off()
   
 }
@@ -869,8 +927,20 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, 'ht_ftimportance_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
-  draw(fig, adjust_annotation_extension = FALSE)
+  tiff(
+    paste(
+      cancer,
+      'ht_ftimportance_top5', 
+      unlist(strsplit(prefix, ':'))[2],
+      '.tiff',
+      sep=''
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = "none"
+  )
+  draw(fig)
   dev.off()
 
 } else if (cancer == 'BRCA' & top == c("ESTROGEN_RESPONSE_EARLY", "ESTROGEN_RESPONSE_LATE", "E2F_TARGETS", "G2M_CHECKPOINT", "MTORC1_SIGNALING" ) ){
@@ -963,8 +1033,20 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, 'ht_ftimportance_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
-  draw(fig, adjust_annotation_extension = FALSE)
+  tiff(
+    paste(
+      cancer,
+      'ht_ftimportance_top5', 
+      unlist(strsplit(prefix, ':'))[2],
+      '.tiff',
+      sep=''
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = "none"
+  )
+  draw(fig)
   dev.off()
 } else if (cancer == 'GEA' & top == c("IL2_STAT5_SIGNALING", "APICAL_JUNCTION", "EPITHELIAL_MESENCHYMAL_TRANSITION", "HYPOXIA", "MYOGENESIS") ){
   vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
@@ -1058,8 +1140,20 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, 'ht_ftimportance_top5', unlist(strsplit(platform_of_interest, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
-  draw(fig, adjust_annotation_extension = FALSE)
+  tiff(
+    paste(
+      cancer,
+      'ht_ftimportance_top5', 
+      unlist(strsplit(prefix, ':'))[2],
+      '.tiff',
+      sep=''
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = "none"
+  )
+  draw(fig)
   dev.off()
   
 }
