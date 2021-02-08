@@ -77,7 +77,7 @@ Second, create heatmap for each cancer cohort using the hallmark file from last 
 bash RUN_Heatmap_Exact.sh <cancer>
 
 # Create heatmaps
-## run scripts/heatmap.Rmd
+## run scripts/heatmap_importance.Rmd
 ```
 
 **WIP 2/3/21 - will be tweaking heatmap annotations to show feature importances instead (for models that provide importance scores) `heatmap_importance.Rmd`**
