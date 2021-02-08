@@ -232,12 +232,19 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       SKGrid =  c('0' = "#333333", '1' = "#EFA9A9")
     ),
     show_legend = FALSE,
-    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1)
+    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1),
+    simple_anno_size = unit(2, 'mm')
   )
   
   # 3. Heatmap
   # Set up saving fig packet
-  pdf(paste(cancer, 'ht_base', unlist(strsplit(prefix, ':'))[2],'.pdf',sep='_'), onefile=FALSE)
+  # tiff(
+  #   paste(cancer, 'ht_base', unlist(strsplit(prefix, ':'))[2],'.tiff',sep='_'),
+  #   width = 800,
+  #   height = 800,
+  #   res = 200,
+  #   compression = "none"
+  # )
   fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
     name = prefix,
@@ -254,7 +261,15 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     right_annotation = subtype_ha,
     bottom_annotation = team_list,
   )
+  
+  image <- anno(
+    paste(cancer, 'TEST_ht_base', unlist(strsplit(prefix, ':'))[2],'.pdf',sep='_'),
+    full.names=TRUE, 
+    10
+    )
+  anno = anno_image(image)
   draw(fig, adjust_annotation_extension = FALSE)
+  # draw(fig, adjust_annotation_extension = FALSE)
   dev.off()
   
   
@@ -376,9 +391,8 @@ for (prefix in platforms){
     n_fts <- length(ftnames_order)
   }
 }
-
-
 ```
+
 
 
 
