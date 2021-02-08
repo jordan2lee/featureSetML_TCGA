@@ -16,10 +16,10 @@ echo 'completed ft list formatting'
 # Note that --headers must match order of --infile headers
 if [[ ${tumor_cohort} == 'LGGGBM' ]]
 then
-    msize='900'
+    msize='800'
 elif [[ ${tumor_cohort} == 'BRCA' || ${tumor_cohort} == 'GEA' ]]
 then
-    msize='1300'
+    msize='1150' #'1300'
 fi
 Rscript scripts/upset.R \
     -c ${tumor_cohort} \
