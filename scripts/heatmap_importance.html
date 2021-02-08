@@ -394,7 +394,7 @@ summary {
 </ol>
 <p>Note in calculating z-scores, NAs were omitted</p>
 <pre class="r"><code>###### Hardcoded 
-cancer &lt;- &#39;BRCA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
+cancer &lt;- &#39;GEA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
 
 outdir =&#39;../data/figure_panel_b/&#39;
 df &lt;- fread(paste(&#39;../data/figure_panel_b/&#39;, cancer, &#39;_fts_by_VALUE.tsv&#39;, sep=&#39;&#39;)) %&gt;% as.data.frame()
@@ -494,7 +494,7 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
       Subtype = get_colors(df)
     ),
     show_annotation_name = FALSE,
-    simple_anno_size = unit(2, &quot;mm&quot;)
+    simple_anno_size = unit(3, &quot;mm&quot;) # width
   )
   
   # C. Select data type
@@ -576,11 +576,24 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
     ),
     show_legend = FALSE,
     nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1)
+    # simple_anno_size = unit(2, &#39;mm&#39;) # height
   )
   
   # 3. Heatmap
   # Set up saving fig packet
-  pdf(paste(cancer, &#39;ht_base&#39;, unlist(strsplit(prefix, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+  tiff(
+    paste(
+      cancer,
+      &#39;_ht_base_&#39;, 
+      unlist(strsplit(prefix, &#39;:&#39;))[2],
+      &#39;.tiff&#39;,
+      sep=&#39;&#39;
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = &quot;none&quot;
+  )
   fig &lt;- Heatmap(
     mat2, #each col will have mean 0, sd 1
     name = prefix,
@@ -726,22 +739,22 @@ for (prefix in platforms){
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## [1] &quot;N:METH&quot;
-## [1] 30</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;N:MIR&quot;
-## [1] 14</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;I:CNVR&quot;
-## [1] 18</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;B:MUTA&quot;
-## [1] 7</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;N:GEXP&quot;
-## [1] 1682</code></pre>
+## [1] 788</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;want to use this one&quot;
-## [1] &quot;N:GEXP&quot;</code></pre>
+## [1] &quot;N:METH&quot;
+## [1] &quot;N:MIR&quot;
+## [1] 15</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
+## [1] &quot;I:CNVR&quot;
+## [1] 47</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
+## [1] &quot;B:MUTA&quot;
+## [1] 37</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
+## [1] &quot;N:GEXP&quot;
+## [1] 586</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;</code></pre>
 </details>
 </div>
 <div id="section-2-explore-the-hallmarks-associated-with-gexp-features" class="section level3">
@@ -784,8 +797,19 @@ if (platform_of_interest == &#39;N:GEXP&#39;){
 # How many hallmarks is a feature associated with?
 # Set up saving fig packet
 setwd(outdir)
-pdf(paste(cancer, &#39;hallmark_fts&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
-
+tiff(
+  paste(
+    cancer,
+    &#39;hallmark_fts&#39;, 
+    unlist(strsplit(prefix, &#39;:&#39;))[2],
+    &#39;.tiff&#39;,
+    sep=&#39;&#39;
+  ),
+  width = 1400,
+  height = 1200,
+  res = 200,
+  compression = &quot;none&quot;
+)
 df2 &lt;- table(n_hallmarks) %&gt;% as.data.frame()
 colnames(df2)&lt;- c(&#39;nHallmarks&#39;, &#39;Freq&#39;)
 ggplot(data=df2, aes(x=nHallmarks, y=Freq, fill=&#39;blue&#39;)) + 
@@ -798,8 +822,19 @@ dev.off()</code></pre>
 ##                 2</code></pre>
 <pre class="r"><code># What hallmarks are fts most often associated with?
 # Set up saving fig packet
-pdf(paste(cancer, &#39;hallmark_hist&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
-
+tiff(
+  paste(
+    cancer,
+    &#39;hallmark_hist&#39;, 
+    unlist(strsplit(prefix, &#39;:&#39;))[2],
+    &#39;.tiff&#39;,
+    sep=&#39;&#39;
+  ),
+  width = 1400,
+  height = 1200,
+  res = 200,
+  compression = &quot;none&quot;
+)
 df2 &lt;- sort(table(pooled_hallmarks), decreasing=T) %&gt;% as.data.frame()
 colnames(df2)&lt;- c(&#39;Hallmarks&#39;, &#39;Freq&#39;)
 ggplot(data=df2, aes(x=Hallmarks, y=Freq, fill=&#39;blue&#39;)) + 
@@ -840,15 +875,15 @@ for (h in top){
   print(h)
   print(gene_set_size(h))
 }</code></pre>
-<pre><code>## [1] &quot;ESTROGEN_RESPONSE_EARLY&quot;
+<pre><code>## [1] &quot;IL2_STAT5_SIGNALING&quot;
+## [1] 199
+## [1] &quot;APICAL_JUNCTION&quot;
 ## [1] 200
-## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
+## [1] &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;
 ## [1] 200
-## [1] &quot;E2F_TARGETS&quot;
+## [1] &quot;HYPOXIA&quot;
 ## [1] 200
-## [1] &quot;G2M_CHECKPOINT&quot;
-## [1] 200
-## [1] &quot;MTORC1_SIGNALING&quot;
+## [1] &quot;MYOGENESIS&quot;
 ## [1] 200</code></pre>
 <pre class="r"><code># TODO add these as argument input into function
 header_jadbio &lt;- models[&#39;JADBIO&#39;]
@@ -925,7 +960,19 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, &#39;ht_top5&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+  tiff(
+    paste(
+      cancer,
+      &#39;_ht_top5_&#39;, 
+      unlist(strsplit(prefix, &#39;:&#39;))[2],
+      &#39;.tiff&#39;,
+      sep=&#39;&#39;
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = &quot;none&quot;
+  )
   draw(fig)
   dev.off()
 } else if (cancer == &#39;BRCA&#39; &amp; top == c(&quot;ESTROGEN_RESPONSE_EARLY&quot;, &quot;ESTROGEN_RESPONSE_LATE&quot;, &quot;E2F_TARGETS&quot;, &quot;G2M_CHECKPOINT&quot;, &quot;MTORC1_SIGNALING&quot; ) ){
@@ -993,7 +1040,19 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, &#39;ht_top5&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+  tiff(
+    paste(
+      cancer,
+      &#39;_ht_top5_&#39;, 
+      unlist(strsplit(prefix, &#39;:&#39;))[2],
+      &#39;.tiff&#39;,
+      sep=&#39;&#39;
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = &quot;none&quot;
+  )
   draw(fig)
   dev.off()
 } else if (cancer == &#39;GEA&#39; &amp; top == c(&quot;IL2_STAT5_SIGNALING&quot;, &quot;APICAL_JUNCTION&quot;, &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;, &quot;HYPOXIA&quot;, &quot;MYOGENESIS&quot;) ){
@@ -1063,7 +1122,19 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, &#39;ht_top5&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+  tiff(
+    paste(
+      cancer,
+      &#39;_ht_top5_&#39;, 
+      unlist(strsplit(prefix, &#39;:&#39;))[2],
+      &#39;.tiff&#39;,
+      sep=&#39;&#39;
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = &quot;none&quot;
+  )
   draw(fig)
   dev.off()
   
@@ -1073,6 +1144,9 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
 <pre><code>## Warning in if (cancer == &quot;BRCA&quot; &amp; top == c(&quot;ESTROGEN_RESPONSE_EARLY&quot;,
 ## &quot;ESTROGEN_RESPONSE_LATE&quot;, : the condition has length &gt; 1 and only the first
 ## element will be used</code></pre>
+<pre><code>## Warning in if (cancer == &quot;GEA&quot; &amp; top == c(&quot;IL2_STAT5_SIGNALING&quot;,
+## &quot;APICAL_JUNCTION&quot;, : the condition has length &gt; 1 and only the first element
+## will be used</code></pre>
 <pre><code>## quartz_off_screen 
 ##                 2</code></pre>
 </details>
@@ -1104,15 +1178,15 @@ for (h in top){
   print(h)
   print(gene_set_size(h))
 }</code></pre>
-<pre><code>## [1] &quot;ESTROGEN_RESPONSE_EARLY&quot;
+<pre><code>## [1] &quot;IL2_STAT5_SIGNALING&quot;
+## [1] 199
+## [1] &quot;APICAL_JUNCTION&quot;
 ## [1] 200
-## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
+## [1] &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;
 ## [1] 200
-## [1] &quot;E2F_TARGETS&quot;
+## [1] &quot;HYPOXIA&quot;
 ## [1] 200
-## [1] &quot;G2M_CHECKPOINT&quot;
-## [1] 200
-## [1] &quot;MTORC1_SIGNALING&quot;
+## [1] &quot;MYOGENESIS&quot;
 ## [1] 200</code></pre>
 <pre class="r"><code># TODO add these as argument input into function
 header_jadbio &lt;- models[&#39;JADBIO&#39;]
@@ -1217,7 +1291,19 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, &#39;ht_ftimportance_top5&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+  tiff(
+    paste(
+      cancer,
+      &#39;ht_ftimportance_top5&#39;, 
+      unlist(strsplit(prefix, &#39;:&#39;))[2],
+      &#39;.tiff&#39;,
+      sep=&#39;&#39;
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = &quot;none&quot;
+  )
   draw(fig)
   dev.off()
 
@@ -1311,7 +1397,19 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, &#39;ht_ftimportance_top5&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+  tiff(
+    paste(
+      cancer,
+      &#39;ht_ftimportance_top5&#39;, 
+      unlist(strsplit(prefix, &#39;:&#39;))[2],
+      &#39;.tiff&#39;,
+      sep=&#39;&#39;
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = &quot;none&quot;
+  )
   draw(fig)
   dev.off()
 } else if (cancer == &#39;GEA&#39; &amp; top == c(&quot;IL2_STAT5_SIGNALING&quot;, &quot;APICAL_JUNCTION&quot;, &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;, &quot;HYPOXIA&quot;, &quot;MYOGENESIS&quot;) ){
@@ -1406,7 +1504,19 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     use_raster = TRUE
   )
   # Set up saving fig packet
-  pdf(paste(cancer, &#39;ht_ftimportance_top5&#39;, unlist(strsplit(platform_of_interest, &#39;:&#39;))[2],&#39;.pdf&#39;,sep=&#39;_&#39;), onefile=FALSE)
+  tiff(
+    paste(
+      cancer,
+      &#39;ht_ftimportance_top5&#39;, 
+      unlist(strsplit(prefix, &#39;:&#39;))[2],
+      &#39;.tiff&#39;,
+      sep=&#39;&#39;
+    ),
+    width = 1400,
+    height = 1200,
+    res = 200,
+    compression = &quot;none&quot;
+  )
   draw(fig)
   dev.off()
   
@@ -1416,6 +1526,9 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
 <pre><code>## Warning in if (cancer == &quot;BRCA&quot; &amp; top == c(&quot;ESTROGEN_RESPONSE_EARLY&quot;,
 ## &quot;ESTROGEN_RESPONSE_LATE&quot;, : the condition has length &gt; 1 and only the first
 ## element will be used</code></pre>
+<pre><code>## Warning in if (cancer == &quot;GEA&quot; &amp; top == c(&quot;IL2_STAT5_SIGNALING&quot;,
+## &quot;APICAL_JUNCTION&quot;, : the condition has length &gt; 1 and only the first element
+## will be used</code></pre>
 <pre><code>## quartz_off_screen 
 ##                 2</code></pre>
 </details>
