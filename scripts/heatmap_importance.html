@@ -397,13 +397,45 @@ summary {
 cancer &lt;- &#39;LGGGBM&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
 
 outdir =&#39;../data/figure_panel_b/&#39;
-df &lt;- fread(paste(&#39;../data/figure_panel_b/&#39;, cancer, &#39;_fts_by_VALUE.tsv&#39;, sep=&#39;&#39;)) %&gt;% as.data.frame()
-df_fts &lt;- fread(paste(&#39;../data/figure_panel_b/&#39;, cancer, &#39;_fts_by_TEAM.tsv&#39;, sep=&#39;&#39;))%&gt;% as.data.frame()
-mappings &lt;- fread(&#39;../data/figure_panel_b/hallmarks.tsv&#39;) %&gt;% as.data.frame()
-
 file_imp_aklimate &lt;- paste(&#39;../src/aklimate_feature_importance_scores_20200807/AKLIMATE_TEMPLATE_FULLY_TRAINED_&#39;, cancer, &#39;_20200423_aklimate_ranked_feature_importance.tsv&#39;, sep=&#39;&#39;)
-imp_aklimate &lt;- fread(file_imp_aklimate) %&gt;% as.data.frame()
-######</code></pre>
+jd_file &lt;- paste(&#39;../src/feature_importance/JADBio_TCGA_results_fig6_update_2020_01_allcohorts_MCastro/&#39;, cancer, &#39;_markers_outcome_association.csv&#39;, sep = &#39;&#39;)
+######
+
+
+
+# Read in files
+# A. base files
+df &lt;- fread(
+  paste(
+    &#39;../data/figure_panel_b/&#39;, 
+    cancer, 
+    &#39;_fts_by_VALUE.tsv&#39;, 
+    sep=&#39;&#39;
+  )
+) %&gt;% as.data.frame()
+
+df_fts &lt;- fread(
+  paste(
+    &#39;../data/figure_panel_b/&#39;, 
+    cancer, 
+    &#39;_fts_by_TEAM.tsv&#39;, 
+    sep=&#39;&#39;
+  )
+)%&gt;% as.data.frame()
+
+mappings &lt;- fread(
+  &#39;../data/figure_panel_b/hallmarks.tsv&#39;
+) %&gt;% as.data.frame()
+
+# B. Importance Score files
+imp_aklimate &lt;- fread(
+  file_imp_aklimate
+) %&gt;% as.data.frame()
+
+imp_jd &lt;- fread(
+  jd_file
+) %&gt;% as.data.frame()
+colnames(imp_jd) &lt;- c(&quot;features&quot;,&quot;importance&quot;)</code></pre>
 </div>
 <div id="section-1-heatmaps-for-each-data-type" class="section level3">
 <h3>Section 1: Heatmaps for each data type</h3>
@@ -1187,6 +1219,32 @@ header_subscope &lt;- models[&#39;SubSCOPE&#39;]
 header_skgrid &lt;- models[&#39;SKGrid&#39;]
 
 subtype_ha &lt;- subtype_annotation</code></pre>
+<pre class="r"><code># Function for pulling feature importance scores
+normalize_data &lt;- function(df, team_df){
+  ## Purpose: min-max normalization and order features to match heatmap
+  ## Input df that contains columns c(&quot;features&quot;,&quot;importance&quot;)
+  ## Input df of all teams
+  ## Return vector of normalized values
+
+  # Min max normalize importance scores
+  subset_df &lt;- df[,c(&#39;features&#39;, &#39;importance&#39;)]
+  minmax_vals &lt;- mm_normal(subset_df$importance)
+  subset_df &lt;- cbind(subset_df, minmax_vals)
+  
+
+  # Map and order ft importances to pooled ft order
+  minmax_norm &lt;- c()
+  all_features &lt;- subset_df$features
+  for (pooled_ft in team_df$featureID){
+    if (pooled_ft %in% all_features){
+      mm &lt;- subset_df[subset_df$&#39;features&#39;==pooled_ft,]$minmax_vals
+      minmax_norm &lt;- c(minmax_norm, mm)
+    } else {
+      minmax_norm &lt;- c(minmax_norm, 0)
+    }
+  }
+  return(minmax_norm)
+}</code></pre>
 <pre class="r"><code>setwd(outdir)
 
 # TODO make less janky so autopopulates the annotation names 
@@ -1203,28 +1261,10 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   
   
   ########
-  # 1B. Create MinMax Values - for AKLIMATE only
+  # 1B. Create MinMax Values
   ########
-  # Read importance file and subset 
-  s_imp_aklimate &lt;- imp_aklimate[,c(&#39;features&#39;, &#39;importance&#39;)]
-  # Min max normalize importance scores
-  minmax_vals &lt;- mm_normal(s_imp_aklimate$importance)
-  s_imp_aklimate &lt;- cbind(s_imp_aklimate, minmax_vals)
-  # Map and order ft importances to pooled ft order
-  aklimate_minmax &lt;- c()
-  sanity_check_fts &lt;- c()
-  aklimate_importance_fts &lt;- s_imp_aklimate$features
-  for (pooled_ft in team_df$featureID){
-    # Need this check if pulled aklimate model that is less than largest aklimate ft set (1k)
-    if (pooled_ft %in% aklimate_importance_fts){
-      mm &lt;- s_imp_aklimate[s_imp_aklimate$&#39;features&#39;==pooled_ft,]$minmax_vals
-      aklimate_minmax &lt;- c(aklimate_minmax, mm)
-      sanity_check_fts &lt;- c(sanity_check_fts, pooled_ft)
-    } else {
-      aklimate_minmax &lt;- c(aklimate_minmax, 0)
-      sanity_check_fts &lt;- c(sanity_check_fts, pooled_ft)
-    }
-  }
+  aklimate_minmax &lt;- normalize_data(imp_aklimate, team_df)
+  jadbio_minmax &lt;- normalize_data(imp_jd, team_df)
 
 
   # 2. Pull just the team of interest
@@ -1238,6 +1278,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   col_annot &lt;- HeatmapAnnotation(
     # A. ft importance
     AKLIMATE_importance = aklimate_minmax,
+    JADBIO_importance = jadbio_minmax,
     
     # B. ft binary membership
     AKLIMATE = aklimate,
@@ -1263,6 +1304,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     
     col = list(
       AKLIMATE_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
+      JADBIO_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;#D55B5B&quot;)),
       AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
       SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
       CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
@@ -1275,7 +1317,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
       EstrogenResponseLate_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(1,0,0,0,0,1,1,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(0,1,0,0,0,0,1,1,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot
@@ -1381,7 +1423,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
       MTORC1Signaling_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,1,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(1,0,0,0,0,1,1,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot
@@ -1430,15 +1472,23 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   ########
   # Read importance file and subset 
   s_imp_aklimate &lt;- imp_aklimate[,c(&#39;features&#39;, &#39;importance&#39;)]
+  
   # Min max normalize importance scores
   minmax_vals &lt;- mm_normal(s_imp_aklimate$importance)
   s_imp_aklimate &lt;- cbind(s_imp_aklimate, minmax_vals)
+  
+  
+  
+  
   # Map and order ft importances to pooled ft order
   aklimate_minmax &lt;- c()
   sanity_check_fts &lt;- c()
   aklimate_importance_fts &lt;- s_imp_aklimate$features
   for (pooled_ft in team_df$featureID){
-    # Need this check if pulled aklimate model that is less than largest aklimate ft set (1k)
+    
+    # TODO: Need this check if pulled aklimate model 
+    #that is less than largest aklimate ft set (1k)
+    # A. AKLIMATE
     if (pooled_ft %in% aklimate_importance_fts){
       mm &lt;- s_imp_aklimate[s_imp_aklimate$&#39;features&#39;==pooled_ft,]$minmax_vals
       aklimate_minmax &lt;- c(aklimate_minmax, mm)
@@ -1448,6 +1498,12 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
       sanity_check_fts &lt;- c(sanity_check_fts, pooled_ft)
     }
   }
+  
+  
+  
+  
+  
+  
   
   # 2. Pull just the team of interest
   jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
