@@ -1,3 +1,13 @@
+# feature_importance/
+
+Contains team feature importance info. Each provided from the teams
+
+```
+2020v8_aggr_preds_filtcolumn.txt # Subscope
+JADBio_TCGA_results_fig6_update_2020_01_allcohorts_MCastro.zip # JADBio
+TMP_GEXP_v8_toplistsForPathwayAnalysis_20200203.RData ##Parsed GEXP lists with Top10, Top50, Top100, Top200, and Top500 genes by MCastro
+```
+
 # aklimate_feature_importance_scores_20200807.tar.gz
 
 (syn22294880)
