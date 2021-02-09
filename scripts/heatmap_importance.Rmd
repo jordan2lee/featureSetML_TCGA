@@ -59,7 +59,6 @@ imp_aklimate <- fread(file_imp_aklimate) %>% as.data.frame()
 ######
 ```
 
-
 ### Section 1: Heatmaps for each data type
 
 Scaling data - METH, GEXP, and MIR
@@ -876,21 +875,31 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   # 2. Pull just the team of interest
   jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
   cforest <- team_df %>% pull(header_cforest) %>% as.character()
-  aklimate <- aklimate_minmax
+  aklimate <- team_df %>% pull(header_aklimate) %>% as.character()
   subscope <- team_df %>% pull(header_subscope) %>% as.character()
   skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
   
   # Build annotation
   col_annot <- HeatmapAnnotation(
+    # A. ft importance
+    AKLIMATE_importance = aklimate_minmax,
+    
+    # B. ft binary membership
     AKLIMATE = aklimate,
     SubSCOPE = subscope,
     CForest = cforest,
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill='blue', col='grey38') ),
+    # C. Bar counts
+    nTeamsSelected= anno_barplot(
+      team_df$Total, 
+      bar_width = 1, 
+      gp = gpar(fill='blue', col='grey38')
+    ),
     
-    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    # TODO need to manually update the name
+    # D. Hallmarks
     InterferonGammaResponse_200 = vals_1,
     MTORC1Signaling_200 = vals_2,
     IL2STAT5Signaling_199 = vals_3,
@@ -898,7 +907,8 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     EstrogenResponseLate_200 = vals_5,  
     
     col = list(
-      AKLIMATE = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
+      AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
+      AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
       CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
       JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
@@ -910,7 +920,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       EstrogenResponseLate_200 = c('0' = "#333333", '1' = "darkgoldenrod3")
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
+    gap = unit(c(1,0,0,0,0,1,1,0,0,0,0), 'mm')
   )
   
   # Plot
