@@ -1230,21 +1230,31 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   # 2. Pull just the team of interest
   jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
   cforest &lt;- team_df %&gt;% pull(header_cforest) %&gt;% as.character()
-  aklimate &lt;- aklimate_minmax
+  aklimate &lt;- team_df %&gt;% pull(header_aklimate) %&gt;% as.character()
   subscope &lt;- team_df %&gt;% pull(header_subscope) %&gt;% as.character()
   skgrid &lt;- team_df %&gt;% pull(header_skgrid) %&gt;% as.character()
   
   # Build annotation
   col_annot &lt;- HeatmapAnnotation(
+    # A. ft importance
+    AKLIMATE_importance = aklimate_minmax,
+    
+    # B. ft binary membership
     AKLIMATE = aklimate,
     SubSCOPE = subscope,
     CForest = cforest,
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    nTeamsSelected= anno_barplot(team_df$Total, bar_width = 1, gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;) ),
+    # C. Bar counts
+    nTeamsSelected= anno_barplot(
+      team_df$Total, 
+      bar_width = 1, 
+      gp = gpar(fill=&#39;blue&#39;, col=&#39;grey38&#39;)
+    ),
     
-    # TODO need to manually update the name + gene set size of each hallmark name + color pallate
+    # TODO need to manually update the name
+    # D. Hallmarks
     InterferonGammaResponse_200 = vals_1,
     MTORC1Signaling_200 = vals_2,
     IL2STAT5Signaling_199 = vals_3,
@@ -1252,7 +1262,8 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     EstrogenResponseLate_200 = vals_5,  
     
     col = list(
-      AKLIMATE = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
+      AKLIMATE_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
+      AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
       SubSCOPE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
       CForest =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
       JADBIO = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
@@ -1264,7 +1275,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
       EstrogenResponseLate_200 = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,1,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(1,0,0,0,0,1,1,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot
