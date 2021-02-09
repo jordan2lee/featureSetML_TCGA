@@ -394,7 +394,7 @@ summary {
 </ol>
 <p>Note in calculating z-scores, NAs were omitted</p>
 <pre class="r"><code>###### Hardcoded 
-cancer &lt;- &#39;GEA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
+cancer &lt;- &#39;LGGGBM&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
 
 outdir =&#39;../data/figure_panel_b/&#39;
 df &lt;- fread(paste(&#39;../data/figure_panel_b/&#39;, cancer, &#39;_fts_by_VALUE.tsv&#39;, sep=&#39;&#39;)) %&gt;% as.data.frame()
@@ -402,7 +402,7 @@ df_fts &lt;- fread(paste(&#39;../data/figure_panel_b/&#39;, cancer, &#39;_fts_by
 mappings &lt;- fread(&#39;../data/figure_panel_b/hallmarks.tsv&#39;) %&gt;% as.data.frame()
 
 file_imp_aklimate &lt;- paste(&#39;../src/aklimate_feature_importance_scores_20200807/AKLIMATE_TEMPLATE_FULLY_TRAINED_&#39;, cancer, &#39;_20200423_aklimate_ranked_feature_importance.tsv&#39;, sep=&#39;&#39;)
-imp_mat &lt;- fread(file_imp_aklimate) %&gt;% as.data.frame()
+imp_aklimate &lt;- fread(file_imp_aklimate) %&gt;% as.data.frame()
 ######</code></pre>
 </div>
 <div id="section-1-heatmaps-for-each-data-type" class="section level3">
@@ -739,21 +739,18 @@ for (prefix in platforms){
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## [1] &quot;N:METH&quot;
-## [1] 788</code></pre>
+## [1] 287</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;want to use this one&quot;
 ## [1] &quot;N:METH&quot;
-## [1] &quot;N:MIR&quot;
-## [1] 15</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;I:CNVR&quot;
-## [1] 47</code></pre>
+## [1] 188</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;B:MUTA&quot;
-## [1] 37</code></pre>
+## [1] 16</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;N:GEXP&quot;
-## [1] 586</code></pre>
+## [1] 757</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;</code></pre>
 </details>
 </div>
@@ -875,15 +872,15 @@ for (h in top){
   print(h)
   print(gene_set_size(h))
 }</code></pre>
-<pre><code>## [1] &quot;IL2_STAT5_SIGNALING&quot;
+<pre><code>## [1] &quot;INTERFERON_GAMMA_RESPONSE&quot;
+## [1] 200
+## [1] &quot;MTORC1_SIGNALING&quot;
+## [1] 200
+## [1] &quot;IL2_STAT5_SIGNALING&quot;
 ## [1] 199
-## [1] &quot;APICAL_JUNCTION&quot;
+## [1] &quot;INFLAMMATORY_RESPONSE&quot;
 ## [1] 200
-## [1] &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;
-## [1] 200
-## [1] &quot;HYPOXIA&quot;
-## [1] 200
-## [1] &quot;MYOGENESIS&quot;
+## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
 ## [1] 200</code></pre>
 <pre class="r"><code># TODO add these as argument input into function
 header_jadbio &lt;- models[&#39;JADBIO&#39;]
@@ -1141,12 +1138,6 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
 }</code></pre>
 <pre><code>## Warning in if (cancer == &quot;LGGGBM&quot; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&quot;, : the
 ## condition has length &gt; 1 and only the first element will be used</code></pre>
-<pre><code>## Warning in if (cancer == &quot;BRCA&quot; &amp; top == c(&quot;ESTROGEN_RESPONSE_EARLY&quot;,
-## &quot;ESTROGEN_RESPONSE_LATE&quot;, : the condition has length &gt; 1 and only the first
-## element will be used</code></pre>
-<pre><code>## Warning in if (cancer == &quot;GEA&quot; &amp; top == c(&quot;IL2_STAT5_SIGNALING&quot;,
-## &quot;APICAL_JUNCTION&quot;, : the condition has length &gt; 1 and only the first element
-## will be used</code></pre>
 <pre><code>## quartz_off_screen 
 ##                 2</code></pre>
 </details>
@@ -1178,15 +1169,15 @@ for (h in top){
   print(h)
   print(gene_set_size(h))
 }</code></pre>
-<pre><code>## [1] &quot;IL2_STAT5_SIGNALING&quot;
+<pre><code>## [1] &quot;INTERFERON_GAMMA_RESPONSE&quot;
+## [1] 200
+## [1] &quot;MTORC1_SIGNALING&quot;
+## [1] 200
+## [1] &quot;IL2_STAT5_SIGNALING&quot;
 ## [1] 199
-## [1] &quot;APICAL_JUNCTION&quot;
+## [1] &quot;INFLAMMATORY_RESPONSE&quot;
 ## [1] 200
-## [1] &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;
-## [1] 200
-## [1] &quot;HYPOXIA&quot;
-## [1] 200
-## [1] &quot;MYOGENESIS&quot;
+## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
 ## [1] 200</code></pre>
 <pre class="r"><code># TODO add these as argument input into function
 header_jadbio &lt;- models[&#39;JADBIO&#39;]
@@ -1215,18 +1206,18 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   # 1B. Create MinMax Values - for AKLIMATE only
   ########
   # Read importance file and subset 
-  s_imp_mat &lt;- imp_mat[,c(&#39;features&#39;, &#39;importance&#39;)]
+  s_imp_aklimate &lt;- imp_aklimate[,c(&#39;features&#39;, &#39;importance&#39;)]
   # Min max normalize importance scores
-  minmax_vals &lt;- mm_normal(s_imp_mat$importance)
-  s_imp_mat &lt;- cbind(s_imp_mat, minmax_vals)
+  minmax_vals &lt;- mm_normal(s_imp_aklimate$importance)
+  s_imp_aklimate &lt;- cbind(s_imp_aklimate, minmax_vals)
   # Map and order ft importances to pooled ft order
   aklimate_minmax &lt;- c()
   sanity_check_fts &lt;- c()
-  aklimate_importance_fts &lt;- s_imp_mat$features
+  aklimate_importance_fts &lt;- s_imp_aklimate$features
   for (pooled_ft in team_df$featureID){
     # Need this check if pulled aklimate model that is less than largest aklimate ft set (1k)
     if (pooled_ft %in% aklimate_importance_fts){
-      mm &lt;- s_imp_mat[s_imp_mat$&#39;features&#39;==pooled_ft,]$minmax_vals
+      mm &lt;- s_imp_aklimate[s_imp_aklimate$&#39;features&#39;==pooled_ft,]$minmax_vals
       aklimate_minmax &lt;- c(aklimate_minmax, mm)
       sanity_check_fts &lt;- c(sanity_check_fts, pooled_ft)
     } else {
@@ -1322,18 +1313,18 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   # 1B. Create MinMax Values - for AKLIMATE only
   ########
   # Read importance file and subset 
-  s_imp_mat &lt;- imp_mat[,c(&#39;features&#39;, &#39;importance&#39;)]
+  s_imp_aklimate &lt;- imp_aklimate[,c(&#39;features&#39;, &#39;importance&#39;)]
   # Min max normalize importance scores
-  minmax_vals &lt;- mm_normal(s_imp_mat$importance)
-  s_imp_mat &lt;- cbind(s_imp_mat, minmax_vals)
+  minmax_vals &lt;- mm_normal(s_imp_aklimate$importance)
+  s_imp_aklimate &lt;- cbind(s_imp_aklimate, minmax_vals)
   # Map and order ft importances to pooled ft order
   aklimate_minmax &lt;- c()
   sanity_check_fts &lt;- c()
-  aklimate_importance_fts &lt;- s_imp_mat$features
+  aklimate_importance_fts &lt;- s_imp_aklimate$features
   for (pooled_ft in team_df$featureID){
     # Need this check if pulled aklimate model that is less than largest aklimate ft set (1k)
     if (pooled_ft %in% aklimate_importance_fts){
-      mm &lt;- s_imp_mat[s_imp_mat$&#39;features&#39;==pooled_ft,]$minmax_vals
+      mm &lt;- s_imp_aklimate[s_imp_aklimate$&#39;features&#39;==pooled_ft,]$minmax_vals
       aklimate_minmax &lt;- c(aklimate_minmax, mm)
       sanity_check_fts &lt;- c(sanity_check_fts, pooled_ft)
     } else {
@@ -1427,18 +1418,18 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   # 1B. Create MinMax Values - for AKLIMATE only
   ########
   # Read importance file and subset 
-  s_imp_mat &lt;- imp_mat[,c(&#39;features&#39;, &#39;importance&#39;)]
+  s_imp_aklimate &lt;- imp_aklimate[,c(&#39;features&#39;, &#39;importance&#39;)]
   # Min max normalize importance scores
-  minmax_vals &lt;- mm_normal(s_imp_mat$importance)
-  s_imp_mat &lt;- cbind(s_imp_mat, minmax_vals)
+  minmax_vals &lt;- mm_normal(s_imp_aklimate$importance)
+  s_imp_aklimate &lt;- cbind(s_imp_aklimate, minmax_vals)
   # Map and order ft importances to pooled ft order
   aklimate_minmax &lt;- c()
   sanity_check_fts &lt;- c()
-  aklimate_importance_fts &lt;- s_imp_mat$features
+  aklimate_importance_fts &lt;- s_imp_aklimate$features
   for (pooled_ft in team_df$featureID){
     # Need this check if pulled aklimate model that is less than largest aklimate ft set (1k)
     if (pooled_ft %in% aklimate_importance_fts){
-      mm &lt;- s_imp_mat[s_imp_mat$&#39;features&#39;==pooled_ft,]$minmax_vals
+      mm &lt;- s_imp_aklimate[s_imp_aklimate$&#39;features&#39;==pooled_ft,]$minmax_vals
       aklimate_minmax &lt;- c(aklimate_minmax, mm)
       sanity_check_fts &lt;- c(sanity_check_fts, pooled_ft)
     } else {
@@ -1523,12 +1514,6 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
 }</code></pre>
 <pre><code>## Warning in if (cancer == &quot;LGGGBM&quot; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&quot;, : the
 ## condition has length &gt; 1 and only the first element will be used</code></pre>
-<pre><code>## Warning in if (cancer == &quot;BRCA&quot; &amp; top == c(&quot;ESTROGEN_RESPONSE_EARLY&quot;,
-## &quot;ESTROGEN_RESPONSE_LATE&quot;, : the condition has length &gt; 1 and only the first
-## element will be used</code></pre>
-<pre><code>## Warning in if (cancer == &quot;GEA&quot; &amp; top == c(&quot;IL2_STAT5_SIGNALING&quot;,
-## &quot;APICAL_JUNCTION&quot;, : the condition has length &gt; 1 and only the first element
-## will be used</code></pre>
 <pre><code>## quartz_off_screen 
 ##                 2</code></pre>
 </details>
