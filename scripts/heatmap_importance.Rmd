@@ -667,6 +667,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
   
   # Build annotation
+  pmat <- mapply('/',team_df$Total, 5) *100
   col_annot <- HeatmapAnnotation(
     # A. ft binary membership
     AKLIMATE = aklimate,
@@ -675,11 +676,11 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    # B. Bar counts
-    nTeamsSelected= anno_barplot(
-      team_df$Total, 
-      bar_width = 1, 
-      gp = gpar(fill='grey38', col='grey38')
+    # B. N teams selected
+    PercentSelected= anno_lines(
+      mapply('/',team_df$Total, 5) *100,
+      ylim = c(min(pmat),100),
+      height = unit(8, 'mm')
     ),
     
     # C. ft importance
@@ -775,6 +776,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
   
   # Build annotation
+  pmat <- mapply('/',team_df$Total, 5) *100
   col_annot <- HeatmapAnnotation(
     # A. ft binary membership
     AKLIMATE = aklimate,
@@ -783,11 +785,11 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    # B. Bar counts
-    nTeamsSelected= anno_barplot(
-      team_df$Total, 
-      bar_width = 1, 
-      gp = gpar(fill='grey38', col='grey38')
+    # B. N teams selected
+    PercentSelected= anno_lines(
+      mapply('/',team_df$Total, 5) *100,
+      ylim = c(min(pmat),100),
+      height = unit(8, 'mm')
     ),
     
     # C. ft importance
@@ -882,6 +884,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
   
   # Build annotation
+  pmat <- mapply('/',team_df$Total, 5) *100
   col_annot <- HeatmapAnnotation(
     # A. ft binary membership
     AKLIMATE = aklimate,
@@ -890,11 +893,11 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    # B. Bar counts
-    nTeamsSelected= anno_barplot(
-      team_df$Total, 
-      bar_width = 1, 
-      gp = gpar(fill='grey38', col='grey38')
+    # B. N teams selected
+    PercentSelected= anno_lines(
+      pmat,
+      ylim = c(min(pmat),100),
+      height = unit(1, 'cm')
     ),
     
     # C. Ft importance
