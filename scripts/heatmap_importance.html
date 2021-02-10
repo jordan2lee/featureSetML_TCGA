@@ -1036,6 +1036,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   skgrid &lt;- team_df %&gt;% pull(header_skgrid) %&gt;% as.character()
   
   # Build annotation
+  pmat &lt;- mapply(&#39;/&#39;,team_df$Total, 5) *100
   col_annot &lt;- HeatmapAnnotation(
     # A. ft binary membership
     AKLIMATE = aklimate,
@@ -1044,11 +1045,11 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    # B. Bar counts
-    nTeamsSelected= anno_barplot(
-      team_df$Total, 
-      bar_width = 1, 
-      gp = gpar(fill=&#39;grey38&#39;, col=&#39;grey38&#39;)
+    # B. N teams selected
+    PercentSelected= anno_lines(
+      mapply(&#39;/&#39;,team_df$Total, 5) *100,
+      ylim = c(min(pmat),100),
+      height = unit(8, &#39;mm&#39;)
     ),
     
     # C. ft importance
@@ -1144,6 +1145,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   skgrid &lt;- team_df %&gt;% pull(header_skgrid) %&gt;% as.character()
   
   # Build annotation
+  pmat &lt;- mapply(&#39;/&#39;,team_df$Total, 5) *100
   col_annot &lt;- HeatmapAnnotation(
     # A. ft binary membership
     AKLIMATE = aklimate,
@@ -1152,11 +1154,11 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    # B. Bar counts
-    nTeamsSelected= anno_barplot(
-      team_df$Total, 
-      bar_width = 1, 
-      gp = gpar(fill=&#39;grey38&#39;, col=&#39;grey38&#39;)
+    # B. N teams selected
+    PercentSelected= anno_lines(
+      mapply(&#39;/&#39;,team_df$Total, 5) *100,
+      ylim = c(min(pmat),100),
+      height = unit(8, &#39;mm&#39;)
     ),
     
     # C. ft importance
@@ -1251,6 +1253,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   skgrid &lt;- team_df %&gt;% pull(header_skgrid) %&gt;% as.character()
   
   # Build annotation
+  pmat &lt;- mapply(&#39;/&#39;,team_df$Total, 5) *100
   col_annot &lt;- HeatmapAnnotation(
     # A. ft binary membership
     AKLIMATE = aklimate,
@@ -1259,11 +1262,11 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     JADBIO = jadbio,
     SKGrid = skgrid,
     
-    # B. Bar counts
-    nTeamsSelected= anno_barplot(
-      team_df$Total, 
-      bar_width = 1, 
-      gp = gpar(fill=&#39;grey38&#39;, col=&#39;grey38&#39;)
+    # B. N teams selected
+    PercentSelected= anno_lines(
+      pmat,
+      ylim = c(min(pmat),100),
+      height = unit(1, &#39;cm&#39;)
     ),
     
     # C. Ft importance
