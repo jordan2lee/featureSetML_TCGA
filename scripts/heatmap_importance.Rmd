@@ -42,7 +42,7 @@ Note in calculating z-scores, NAs were omitted
 ###### 
 # Hardcoded 
 ######
-cancer <- 'LGGGBM' # 'GEA', 'LGGGBM', 'BRCA'
+cancer <- 'BRCA' # 'GEA', 'LGGGBM', 'BRCA'
 
 outdir ='../data/figure_panel_b/'
 
@@ -291,6 +291,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
     right_annotation = subtype_ha,
     bottom_annotation = team_list,
+    na_col = 'white'
   )
   draw(fig)
   dev.off()
@@ -714,16 +715,22 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   # Plot
   fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
+    # width = unit(10, 'cm'),
+    # height = unit(10, 'cm'),
     name = unlist(strsplit(platform_of_interest, ':'))[2],
     cluster_rows = FALSE,
     cluster_columns = FALSE,
     show_row_names = FALSE,
     show_column_names = FALSE,
     column_title = paste('Features (n=', n_fts, ')', sep=''),
+    column_title_gp = gpar(fontsize = 12),
     row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
-    right_annotation = subtype_ha,
+    row_title_gp = gpar(fontsize = 12),
+    left_annotation = subtype_ha,
     bottom_annotation = col_annot,
-    use_raster = TRUE
+    use_raster = TRUE,
+    na_col = 'white',
+    col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
   )
   # Set up saving fig packet
   tiff(
@@ -739,7 +746,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     res = 200,
     compression = "none"
   )
-  draw(fig)
+  draw(fig,heatmap_legend_side = c('left'))
   dev.off()
 
 } else if (cancer == 'BRCA' & top == c("ESTROGEN_RESPONSE_EARLY", "ESTROGEN_RESPONSE_LATE", "E2F_TARGETS", "G2M_CHECKPOINT", "MTORC1_SIGNALING" ) ){
@@ -816,16 +823,22 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   # Plot
   fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
+    # width = unit(10, 'cm'),
+    # height = unit(10, 'cm'),
     name = unlist(strsplit(platform_of_interest, ':'))[2],
     cluster_rows = FALSE,
     cluster_columns = FALSE,
     show_row_names = FALSE,
     show_column_names = FALSE,
     column_title = paste('Features (n=', n_fts, ')', sep=''),
+    column_title_gp = gpar(fontsize = 12),
     row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
-    right_annotation = subtype_ha,
+    row_title_gp = gpar(fontsize = 12),
+    left_annotation = subtype_ha,
     bottom_annotation = col_annot,
-    use_raster = TRUE
+    use_raster = TRUE,
+    na_col = 'white',
+    col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
   )
   # Set up saving fig packet
   tiff(
@@ -841,7 +854,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     res = 200,
     compression = "none"
   )
-  draw(fig)
+  draw(fig,heatmap_legend_side = c('left'))
   dev.off()
 } else if (cancer == 'GEA' & top == c("IL2_STAT5_SIGNALING", "APICAL_JUNCTION", "EPITHELIAL_MESENCHYMAL_TRANSITION", "HYPOXIA", "MYOGENESIS") ){
   vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
@@ -925,10 +938,14 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     show_row_names = FALSE,
     show_column_names = FALSE,
     column_title = paste('Features (n=', n_fts, ')', sep=''),
+    column_title_gp = gpar(fontsize = 12),
     row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
-    right_annotation = subtype_ha,
+    row_title_gp = gpar(fontsize = 12),
+    left_annotation = subtype_ha,
     bottom_annotation = col_annot,
-    use_raster = TRUE
+    use_raster = TRUE,
+    na_col = 'white',
+    col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
   )
   # Set up saving fig packet
   tiff(
@@ -944,7 +961,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     res = 200,
     compression = "none"
   )
-  draw(fig)
+  draw(fig,heatmap_legend_side = c('left'))
   dev.off()
   
 }
