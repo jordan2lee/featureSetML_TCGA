@@ -674,16 +674,16 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     CloudForest = cforest,
     JADBio = jadbio,
     SciKitGrid = skgrid,
+
+    # B. ft importance
+    AKLIMATE_importance = aklimate_minmax,
+    JADBio_importance_v7 = jadbio_minmax,
     
-    # B. N teams selected
+    # C. N teams selected
     PercentSelected= anno_lines(
       mapply('/',team_df$Total, 5) *100,
       height = unit(10, 'mm')
     ),
-    
-    # C. ft importance
-    AKLIMATE_importance = aklimate_minmax,
-    JADBio_importance_v7 = jadbio_minmax,
     
     # TODO need to manually update the name
     # D. Hallmarks
@@ -699,16 +699,16 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
       JADBio = c('0' = "#333333", '1' = "#D55B5B"),
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
+      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
       'InterferonGammaResponse_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'InflammatoryResponse_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'EstrogenResponseLate_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B"))
+      'EstrogenResponseLate_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,1,0,1,0,0,0,0), 'mm')
+    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), 'mm')
   )
   
   # Plot
@@ -781,16 +781,16 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     CloudForest = cforest,
     JADBio = jadbio,
     SciKitGrid = skgrid,
-    
-    # B. N teams selected
+
+    # B. ft importance
+    AKLIMATE_importance = aklimate_minmax,
+    JADBio_importance_v7 = jadbio_minmax,
+        
+    # C. N teams selected
     PercentSelected= anno_lines(
       mapply('/',team_df$Total, 5) *100,
       height = unit(10, 'mm')
     ),
-    
-    # C. ft importance
-    AKLIMATE_importance = aklimate_minmax,
-    JADBio_importance_v7 = jadbio_minmax,
     
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
     # D. Hallmarks
@@ -806,16 +806,16 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
       JADBio = c('0' = "#333333", '1' = "#D55B5B"),
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
+      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
       'EstrogrenResponseEarly_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'EstrogrenResponseLate_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'E2FTargets_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'G2MCheckpoint_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B"))
+      'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,1,0,1,0,0,0,0), 'mm')
+    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), 'mm')
   )
   
   # Plot
@@ -887,16 +887,16 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     CloudForest = cforest,
     JADBio = jadbio,
     SciKitGrid = skgrid,
-    
-    # B. N teams selected
+
+    # B. Ft importance
+    AKLIMATE_importance = aklimate_minmax,
+    JADBio_importance_v7 = jadbio_minmax,
+        
+    # C. N teams selected
     PercentSelected= anno_lines(
       mapply('/',team_df$Total, 5) *100,
       height = unit(10, 'mm')
     ),
-    
-    # C. Ft importance
-    AKLIMATE_importance = aklimate_minmax,
-    JADBio_importance_v7 = jadbio_minmax,
     
     # D. Hallmarks
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
@@ -912,16 +912,16 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
       JADBio = c('0' = "#333333", '1' = "#D55B5B"),
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
+      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
       'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'ApicalJunction_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'EpithelialMesenchymalTransition_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'Hypoxia_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'Myogenesis_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B"))
+      'Myogenesis_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,1,0,1,0,0,0,0), 'mm')
+    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), 'mm')
   )
   
   # Plot
