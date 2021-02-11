@@ -239,22 +239,22 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     pull(header_skgrid) %>% 
     as.character()
   team_list <- HeatmapAnnotation(
-    JADBIO = jadbio,
-    CForest = cforest,
+    JADBio = jadbio,
+    CloudForest = cforest,
     AKLIMATE = aklimate,
     SubSCOPE = subscope,
-    SKGrid = skgrid,
+    SciKitGrid = skgrid,
     col = list(
-      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
-      CForest = c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBio = c('0' = "#333333", '1' = "#D55B5B"),
+      CloudForest = c('0' = "#333333", '1' = "mediumpurple1"),
       AKLIMATE = c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE = c('0' = "#333333", '1' = "palegreen2"),
-      SKGrid = c('0' = "#333333", '1' = "#EFA9A9")
+      SciKitGrid = c('0' = "#333333", '1' = "#EFA9A9")
     ),
     show_legend = FALSE,
-    nTeamsSelected= anno_barplot(
-      team_df$Total, 
-      bar_width = 1
+    nTeamsSelected= anno_barplot (
+      team_df$Total,
+      bar_width=1
     )
     # simple_anno_size = unit(2, 'mm') # height
   )
@@ -667,25 +667,23 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
   
   # Build annotation
-  pmat <- mapply('/',team_df$Total, 5) *100
   col_annot <- HeatmapAnnotation(
     # A. ft binary membership
     AKLIMATE = aklimate,
     SubSCOPE = subscope,
-    CForest = cforest,
-    JADBIO = jadbio,
-    SKGrid = skgrid,
+    CloudForest = cforest,
+    JADBio = jadbio,
+    SciKitGrid = skgrid,
     
     # B. N teams selected
     PercentSelected= anno_lines(
       mapply('/',team_df$Total, 5) *100,
-      ylim = c(min(pmat),100),
-      height = unit(8, 'mm')
+      height = unit(10, 'mm')
     ),
     
     # C. ft importance
     AKLIMATE_importance = aklimate_minmax,
-    JADBIO_importance_v7 = jadbio_minmax,
+    JADBio_importance_v7 = jadbio_minmax,
     
     # TODO need to manually update the name
     # D. Hallmarks
@@ -698,16 +696,16 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     col = list(
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
-      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
-      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
-      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBio = c('0' = "#333333", '1' = "#D55B5B"),
+      SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       'InterferonGammaResponse_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'InflammatoryResponse_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'EstrogenResponseLate_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      JADBIO_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B"))
+      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B"))
     ),
     show_legend = FALSE,
     gap = unit(c(0,0,0,0,1,1,0,1,0,0,0,0), 'mm')
@@ -776,25 +774,23 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
   
   # Build annotation
-  pmat <- mapply('/',team_df$Total, 5) *100
   col_annot <- HeatmapAnnotation(
     # A. ft binary membership
     AKLIMATE = aklimate,
     SubSCOPE = subscope,
-    CForest = cforest,
-    JADBIO = jadbio,
-    SKGrid = skgrid,
+    CloudForest = cforest,
+    JADBio = jadbio,
+    SciKitGrid = skgrid,
     
     # B. N teams selected
     PercentSelected= anno_lines(
       mapply('/',team_df$Total, 5) *100,
-      ylim = c(min(pmat),100),
-      height = unit(8, 'mm')
+      height = unit(10, 'mm')
     ),
     
     # C. ft importance
     AKLIMATE_importance = aklimate_minmax,
-    JADBIO_importance_v7 = jadbio_minmax,
+    JADBio_importance_v7 = jadbio_minmax,
     
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
     # D. Hallmarks
@@ -807,16 +803,16 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     col = list(
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
-      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
-      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
-      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBio = c('0' = "#333333", '1' = "#D55B5B"),
+      SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       'EstrogrenResponseEarly_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'EstrogrenResponseLate_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'E2FTargets_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'G2MCheckpoint_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      JADBIO_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B"))
+      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B"))
     ),
     show_legend = FALSE,
     gap = unit(c(0,0,0,0,1,1,0,1,0,0,0,0), 'mm')
@@ -884,25 +880,23 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
   
   # Build annotation
-  pmat <- mapply('/',team_df$Total, 5) *100
   col_annot <- HeatmapAnnotation(
     # A. ft binary membership
     AKLIMATE = aklimate,
     SubSCOPE = subscope,
-    CForest = cforest,
-    JADBIO = jadbio,
-    SKGrid = skgrid,
+    CloudForest = cforest,
+    JADBio = jadbio,
+    SciKitGrid = skgrid,
     
     # B. N teams selected
     PercentSelected= anno_lines(
-      pmat,
-      ylim = c(min(pmat),100),
-      height = unit(1, 'cm')
+      mapply('/',team_df$Total, 5) *100,
+      height = unit(10, 'mm')
     ),
     
     # C. Ft importance
     AKLIMATE_importance = aklimate_minmax,
-    JADBIO_importance_v7 = jadbio_minmax,
+    JADBio_importance_v7 = jadbio_minmax,
     
     # D. Hallmarks
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
@@ -915,16 +909,16 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     col = list(
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
       SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
-      CForest =  c('0' = "#333333", '1' = "mediumpurple1"),
-      JADBIO = c('0' = "#333333", '1' = "#D55B5B"),
-      SKGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+      CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
+      JADBio = c('0' = "#333333", '1' = "#D55B5B"),
+      SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'ApicalJunction_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'EpithelialMesenchymalTransition_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'Hypoxia_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'Myogenesis_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      JADBIO_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B"))
+      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B"))
     ),
     show_legend = FALSE,
     gap = unit(c(0,0,0,0,1,1,0,1,0,0,0,0), 'mm')
