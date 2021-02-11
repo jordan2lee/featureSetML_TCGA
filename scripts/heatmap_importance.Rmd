@@ -276,6 +276,8 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     compression = "none"
   )
   # Draw
+  ht_rows <- nrow(mat2)
+  ht_cols <- ncol(mat2)
   fig <- Heatmap(
     mat2,
     name = prefix,
@@ -287,8 +289,8 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     column_order = ftnames_order,
     show_row_names = FALSE,
     show_column_names = FALSE,
-    column_title = paste('Features (n=', n_fts, ')', sep=''),
-    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    column_title = paste('Features (n=', ht_cols, ')', sep=''),
+    row_title = paste('Samples (n=', ht_rows, ')', sep=''),
     right_annotation = subtype_ha,
     bottom_annotation = team_list,
     na_col = 'white'
@@ -431,6 +433,18 @@ if (cancer == 'BRCA' | cancer == 'GEA' ){
 }
 ```
 
+
+
+```{r dev}
+for (c in colnames(df_fts)[2:]){
+  print(c)
+  print(sum(df_fts[,c]))
+}
+```
+
+
+
+
 ### Section 1: Heatmaps for each data type
 
 Code and figures for all data types
@@ -466,6 +480,7 @@ for (prefix in platforms){
   }
 }
 ```
+
 
 ### Section 2: Explore the hallmarks associated with GEXP features
 
@@ -677,7 +692,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
 
     # B. ft importance
     AKLIMATE_importance = aklimate_minmax,
-    JADBio_importance_v7 = jadbio_minmax,
+    mock_team2_data = jadbio_minmax,
     
     # C. N teams selected
     PercentSelected= anno_lines(
@@ -700,7 +715,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       JADBio = c('0' = "#333333", '1' = "#D55B5B"),
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
+      mock_team2_data = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
       'InterferonGammaResponse_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
@@ -712,6 +727,8 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   )
   
   # Plot
+  ht_rows <- nrow(mat2)
+  ht_cols <- ncol(mat2)
   fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
     # width = unit(10, 'cm'),
@@ -721,9 +738,9 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     cluster_columns = FALSE,
     show_row_names = FALSE,
     show_column_names = FALSE,
-    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    column_title = paste('Features (n=', ht_cols, ')', sep=''),
     column_title_gp = gpar(fontsize = 12),
-    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    row_title = paste('Samples (n=', ht_rows, ')', sep=''),
     row_title_gp = gpar(fontsize = 12),
     left_annotation = subtype_ha,
     bottom_annotation = col_annot,
@@ -784,7 +801,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
 
     # B. ft importance
     AKLIMATE_importance = aklimate_minmax,
-    JADBio_importance_v7 = jadbio_minmax,
+    mock_team2_data = jadbio_minmax,
         
     # C. N teams selected
     PercentSelected= anno_lines(
@@ -807,7 +824,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       JADBio = c('0' = "#333333", '1' = "#D55B5B"),
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
+      mock_team2_data = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
       'EstrogrenResponseEarly_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'EstrogrenResponseLate_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'E2FTargets_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
@@ -819,6 +836,8 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   )
   
   # Plot
+  ht_rows <- nrow(mat2)
+  ht_cols <- ncol(mat2)
   fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
     # width = unit(10, 'cm'),
@@ -828,9 +847,9 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     cluster_columns = FALSE,
     show_row_names = FALSE,
     show_column_names = FALSE,
-    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    column_title = paste('Features (n=', ht_cols, ')', sep=''),
     column_title_gp = gpar(fontsize = 12),
-    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    row_title = paste('Samples (n=',ht_rows, ')', sep=''),
     row_title_gp = gpar(fontsize = 12),
     left_annotation = subtype_ha,
     bottom_annotation = col_annot,
@@ -890,7 +909,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
 
     # B. Ft importance
     AKLIMATE_importance = aklimate_minmax,
-    JADBio_importance_v7 = jadbio_minmax,
+    mock_team2_data = jadbio_minmax,
         
     # C. N teams selected
     PercentSelected= anno_lines(
@@ -913,7 +932,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       JADBio = c('0' = "#333333", '1' = "#D55B5B"),
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      JADBio_importance_v7 = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
+      mock_team2_data = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
       'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'ApicalJunction_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'EpithelialMesenchymalTransition_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
@@ -925,6 +944,8 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   )
   
   # Plot
+  ht_rows <- nrow(mat2)
+  ht_cols <- ncol(mat2)
   fig <- Heatmap(
     mat2, #each col will have mean 0, sd 1
     # width = unit(10, 'cm'),
@@ -934,9 +955,9 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     cluster_columns = FALSE,
     show_row_names = FALSE,
     show_column_names = FALSE,
-    column_title = paste('Features (n=', n_fts, ')', sep=''),
+    column_title = paste('Features (n=', ht_cols, ')', sep=''),
     column_title_gp = gpar(fontsize = 12),
-    row_title = paste('Samples (n=', nrow(mat2), ')', sep=''),
+    row_title = paste('Samples (n=', ht_rows, ')', sep=''),
     row_title_gp = gpar(fontsize = 12),
     left_annotation = subtype_ha,
     bottom_annotation = col_annot,
@@ -963,3 +984,4 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   
 }
 ```
+
