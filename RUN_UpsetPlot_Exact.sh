@@ -11,15 +11,25 @@ python scripts/get_fts.py \
     --out data/figure_panel_a/best_models_${tumor_cohort}.tsv
 echo 'completed ft list formatting'
 
-# 1. Exact Feature Match - Overlaps
+# 2. Clean files and create 2 new files
+python scripts/pull_grp_best.py \
+    --tumor ${tumor_cohort} \
+    -f1 data/figure_panel_a/best_models_${tumor_cohort}.tsv \
+    -f2 src/tarball/${tumor_cohort}_v9_20201029.tsv \
+    --out1 data/figure_panel_b/${tumor_cohort}_fts_by_TEAM.tsv \
+    --out2 data/figure_panel_b/${tumor_cohort}_fts_by_VALUE.tsv
+echo 'completed pulling group best and file cleaning'
+
+
+# 3. Exact Feature Match - Overlaps
 # Create upset plots
 # Note that --headers must match order of --infile headers
-if [[ ${tumor_cohort} == 'LGGGBM' ]]
-then
+if [[ ${tumor_cohort} == 'LGGGBM' ]]; then
     msize='800'
-elif [[ ${tumor_cohort} == 'BRCA' || ${tumor_cohort} == 'GEA' ]]
-then
-    msize='1150' #'1300'
+elif [[ ${tumor_cohort} == 'GEA' ]]; then
+    msize='600'
+elif [[  ${tumor_cohort} == 'BRCA' ]]; then
+    msize='1000'
 fi
 Rscript scripts/upset.R \
     -c ${tumor_cohort} \
