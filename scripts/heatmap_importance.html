@@ -399,7 +399,7 @@ summary {
 <pre class="r"><code>###### 
 # Hardcoded 
 ######
-cancer &lt;- &#39;BRCA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
+cancer &lt;- &#39;GEA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
 
 outdir =&#39;../data/figure_panel_b/&#39;
 
@@ -785,6 +785,22 @@ if (cancer == &#39;BRCA&#39; | cancer == &#39;GEA&#39; ){
 } else if (cancer == &#39;LGGGBM&#39;){
   platforms &lt;- c(&#39;N:METH&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;, &#39;N:GEXP&#39;)
 }</code></pre>
+<pre class="r"><code>for (c in colnames(df_fts)[2:ncol(df_fts)]){
+  print(c)
+  print(sum(df_fts[,c]))
+}</code></pre>
+<pre><code>## [1] &quot;gnosis_2_GEA&quot;
+## [1] 25
+## [1] &quot;CF|All_Top 100_GEA&quot;
+## [1] 100
+## [1] &quot;AKLIMATE_GEA_reduced_model_500_feature_set_GEA&quot;
+## [1] 500
+## [1] &quot;nn_jg_2020-03-20_top1kfreq:GEA_GEA&quot;
+## [1] 421
+## [1] &quot;rfe15_GEA&quot;
+## [1] 75
+## [1] &quot;Total&quot;
+## [1] 1121</code></pre>
 </div>
 <div id="section-1-heatmaps-for-each-data-type" class="section level3">
 <h3>Section 1: Heatmaps for each data type</h3>
@@ -832,22 +848,22 @@ for (prefix in platforms){
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## [1] &quot;N:METH&quot;
-## [1] 30</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;N:MIR&quot;
-## [1] 14</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;I:CNVR&quot;
-## [1] 18</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;B:MUTA&quot;
-## [1] 7</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;N:GEXP&quot;
-## [1] 1682</code></pre>
+## [1] 459</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;Using this as main platform of interest:&quot;
-## [1] &quot;N:GEXP&quot;</code></pre>
+## [1] &quot;N:METH&quot;
+## [1] &quot;N:MIR&quot;
+## [1] 15</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
+## [1] &quot;I:CNVR&quot;
+## [1] 16</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
+## [1] &quot;B:MUTA&quot;
+## [1] 23</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
+## [1] &quot;N:GEXP&quot;
+## [1] 478</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;</code></pre>
 </div>
 <div id="section-2-explore-the-hallmarks-associated-with-gexp-features" class="section level3">
 <h3>Section 2: Explore the hallmarks associated with GEXP features</h3>
@@ -961,15 +977,15 @@ for (h in top){
   print(h)
   print(gene_set_size(h))
 }</code></pre>
-<pre><code>## [1] &quot;ESTROGEN_RESPONSE_EARLY&quot;
+<pre><code>## [1] &quot;APICAL_JUNCTION&quot;
 ## [1] 200
-## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
+## [1] &quot;HYPOXIA&quot;
 ## [1] 200
-## [1] &quot;E2F_TARGETS&quot;
+## [1] &quot;IL2_STAT5_SIGNALING&quot;
+## [1] 199
+## [1] &quot;MYOGENESIS&quot;
 ## [1] 200
-## [1] &quot;G2M_CHECKPOINT&quot;
-## [1] 200
-## [1] &quot;MTORC1_SIGNALING&quot;
+## [1] &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;
 ## [1] 200</code></pre>
 <pre class="r"><code># TODO add these as argument input into function
 header_jadbio &lt;- models[&#39;JADBIO&#39;]
@@ -1011,7 +1027,7 @@ normalize_data &lt;- function(df, team_df){
 <pre class="r"><code>setwd(outdir)
 
 # TODO make less janky so autopopulates the annotation names 
-if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&quot;, &quot;MTORC1_SIGNALING&quot;, &quot;IL2_STAT5_SIGNALING&quot;, &quot;INFLAMMATORY_RESPONSE&quot;, &quot;ESTROGEN_RESPONSE_LATE&quot;) ){
+if (cancer == &#39;LGGGBM&#39; ){
   vals_1 &lt;- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
   vals_2 &lt;- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
   vals_3 &lt;- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
@@ -1121,7 +1137,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   draw(fig,heatmap_legend_side = c(&#39;left&#39;))
   dev.off()
 
-} else if (cancer == &#39;BRCA&#39; &amp; top == c(&quot;ESTROGEN_RESPONSE_EARLY&quot;, &quot;ESTROGEN_RESPONSE_LATE&quot;, &quot;E2F_TARGETS&quot;, &quot;G2M_CHECKPOINT&quot;, &quot;MTORC1_SIGNALING&quot; ) ){
+} else if (cancer == &#39;BRCA&#39; ){
   vals_1 &lt;- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
   vals_2 &lt;- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
   vals_3 &lt;- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
@@ -1169,9 +1185,9 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     # D. Hallmarks
     &#39;EstrogrenResponseEarly_200&#39; = vals_1,
     &#39;EstrogrenResponseLate_200&#39; = vals_2,
-    &#39;E2FTargets_200&#39; = vals_3,
-    &#39;G2MCheckpoint_200&#39; = vals_4,
-    &#39;MTORC1Signaling_200&#39; = vals_5,  
+    &#39;MTORC1Signaling_200&#39; = vals_3,
+    &#39;EpithelialMesenchymalTransition_200&#39; = vals_4,
+    &#39;Hypoxia_200&#39; = vals_5,  
     
     col = list(
       AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
@@ -1183,9 +1199,9 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
       mock_team2_data = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;#D55B5B&quot;)),
       &#39;EstrogrenResponseEarly_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;EstrogrenResponseLate_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-      &#39;E2FTargets_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-      &#39;G2MCheckpoint_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-      &#39;MTORC1Signaling_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
+      &#39;MTORC1Signaling_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &#39;EpithelialMesenchymalTransition_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &#39;Hypoxia_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
     gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), &#39;mm&#39;)
@@ -1229,7 +1245,7 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   )
   draw(fig,heatmap_legend_side = c(&#39;left&#39;))
   dev.off()
-} else if (cancer == &#39;GEA&#39; &amp; top == c(&quot;IL2_STAT5_SIGNALING&quot;, &quot;APICAL_JUNCTION&quot;, &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;, &quot;HYPOXIA&quot;, &quot;MYOGENESIS&quot;) ){
+} else if (cancer == &#39;GEA&#39; ){
   vals_1 &lt;- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
   vals_2 &lt;- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
   vals_3 &lt;- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
@@ -1275,11 +1291,11 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
     
     # D. Hallmarks
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
-    &#39;IL2STAT5Signaling_199&#39; = vals_1,
-    &#39;ApicalJunction_200&#39; = vals_2,
-    &#39;EpithelialMesenchymalTransition_200&#39; = vals_3,
-    &#39;Hypoxia_200&#39; = vals_4,
-    &#39;Myogenesis_200&#39; = vals_5,  
+    &#39;ApicalJunction_200&#39; = vals_1,
+    &#39;Hypoxia_200&#39; = vals_2,
+    &#39;IL2STAT5Signaling_199&#39; = vals_3,
+    &#39;Myogenesis_200&#39; = vals_4,
+    &#39;EpithelialMesenchymalTransition_200&#39; = vals_5,  
     
     col = list(
       AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
@@ -1289,11 +1305,11 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
       SciKitGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       AKLIMATE_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
       mock_team2_data = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;#D55B5B&quot;)),
-      &#39;IL2STAT5Signaling_199&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;ApicalJunction_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-      &#39;EpithelialMesenchymalTransition_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;Hypoxia_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-      &#39;Myogenesis_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
+      &#39;IL2STAT5Signaling_199&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &#39;Myogenesis_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &#39;EpithelialMesenchymalTransition_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
     gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), &#39;mm&#39;)
@@ -1339,11 +1355,6 @@ if (cancer == &#39;LGGGBM&#39; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&qu
   dev.off()
   
 }</code></pre>
-<pre><code>## Warning in if (cancer == &quot;LGGGBM&quot; &amp; top == c(&quot;INTERFERON_GAMMA_RESPONSE&quot;, : the
-## condition has length &gt; 1 and only the first element will be used</code></pre>
-<pre><code>## Warning in if (cancer == &quot;BRCA&quot; &amp; top == c(&quot;ESTROGEN_RESPONSE_EARLY&quot;,
-## &quot;ESTROGEN_RESPONSE_LATE&quot;, : the condition has length &gt; 1 and only the first
-## element will be used</code></pre>
 <pre><code>## quartz_off_screen 
 ##                 2</code></pre>
 </div>

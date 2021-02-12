@@ -42,7 +42,7 @@ Note in calculating z-scores, NAs were omitted
 ###### 
 # Hardcoded 
 ######
-cancer <- 'BRCA' # 'GEA', 'LGGGBM', 'BRCA'
+cancer <- 'GEA' # 'GEA', 'LGGGBM', 'BRCA'
 
 outdir ='../data/figure_panel_b/'
 
@@ -436,7 +436,7 @@ if (cancer == 'BRCA' | cancer == 'GEA' ){
 
 
 ```{r dev}
-for (c in colnames(df_fts)[2:]){
+for (c in colnames(df_fts)[2:ncol(df_fts)]){
   print(c)
   print(sum(df_fts[,c]))
 }
@@ -655,7 +655,7 @@ normalize_data <- function(df, team_df){
 setwd(outdir)
 
 # TODO make less janky so autopopulates the annotation names 
-if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING", "IL2_STAT5_SIGNALING", "INFLAMMATORY_RESPONSE", "ESTROGEN_RESPONSE_LATE") ){
+if (cancer == 'LGGGBM' ){
   vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
   vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
   vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
@@ -765,7 +765,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   draw(fig,heatmap_legend_side = c('left'))
   dev.off()
 
-} else if (cancer == 'BRCA' & top == c("ESTROGEN_RESPONSE_EARLY", "ESTROGEN_RESPONSE_LATE", "E2F_TARGETS", "G2M_CHECKPOINT", "MTORC1_SIGNALING" ) ){
+} else if (cancer == 'BRCA' ){
   vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
   vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
   vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
@@ -813,9 +813,9 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     # D. Hallmarks
     'EstrogrenResponseEarly_200' = vals_1,
     'EstrogrenResponseLate_200' = vals_2,
-    'E2FTargets_200' = vals_3,
-    'G2MCheckpoint_200' = vals_4,
-    'MTORC1Signaling_200' = vals_5,  
+    'MTORC1Signaling_200' = vals_3,
+    'EpithelialMesenchymalTransition_200' = vals_4,
+    'Hypoxia_200' = vals_5,  
     
     col = list(
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
@@ -827,9 +827,9 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       mock_team2_data = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
       'EstrogrenResponseEarly_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'EstrogrenResponseLate_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'E2FTargets_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'G2MCheckpoint_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
+      'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      'EpithelialMesenchymalTransition_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      'Hypoxia_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
     ),
     show_legend = FALSE,
     gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), 'mm')
@@ -873,7 +873,7 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
   )
   draw(fig,heatmap_legend_side = c('left'))
   dev.off()
-} else if (cancer == 'GEA' & top == c("IL2_STAT5_SIGNALING", "APICAL_JUNCTION", "EPITHELIAL_MESENCHYMAL_TRANSITION", "HYPOXIA", "MYOGENESIS") ){
+} else if (cancer == 'GEA' ){
   vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
   vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
   vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
@@ -919,11 +919,11 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
     
     # D. Hallmarks
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
-    'IL2STAT5Signaling_199' = vals_1,
-    'ApicalJunction_200' = vals_2,
-    'EpithelialMesenchymalTransition_200' = vals_3,
-    'Hypoxia_200' = vals_4,
-    'Myogenesis_200' = vals_5,  
+    'ApicalJunction_200' = vals_1,
+    'Hypoxia_200' = vals_2,
+    'IL2STAT5Signaling_199' = vals_3,
+    'Myogenesis_200' = vals_4,
+    'EpithelialMesenchymalTransition_200' = vals_5,  
     
     col = list(
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
@@ -933,11 +933,11 @@ if (cancer == 'LGGGBM' & top == c("INTERFERON_GAMMA_RESPONSE", "MTORC1_SIGNALING
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
       mock_team2_data = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
-      'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'ApicalJunction_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'EpithelialMesenchymalTransition_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'Hypoxia_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'Myogenesis_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
+      'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      'Myogenesis_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      'EpithelialMesenchymalTransition_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
     ),
     show_legend = FALSE,
     gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), 'mm')
