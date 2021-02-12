@@ -33,14 +33,16 @@ for group in groups:
     if type(group)== list:
         subset = performance_df[performance_df['feature_list_method'].isin(['rfe15', 'fbedeBIC'])]
         subset = subset[subset['cohort'] == cancer]
-        subset = subset[subset['performance_metric']== pmetric].reset_index(drop=True)
-        ftID = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)['featureID'][0]
+        subset = subset[subset['performance_metric'] == pmetric].reset_index(drop=True)
+        subset = subset[subset['total_features'] < 1000].reset_index(drop=True)
+        subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
     else:
+        print(group)
         subset = performance_df[performance_df['feature_list_method'] == group]
         subset = subset[subset['cohort'] == cancer]
-        subset = subset[subset['performance_metric']== pmetric].reset_index(drop=True)
-
-
+        subset = subset[subset['performance_metric'] == pmetric].reset_index(drop=True)
+        subset = subset[subset['total_features'] < 1000].reset_index(drop=True)
+        subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
     # Grab the name of the model with highest MEAN performance metric
     ftID = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)['featureID'][0]
 

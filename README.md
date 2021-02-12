@@ -33,51 +33,45 @@ bash RUN_to_synapse.sh
 
 Run feature sets through Sci-kit Grid classifiers. Combine prediction results with the results from other team members and download the merged feature set file and classifier performance file into `src/`
 
-## 3. Exact Feature Name Overlap Upset Plot (Base Upset Plot)
+## 3. Team Overlap Analysis
 
-Last updated: 1/22/21
+Last updated: 2/11/21
 
-Purpose: create an upset plot that shows how much overlap there is between the feature sets of the best models
+Two parts:
 
-Methods: pull the best model per team (based on mean `overall weighted F1` score). pull corresponding feature set for each model. look at raw overlap of features across teams
+1. Exact Feature Name Overlap Upset Plot (Base Upset Plot)
 
-```
-# Preprocessing and Upset Plot - in script/ it calls get_fts.py and upset_exactMatch.R
-bash RUN_UpsetPlot_Exact.sh <cancer>
-```
+2. Exact Feature Overlap Heatmap - Clustering features
 
-Outputs two files in `data/figure_panel_a/`:
+Purpose 3A: create an upset plot that shows how much overlap there is between the feature sets of the best models
 
-+ `best_models_<cancer>.tsv`
-+ `upsetplot_<cancer>.pdf`
++ Methods: pull the best model per team (based on mean `overall weighted F1` score). pull corresponding feature set for each model. look at raw overlap of features across teams
 
-## 4. Exact Feature Overlap Heatmap - Clustering features
+Purpose 3B: create heatmap of all features of best models and cluster based on original molecular tarball signatures
 
-Last updated: 2/3/21
-
-Purpose: create heatmap of all features of best models and cluster based on original molecular tarball signatures
-
-Methods: select a cancer cohort. pull the best model per team (based on mean `overall weighted F1` score). Pull corresponding feature set for each model. Scale if needed (depends on data platform). Cluster features and show on heatmap.
++ Methods: select a cancer cohort. pull the best model per team (based on mean `overall weighted F1` score). Pull corresponding feature set for each model. Scale if needed (depends on data platform). Cluster features and show on heatmap.
 
 Cancers: BRCA, LGGGBM, GEA
 
-*Note: assumes you ran scripts from section* `2. Exact Feature Name Overlap Upset Plot (Base Upset Plot)`
+**Implements a feature set threshold of <1K features. Feature sets with larger sizes will not be considered for "top model"**
 
 First, save a local file containing hallmark gene sets
 
 ```
-# Run once. Does not need to be recalled for each cancer type
+# Run once.
+# Does not need to be recalled for each cancer type
 bash RUN_Extract_Hallmark_file.sh
 ```
 
-Second, create heatmap for each cancer cohort using the hallmark file from last step
+Create upset plots and heatmaps
 
 ```
-# Preprocessing - in scripts/ it calls get_fts.py, pull_grp_best.py, extract_hallmarks
-bash RUN_Heatmap_Exact.sh <cancer>
+# Upset Plot
+bash RUN_overlap.sh <cancer>
 
 # Create heatmaps
+# TODO: convert to R script
 ## run scripts/heatmap_importance.Rmd
 ```
 
-**WIP 2/3/21 - will be tweaking heatmap annotations to show feature importances instead (for models that provide importance scores) `heatmap_importance.Rmd`**
+Outputs two files in `data/figure_panel_a/` and `data/figure_panel_b/`:
