@@ -252,7 +252,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       SciKitGrid = c('0' = "#333333", '1' = "#EFA9A9")
     ),
     show_legend = FALSE,
-    nTeamsSelected= anno_barplot (
+    Frequency= anno_barplot (
       team_df$Total,
       bar_width=1
     )
@@ -695,10 +695,11 @@ if (cancer == 'LGGGBM' ){
     mock_team2_data = jadbio_minmax,
     
     # C. N teams selected
-    PercentSelected= anno_lines(
-      mapply('/',team_df$Total, 5) *100,
-      height = unit(10, 'mm')
+    Frequency= anno_barplot (
+      team_df$Total,
+      bar_width=1
     ),
+
     
     # TODO need to manually update the name
     # D. Hallmarks
@@ -804,9 +805,9 @@ if (cancer == 'LGGGBM' ){
     mock_team2_data = jadbio_minmax,
         
     # C. N teams selected
-    PercentSelected= anno_lines(
-      mapply('/',team_df$Total, 5) *100,
-      height = unit(10, 'mm')
+    Frequency= anno_barplot (
+      team_df$Total,
+      bar_width=1
     ),
     
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
@@ -912,9 +913,9 @@ if (cancer == 'LGGGBM' ){
     mock_team2_data = jadbio_minmax,
         
     # C. N teams selected
-    PercentSelected= anno_lines(
-      mapply('/',team_df$Total, 5) *100,
-      height = unit(10, 'mm')
+    Frequency= anno_barplot (
+      team_df$Total,
+      bar_width=1
     ),
     
     # D. Hallmarks
