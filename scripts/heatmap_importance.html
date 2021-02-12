@@ -410,13 +410,6 @@ file_imp_aklimate &lt;- paste(
   sep=&#39;&#39;
 )
 
-jd_file &lt;- paste(
-  &#39;../src/feature_importance/JADBio_TCGA_results_fig6_update_2020_01_allcohorts_MCastro/&#39;, 
-  cancer, 
-  &#39;_markers_outcome_association.csv&#39;, 
-  sep = &#39;&#39;
-)
-
 yes_scale &lt;- c(&#39;N:METH&#39;, &#39;N:GEXP&#39;,&#39;N:MIR&#39;) # which fts to scale
 
 #####
@@ -761,11 +754,6 @@ imp_aklimate &lt;- fread(
   file_imp_aklimate
 ) %&gt;% as.data.frame()
 
-imp_jd &lt;- fread(
-  jd_file
-) %&gt;% as.data.frame()
-colnames(imp_jd) &lt;- c(&quot;features&quot;,&quot;importance&quot;)
-
 ####
 # Define platform for hallmark heatmap
 ####
@@ -1043,8 +1031,6 @@ if (cancer == &#39;LGGGBM&#39; ){
   # 1B. Create MinMax Values
   ########
   aklimate_minmax &lt;- normalize_data(imp_aklimate, team_df)
-  jadbio_minmax &lt;- normalize_data(imp_jd, team_df)
-
 
   # 2. Pull just the team of interest
   jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
@@ -1064,7 +1050,6 @@ if (cancer == &#39;LGGGBM&#39; ){
 
     # B. ft importance
     AKLIMATE_importance = aklimate_minmax,
-    mock_team2_data = jadbio_minmax,
     
     # C. N teams selected
     Frequency= anno_barplot (
@@ -1088,7 +1073,6 @@ if (cancer == &#39;LGGGBM&#39; ){
       JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
       SciKitGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       AKLIMATE_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
-      mock_team2_data = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;#D55B5B&quot;)),
       &#39;InterferonGammaResponse_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;MTORC1Signaling_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;IL2STAT5Signaling_199&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
@@ -1096,7 +1080,7 @@ if (cancer == &#39;LGGGBM&#39; ){
       &#39;EstrogenResponseLate_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot
@@ -1153,8 +1137,6 @@ if (cancer == &#39;LGGGBM&#39; ){
   # 1B. Create MinMax Values - for AKLIMATE only
   ########
   aklimate_minmax &lt;- normalize_data(imp_aklimate, team_df)
-  jadbio_minmax &lt;- normalize_data(imp_jd, team_df)
-
 
   # 2. Pull just the team of interest
   jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
@@ -1174,8 +1156,7 @@ if (cancer == &#39;LGGGBM&#39; ){
 
     # B. ft importance
     AKLIMATE_importance = aklimate_minmax,
-    mock_team2_data = jadbio_minmax,
-        
+
     # C. N teams selected
     Frequency= anno_barplot (
       team_df$Total,
@@ -1197,7 +1178,6 @@ if (cancer == &#39;LGGGBM&#39; ){
       JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
       SciKitGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       AKLIMATE_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
-      mock_team2_data = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;#D55B5B&quot;)),
       &#39;EstrogrenResponseEarly_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;EstrogrenResponseLate_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;MTORC1Signaling_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
@@ -1205,7 +1185,7 @@ if (cancer == &#39;LGGGBM&#39; ){
       &#39;Hypoxia_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot
@@ -1261,8 +1241,6 @@ if (cancer == &#39;LGGGBM&#39; ){
   # 1B. Create MinMax Values - for AKLIMATE only
   ########
   aklimate_minmax &lt;- normalize_data(imp_aklimate, team_df)
-  jadbio_minmax &lt;- normalize_data(imp_jd, team_df)
-
 
   # 2. Pull just the team of interest
   jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
@@ -1282,8 +1260,6 @@ if (cancer == &#39;LGGGBM&#39; ){
 
     # B. Ft importance
     AKLIMATE_importance = aklimate_minmax,
-    mock_team2_data = jadbio_minmax,
-        
     # C. N teams selected
     Frequency= anno_barplot (
       team_df$Total,
@@ -1305,7 +1281,6 @@ if (cancer == &#39;LGGGBM&#39; ){
       JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
       SciKitGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       AKLIMATE_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
-      mock_team2_data = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;#D55B5B&quot;)),
       &#39;ApicalJunction_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;Hypoxia_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;IL2STAT5Signaling_199&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
@@ -1313,7 +1288,7 @@ if (cancer == &#39;LGGGBM&#39; ){
       &#39;EpithelialMesenchymalTransition_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot
