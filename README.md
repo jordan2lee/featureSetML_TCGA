@@ -67,10 +67,7 @@ Create upset plots and heatmaps
 
 ```
 # Upset Plot
-bash RUN_UpsetPlot_Exact.sh <cancer>
-
-# Preprocessing Heatmap
-bash RUN_Heatmap_Exact.sh <cancer>
+bash RUN_overlap.sh <cancer>
 
 # Create heatmaps
 # TODO: convert to R script

@@ -1,8 +1,9 @@
 #!/usr/bin/bash
 
+# Exact Feature Match - Overlaps
 tumor_cohort=${1}
 
-# 0. Format feature lists of groups (best performing model)
+# 1. Format feature lists of groups (best performing model)
 python scripts/get_fts.py \
     --tumor ${tumor_cohort} \
     -m overall_weighted_f1 \
@@ -20,9 +21,7 @@ python scripts/pull_grp_best.py \
     --out2 data/figure_panel_b/${tumor_cohort}_fts_by_VALUE.tsv
 echo 'completed pulling group best and file cleaning'
 
-
-# 3. Exact Feature Match - Overlaps
-# Create upset plots
+# 3. Create upset plots
 # Note that --headers must match order of --infile headers
 if [[ ${tumor_cohort} == 'LGGGBM' ]]; then
     msize='800'
@@ -37,3 +36,8 @@ Rscript scripts/upset.R \
     --max_ftsize ${msize} \
     --outdir data/figure_panel_a --outname upsetplot_${tumor_cohort}.pdf
 echo 'completed upset plot - mode distinct'
+
+# 4. Create heatmap
+echo 'ACTION:'
+echo '-- next step: create heatmap --'
+echo '-- now manually run figures/heatmap_importance.Rmd --'
