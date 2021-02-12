@@ -53,13 +53,6 @@ file_imp_aklimate <- paste(
   sep=''
 )
 
-jd_file <- paste(
-  '../src/feature_importance/JADBio_TCGA_results_fig6_update_2020_01_allcohorts_MCastro/', 
-  cancer, 
-  '_markers_outcome_association.csv', 
-  sep = ''
-)
-
 yes_scale <- c('N:METH', 'N:GEXP','N:MIR') # which fts to scale
 
 #####
@@ -407,11 +400,6 @@ imp_aklimate <- fread(
   file_imp_aklimate
 ) %>% as.data.frame()
 
-imp_jd <- fread(
-  jd_file
-) %>% as.data.frame()
-colnames(imp_jd) <- c("features","importance")
-
 ####
 # Define platform for hallmark heatmap
 ####
@@ -671,8 +659,6 @@ if (cancer == 'LGGGBM' ){
   # 1B. Create MinMax Values
   ########
   aklimate_minmax <- normalize_data(imp_aklimate, team_df)
-  jadbio_minmax <- normalize_data(imp_jd, team_df)
-
 
   # 2. Pull just the team of interest
   jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
@@ -692,7 +678,6 @@ if (cancer == 'LGGGBM' ){
 
     # B. ft importance
     AKLIMATE_importance = aklimate_minmax,
-    mock_team2_data = jadbio_minmax,
     
     # C. N teams selected
     Frequency= anno_barplot (
@@ -716,7 +701,6 @@ if (cancer == 'LGGGBM' ){
       JADBio = c('0' = "#333333", '1' = "#D55B5B"),
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      mock_team2_data = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
       'InterferonGammaResponse_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
@@ -724,7 +708,7 @@ if (cancer == 'LGGGBM' ){
       'EstrogenResponseLate_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), 'mm')
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), 'mm')
   )
   
   # Plot
@@ -781,8 +765,6 @@ if (cancer == 'LGGGBM' ){
   # 1B. Create MinMax Values - for AKLIMATE only
   ########
   aklimate_minmax <- normalize_data(imp_aklimate, team_df)
-  jadbio_minmax <- normalize_data(imp_jd, team_df)
-
 
   # 2. Pull just the team of interest
   jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
@@ -802,8 +784,7 @@ if (cancer == 'LGGGBM' ){
 
     # B. ft importance
     AKLIMATE_importance = aklimate_minmax,
-    mock_team2_data = jadbio_minmax,
-        
+
     # C. N teams selected
     Frequency= anno_barplot (
       team_df$Total,
@@ -825,7 +806,6 @@ if (cancer == 'LGGGBM' ){
       JADBio = c('0' = "#333333", '1' = "#D55B5B"),
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      mock_team2_data = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
       'EstrogrenResponseEarly_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'EstrogrenResponseLate_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
@@ -833,7 +813,7 @@ if (cancer == 'LGGGBM' ){
       'Hypoxia_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), 'mm')
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), 'mm')
   )
   
   # Plot
@@ -889,8 +869,6 @@ if (cancer == 'LGGGBM' ){
   # 1B. Create MinMax Values - for AKLIMATE only
   ########
   aklimate_minmax <- normalize_data(imp_aklimate, team_df)
-  jadbio_minmax <- normalize_data(imp_jd, team_df)
-
 
   # 2. Pull just the team of interest
   jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
@@ -910,8 +888,6 @@ if (cancer == 'LGGGBM' ){
 
     # B. Ft importance
     AKLIMATE_importance = aklimate_minmax,
-    mock_team2_data = jadbio_minmax,
-        
     # C. N teams selected
     Frequency= anno_barplot (
       team_df$Total,
@@ -933,7 +909,6 @@ if (cancer == 'LGGGBM' ){
       JADBio = c('0' = "#333333", '1' = "#D55B5B"),
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      mock_team2_data = colorRamp2(c(0, 1), c("#333333", "#D55B5B")),
       'ApicalJunction_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'Hypoxia_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
       'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
@@ -941,7 +916,7 @@ if (cancer == 'LGGGBM' ){
       'EpithelialMesenchymalTransition_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), 'mm')
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), 'mm')
   )
   
   # Plot
