@@ -398,7 +398,7 @@ summary {
 <p>Note in calculating z-scores, NAs were omitted</p>
 <pre class="r"><code># Hardcoded 
 ######
-cancer &lt;- &#39;BRCA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
+cancer &lt;- &#39;LGGGBM&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
 
 outdir =&#39;../data/figure_panel_b/&#39;
 
@@ -1004,12 +1004,14 @@ for (prefix in platforms){
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre><code>## [1] &quot;N:METH&quot;</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;N:MIR&quot;</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;N:GEXP&quot;</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;Using this as main platform of interest:&quot;
+## [1] &quot;N:METH&quot;
+## [1] &quot;I:CNVR&quot;</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
+## [1] &quot;B:MUTA&quot;</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;N:GEXP&quot;</code></pre>
+<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;</code></pre>
 </div>
 <div id="section-2-explore-the-hallmarks-associated-with-gexp-features" class="section level3">
 <h3>Section 2: Explore the hallmarks associated with GEXP features</h3>
@@ -1123,16 +1125,16 @@ for (h in top){
   print(h)
   print(gene_set_size(h))
 }</code></pre>
-<pre><code>## [1] &quot;ESTROGEN_RESPONSE_EARLY&quot;
+<pre><code>## [1] &quot;APICAL_JUNCTION&quot;
 ## [1] 200
-## [1] &quot;G2M_CHECKPOINT&quot;
-## [1] 200
-## [1] &quot;E2F_TARGETS&quot;
+## [1] &quot;COMPLEMENT&quot;
 ## [1] 200
 ## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
 ## [1] 200
-## [1] &quot;MITOTIC_SPINDLE&quot;
-## [1] 199</code></pre>
+## [1] &quot;INFLAMMATORY_RESPONSE&quot;
+## [1] 200
+## [1] &quot;APOPTOSIS&quot;
+## [1] 161</code></pre>
 <pre class="r"><code># TODO add these as argument input into function
 header_jadbio &lt;- models[&#39;JADBIO&#39;]
 header_cforest &lt;- models[&#39;CForest&#39;]
