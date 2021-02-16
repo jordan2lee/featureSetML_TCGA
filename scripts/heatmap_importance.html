@@ -396,10 +396,9 @@ summary {
 <p>Non-scaled data - MUTA, CNVR</p>
 <p>I want to see the differences between features. Data was scaled - all samples for a given feature have mean 0 and sd 1. then ran through normal pipeline</p>
 <p>Note in calculating z-scores, NAs were omitted</p>
-<pre class="r"><code>###### 
-# Hardcoded 
+<pre class="r"><code># Hardcoded 
 ######
-cancer &lt;- &#39;GEA&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
+cancer &lt;- &#39;LGGGBM&#39; # &#39;GEA&#39;, &#39;LGGGBM&#39;, &#39;BRCA&#39;
 
 outdir =&#39;../data/figure_panel_b/&#39;
 
@@ -408,13 +407,6 @@ file_imp_aklimate &lt;- paste(
   cancer, 
   &#39;_20200423_aklimate_ranked_feature_importance.tsv&#39;, 
   sep=&#39;&#39;
-)
-
-jd_file &lt;- paste(
-  &#39;../src/feature_importance/JADBio_TCGA_results_fig6_update_2020_01_allcohorts_MCastro/&#39;, 
-  cancer, 
-  &#39;_markers_outcome_association.csv&#39;, 
-  sep = &#39;&#39;
 )
 
 yes_scale &lt;- c(&#39;N:METH&#39;, &#39;N:GEXP&#39;,&#39;N:MIR&#39;) # which fts to scale
@@ -527,171 +519,196 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
       select(-Labels) %&gt;%
       select(-all_of(cancer)) %&gt;%
       select(starts_with(prefix))
-  mat &lt;- df_transform %&gt;%
-      as.matrix() %&gt;%
-      t()
-  print(prefix)
-  n_fts &lt;- nrow(mat)
-  print(n_fts)
-  
-  #####
-  # 1. Generate temp Heatmap 
-  # and pull row/col order
-  #####
-  # Scale if appropriate 
-  #z-scores == each ft row will have mean 0, sd 1. omit NAs
-  if (prefix %in% yes_scale){
-    mat &lt;- scale(t(mat), center=TRUE, scale=TRUE) 
+  if (ncol(df_transform) != 0){
+
+    ##### TESTING NEW START ####
+    mat &lt;- df_transform %&gt;%
+        as.matrix() %&gt;%
+        t()
+    print(prefix)
+    
+    #####
+    # 1. Generate temp Heatmap 
+    # and pull row/col order
+    #####
+    # Scale if appropriate 
+    #z-scores == each ft row will have mean 0, sd 1. omit NAs
+    if (prefix %in% yes_scale){
+      mat &lt;- scale(t(mat), center=TRUE, scale=TRUE) 
+    } else {
+      mat &lt;- t(mat) #flip for heatmap looks
+    }
+    # Heatmap
+    ht_rows &lt;- nrow(mat)
+    ht_cols &lt;- ncol(mat)
+    fig &lt;- Heatmap(
+      mat,
+      name = &#39;first heatmap&#39;,
+      cluster_rows = FALSE,
+      clustering_distance_columns = &quot;euclidean&quot;,
+      clustering_method_columns = &quot;ward.D&quot;,
+      cluster_columns = TRUE,
+      show_row_names = FALSE,
+      show_column_names = FALSE,
+      column_title = paste(&#39;Features (n=&#39;, ht_rows, &#39;)&#39;, sep=&#39;&#39;),
+      row_title = paste(&#39;Samples (n=&#39;, ht_cols, &#39;)&#39;, sep=&#39;&#39;),
+      right_annotation = subtype_ha
+    )
+    #### 
+    # Add team annotation bar
+    ####
+    # Ordering
+    # 1. Get order of features post heatmap clustering
+    heatmap_order &lt;- column_order(fig) # index vector
+    ftnames_order &lt;- c() # featurename vector
+    for (i in heatmap_order){
+      add_ft &lt;- colnames(mat)[i]
+      ftnames_order &lt;- c(ftnames_order, add_ft)
+    }
+    # 2. Get new matrix that is ordered by heatmap clustering
+    mat2 &lt;- mat[,match(ftnames_order, colnames(mat))]
+    #####
+    # Build annotation bars of teams feature sets
+    #####
+    # 1. df of all teams. match ft order in heatmap
+    team_df&lt;- df_fts %&gt;% 
+      filter(featureID %in% ftnames_order) %&gt;% 
+      arrange(match(featureID, ftnames_order))
+    # 2. Pull just the team of interest
+    jadbio &lt;- team_df %&gt;% 
+      pull(header_jadbio) %&gt;% 
+      as.character()
+    cforest &lt;- team_df %&gt;% 
+      pull(header_cforest) %&gt;% 
+      as.character()
+    aklimate &lt;- team_df %&gt;% 
+      pull(header_aklimate) %&gt;% 
+      as.character()
+    subscope &lt;- team_df %&gt;% 
+      pull(header_subscope) %&gt;% 
+      as.character()
+    skgrid &lt;- team_df %&gt;% 
+      pull(header_skgrid) %&gt;% 
+      as.character()
+    team_list &lt;- HeatmapAnnotation(
+      JADBio = jadbio,
+      CloudForest = cforest,
+      AKLIMATE = aklimate,
+      SubSCOPE = subscope,
+      SciKitGrid = skgrid,
+      col = list(
+        JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
+        CloudForest = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
+        AKLIMATE = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
+        SubSCOPE = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
+        SciKitGrid = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;)
+      ),
+      show_legend = FALSE,
+      Frequency= anno_barplot (
+        team_df$Total,
+        bar_width=1
+      )
+      # simple_anno_size = unit(2, &#39;mm&#39;) # height
+    )
+    #####
+    # 3. Output Heatmap
+    #####
+    # Set up saving fig packet
+    tiff(
+      paste(
+        cancer,
+        &#39;_ht_base_&#39;, 
+        unlist(strsplit(prefix, &#39;:&#39;))[2],
+        &#39;.tiff&#39;,
+        sep=&#39;&#39;
+      ),
+      width = 1400,
+      height = 1200,
+      res = 200,
+      compression = &quot;none&quot;
+    )
+    # Draw
+    # handle if only 1 feature in heatmap
+    if (length(ftnames_order)==1){
+      # Sanity check
+      ht_rows &lt;- nrow(mat2)
+      ht_cols &lt;- ncol(mat2)
+      assert(&#39;Assertion Error: in if loop for 1 ft but mat2 object dim() does not match&#39;,
+             is.null(ht_rows) &amp;&amp; is.null(ht_cols)
+      )
+      
+      # If only one feature set ht_rows/cols manually
+      ht_rows &lt;- length(mat2)
+      ht_cols &lt;- 1
+      
+      fig &lt;- Heatmap(
+        mat2,
+        name = prefix,
+        # width = unit(12, &#39;cm&#39;),
+        # height = unit(12, &#39;cm&#39;),
+        cluster_rows = FALSE,
+        clustering_distance_columns = &quot;euclidean&quot;,
+        clustering_method_columns = &quot;ward.D&quot;,
+        # column_order = ftnames_order, # NO ORDERING NEEDED
+        show_row_names = FALSE,
+        show_column_names = FALSE,
+        column_title = paste(&#39;Features (n=&#39;, ht_cols, &#39;)&#39;, sep=&#39;&#39;),
+        row_title = paste(&#39;Samples (n=&#39;, ht_rows, &#39;)&#39;, sep=&#39;&#39;),
+        right_annotation = subtype_ha,
+        bottom_annotation = team_list,
+        na_col = &#39;white&#39;
+      )
+      draw(fig)
+      dev.off()
+    } else {
+      ht_rows &lt;- nrow(mat2)
+      ht_cols &lt;- ncol(mat2)
+      fig &lt;- Heatmap(
+        mat2,
+        name = prefix,
+        # width = unit(12, &#39;cm&#39;),
+        # height = unit(12, &#39;cm&#39;),
+        cluster_rows = FALSE,
+        clustering_distance_columns = &quot;euclidean&quot;,
+        clustering_method_columns = &quot;ward.D&quot;,
+        column_order = ftnames_order,
+        show_row_names = FALSE,
+        show_column_names = FALSE,
+        column_title = paste(&#39;Features (n=&#39;, ht_cols, &#39;)&#39;, sep=&#39;&#39;),
+        row_title = paste(&#39;Samples (n=&#39;, ht_rows, &#39;)&#39;, sep=&#39;&#39;),
+        right_annotation = subtype_ha,
+        bottom_annotation = team_list,
+        na_col = &#39;white&#39;
+      )
+      draw(fig)
+      dev.off()      
+    }
+    print(
+      paste(
+        &#39;Distance metric = &#39;, 
+        fig@column_dend_param$distance, 
+        &#39;. Method = &#39;, 
+        fig@column_dend_param$method, 
+        sep=&#39; &#39;
+      )
+    )
+    # Assign to &#39;output&#39; variables
+    return(
+      list(
+        &#39;results_matrix&#39; = mat2, 
+        &#39;results_ft_order&#39; = ftnames_order, 
+        &#39;subtype_annotation&#39; = subtype_ha
+      )
+    )
   } else {
-    mat &lt;- t(mat) #flip for heatmap looks
-  }
-  # Heatmap
-  fig &lt;- Heatmap(
-    mat,
-    name = &#39;first heatmap&#39;,
-    cluster_rows = FALSE,
-    clustering_distance_columns = &quot;euclidean&quot;,
-    clustering_method_columns = &quot;ward.D&quot;,
-    cluster_columns = TRUE,
-    show_row_names = FALSE,
-    show_column_names = FALSE,
-    column_title = paste(&#39;Features (n=&#39;, n_fts, &#39;)&#39;, sep=&#39;&#39;),
-    row_title = paste(&#39;Samples (n=&#39;, nrow(mat), &#39;)&#39;, sep=&#39;&#39;),
-    right_annotation = subtype_ha
-  )
-  #### 
-  # Add team annotation bar
-  ####
-  # Ordering
-  # 1. Get order of features post heatmap clustering
-  heatmap_order &lt;- column_order(fig) # index vector
-  ftnames_order &lt;- c() # featurename vector
-  for (i in heatmap_order){
-    add_ft &lt;- colnames(mat)[i]
-    ftnames_order &lt;- c(ftnames_order, add_ft)
-  }
-  # 2. Get new matrix that is ordered by heatmap clustering
-  mat2 &lt;- mat[,match(ftnames_order, colnames(mat))]
-  #####
-  # Build annotation bars of teams feature sets
-  #####
-  # 1. df of all teams. match ft order in heatmap
-  team_df&lt;- df_fts %&gt;% 
-    filter(featureID %in% ftnames_order) %&gt;% 
-    arrange(match(featureID, ftnames_order))
-  # 2. Pull just the team of interest
-  jadbio &lt;- team_df %&gt;% 
-    pull(header_jadbio) %&gt;% 
-    as.character()
-  cforest &lt;- team_df %&gt;% 
-    pull(header_cforest) %&gt;% 
-    as.character()
-  aklimate &lt;- team_df %&gt;% 
-    pull(header_aklimate) %&gt;% 
-    as.character()
-  subscope &lt;- team_df %&gt;% 
-    pull(header_subscope) %&gt;% 
-    as.character()
-  skgrid &lt;- team_df %&gt;% 
-    pull(header_skgrid) %&gt;% 
-    as.character()
-  team_list &lt;- HeatmapAnnotation(
-    JADBio = jadbio,
-    CloudForest = cforest,
-    AKLIMATE = aklimate,
-    SubSCOPE = subscope,
-    SciKitGrid = skgrid,
-    col = list(
-      JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
-      CloudForest = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
-      AKLIMATE = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
-      SubSCOPE = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
-      SciKitGrid = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;)
-    ),
-    show_legend = FALSE,
-    nTeamsSelected= anno_barplot (
-      team_df$Total,
-      bar_width=1
+    return(
+      list(
+        &#39;results_matrix&#39; = NULL, 
+        &#39;results_ft_order&#39; = NULL, 
+        &#39;subtype_annotation&#39; = NULL
+      )
     )
-    # simple_anno_size = unit(2, &#39;mm&#39;) # height
-  )
-  #####
-  # 3. Output Heatmap
-  #####
-  # Set up saving fig packet
-  tiff(
-    paste(
-      cancer,
-      &#39;_ht_base_&#39;, 
-      unlist(strsplit(prefix, &#39;:&#39;))[2],
-      &#39;.tiff&#39;,
-      sep=&#39;&#39;
-    ),
-    width = 1400,
-    height = 1200,
-    res = 200,
-    compression = &quot;none&quot;
-  )
-  # Draw
-  ht_rows &lt;- nrow(mat2)
-  ht_cols &lt;- ncol(mat2)
-  fig &lt;- Heatmap(
-    mat2,
-    name = prefix,
-    # width = unit(12, &#39;cm&#39;),
-    # height = unit(12, &#39;cm&#39;),
-    cluster_rows = FALSE,
-    clustering_distance_columns = &quot;euclidean&quot;,
-    clustering_method_columns = &quot;ward.D&quot;,
-    column_order = ftnames_order,
-    show_row_names = FALSE,
-    show_column_names = FALSE,
-    column_title = paste(&#39;Features (n=&#39;, ht_cols, &#39;)&#39;, sep=&#39;&#39;),
-    row_title = paste(&#39;Samples (n=&#39;, ht_rows, &#39;)&#39;, sep=&#39;&#39;),
-    right_annotation = subtype_ha,
-    bottom_annotation = team_list,
-    na_col = &#39;white&#39;
-  )
-  draw(fig)
-  dev.off()
-  #####
-  # unit tests
-  #####
-  # sanity check 1 - 
-  #that the row orders are the same in the two heatmaps
-  assert(&#39;Assertion Error: order of feature rows on 
-         heatmap and final heatmap not same&#39;, 
-         colnames(mat2) == ftnames_order
-  )
-  # sanity check 2 - 
-  #directly compare heatmap rows
-  heatmap_order &lt;- column_order(fig) # index vector
-  ftnames_order2 &lt;- c() # featurename vector
-  for (i in heatmap_order){
-    add_ft &lt;- colnames(mat2)[i]
-    ftnames_order2 &lt;- c(ftnames_order2, add_ft)
   }
-  assert(&#39;Assertion Error: order of feature rows on 
-         heatmap and final heatmap not same&#39;, 
-         ftnames_order2 == ftnames_order
-  )
-  print(
-    paste(
-      &#39;Distance metric = &#39;, 
-      fig@column_dend_param$distance, 
-      &#39;. Method = &#39;, 
-      fig@column_dend_param$method, 
-      sep=&#39; &#39;
-    )
-  )
-  # Assign to &#39;output&#39; variables
-  return(
-    list(
-      &#39;results_matrix&#39; = mat2, 
-      &#39;results_ft_order&#39; = ftnames_order, 
-      &#39;subtype_annotation&#39; = subtype_ha
-    )
-  )
 }
 
 
@@ -761,11 +778,6 @@ imp_aklimate &lt;- fread(
   file_imp_aklimate
 ) %&gt;% as.data.frame()
 
-imp_jd &lt;- fread(
-  jd_file
-) %&gt;% as.data.frame()
-colnames(imp_jd) &lt;- c(&quot;features&quot;,&quot;importance&quot;)
-
 ####
 # Define platform for hallmark heatmap
 ####
@@ -785,22 +797,164 @@ if (cancer == &#39;BRCA&#39; | cancer == &#39;GEA&#39; ){
 } else if (cancer == &#39;LGGGBM&#39;){
   platforms &lt;- c(&#39;N:METH&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;, &#39;N:GEXP&#39;)
 }</code></pre>
-<pre class="r"><code>for (c in colnames(df_fts)[2:ncol(df_fts)]){
-  print(c)
-  print(sum(df_fts[,c]))
-}</code></pre>
-<pre><code>## [1] &quot;gnosis_2_GEA&quot;
-## [1] 25
-## [1] &quot;CF|All_Top 100_GEA&quot;
-## [1] 100
-## [1] &quot;AKLIMATE_GEA_reduced_model_500_feature_set_GEA&quot;
-## [1] 500
-## [1] &quot;nn_jg_2020-03-20_top1kfreq:GEA_GEA&quot;
-## [1] 421
-## [1] &quot;rfe15_GEA&quot;
-## [1] 75
-## [1] &quot;Total&quot;
-## [1] 1121</code></pre>
+<pre class="r"><code># need to update df, but df is based on df_fts
+
+# Purpose: filter for ft rows that occur in &gt;= 2 teams
+#first for df_fts
+df_fts &lt;- df_fts[df_fts[&#39;Total&#39;]&gt;=2,]
+rownames(df_fts) &lt;- 1:nrow(df_fts) #reset row index names
+cols_to_keep &lt;- df_fts$featureID
+cols_to_keep &lt;- c(cancer, &#39;Labels&#39;, cols_to_keep)
+#second for df
+df &lt;- subset(df, select=cols_to_keep)</code></pre>
+<pre class="r"><code># # for (c in colnames(df_fts)[2:ncol(df_fts)]){
+# #   print(c)
+# #   print(sum(df_fts[,c]))
+# # }
+# results_list &lt;- get_base_heatmap(
+#   &#39;I:CNVR&#39;, 
+#   cancer, 
+#   models[&#39;JADBIO&#39;],
+#   models[&#39;CForest&#39;],
+#   models[&#39;AKLIMATE&#39;],
+#   models[&#39;SubSCOPE&#39;],
+#   models[&#39;SKGrid&#39;]
+# )
+# results_list
+
+df
+
+&#39;N:METH&#39;, &#39;N:MIR&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;, &#39;N:GEXP&#39;
+
+prefix &lt;- &#39;N:METH&#39;
+test &lt;- df %&gt;%
+    select(-Labels) %&gt;%
+    select(-all_of(cancer)) %&gt;%
+    select(starts_with(prefix))
+ncol(test)
+
+
+test &lt;-test %&gt;%
+    as.matrix() %&gt;%
+    t()
+
+test&lt;- scale(t(test), center=TRUE, scale=TRUE) 
+
+Heatmap(test)
+
+
+ht_rows &lt;- nrow(test)
+ht_cols &lt;- ncol(test)
+fig &lt;- Heatmap(
+  test,
+  name = prefix,
+  # width = unit(12, &#39;cm&#39;),
+  # height = unit(12, &#39;cm&#39;),
+  cluster_rows = FALSE,
+  clustering_distance_columns = &quot;euclidean&quot;,
+  clustering_method_columns = &quot;ward.D&quot;,
+  column_order = NULL,
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  column_title = paste(&#39;Features (n=&#39;, ht_cols, &#39;)&#39;, sep=&#39;&#39;),
+  row_title = paste(&#39;Samples (n=&#39;, ht_rows, &#39;)&#39;, sep=&#39;&#39;),
+  right_annotation = NULL,
+  bottom_annotation = NULL,
+  na_col = &#39;white&#39;
+)
+draw(fig)
+    
+models &lt;- model2team(df_fts)
+
+header_jadbio &lt;- models[&#39;JADBIO&#39;]
+header_cforest &lt;- models[&#39;CForest&#39;]
+header_aklimate &lt;- models[&#39;AKLIMATE&#39;]
+header_subscope &lt;- models[&#39;SubSCOPE&#39;]
+header_skgrid &lt;- models[&#39;SKGrid&#39;]
+
+# 1. Get order of features post heatmap clustering
+heatmap_order &lt;- column_order(fig) # index vector
+ftnames_order &lt;- c() # featurename vector
+for (i in heatmap_order){
+  add_ft &lt;- colnames(test)[i]
+  ftnames_order &lt;- c(ftnames_order, add_ft)
+}
+# 2. Get new matrix that is ordered by heatmap clustering
+mat2 &lt;- test[,match(ftnames_order, colnames(test))]
+#####
+# Build annotation bars of teams feature sets
+#####
+# 1. df of all teams. match ft order in heatmap
+team_df&lt;- df_fts %&gt;% 
+  filter(featureID %in% ftnames_order) %&gt;% 
+  arrange(match(featureID, ftnames_order))
+# 2. Pull just the team of interest
+jadbio &lt;- team_df %&gt;% 
+  pull(header_jadbio) %&gt;% 
+  as.character()
+cforest &lt;- team_df %&gt;% 
+  pull(header_cforest) %&gt;% 
+  as.character()
+aklimate &lt;- team_df %&gt;% 
+  pull(header_aklimate) %&gt;% 
+  as.character()
+subscope &lt;- team_df %&gt;% 
+  pull(header_subscope) %&gt;% 
+  as.character()
+skgrid &lt;- team_df %&gt;% 
+  pull(header_skgrid) %&gt;% 
+  as.character()
+team_list &lt;- HeatmapAnnotation(
+  JADBio = jadbio,
+  CloudForest = cforest,
+  AKLIMATE = aklimate,
+  SubSCOPE = subscope,
+  SciKitGrid = skgrid,
+  col = list(
+    JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
+    CloudForest = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
+    AKLIMATE = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
+    SubSCOPE = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
+    SciKitGrid = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;)
+  ),
+  show_legend = FALSE,
+  Frequency= anno_barplot (
+    team_df$Total,
+    bar_width=1
+  )
+  # simple_anno_size = unit(2, &#39;mm&#39;) # height
+)
+
+
+# Draw
+ht_rows &lt;- nrow(mat2)
+ht_cols &lt;- ncol(mat2)
+
+# NEW
+# If only one feature set ht_rows/cols manually
+if (is.null(ht_rows) &amp;&amp; is.null(ht_cols)){
+  ht_rows &lt;- length(mat2)
+  ht_cols &lt;- 1
+}
+
+fig &lt;- Heatmap(
+  mat2,
+  name = prefix,
+  # width = unit(12, &#39;cm&#39;),
+  # height = unit(12, &#39;cm&#39;),
+  cluster_rows = FALSE,
+  clustering_distance_columns = &quot;euclidean&quot;,
+  clustering_method_columns = &quot;ward.D&quot;,
+  column_order = ftnames_order,
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  column_title = paste(&#39;Features (n=&#39;, ht_cols, &#39;)&#39;, sep=&#39;&#39;),
+  row_title = paste(&#39;Samples (n=&#39;, ht_rows, &#39;)&#39;, sep=&#39;&#39;),
+  right_annotation = NULL,
+  bottom_annotation = team_list,
+  na_col = &#39;white&#39;
+)
+draw(fig)</code></pre>
 </div>
 <div id="section-1-heatmaps-for-each-data-type" class="section level3">
 <h3>Section 1: Heatmaps for each data type</h3>
@@ -824,12 +978,13 @@ for (prefix in platforms){
     models[&#39;SubSCOPE&#39;],
     models[&#39;SKGrid&#39;]
   )
+  
   # B. If platform for Hallmarks Heatmap then save global variables - input for Section 2
   if (prefix == platform_of_interest){
     print(&#39;Using this as main platform of interest:&#39;)
     print(prefix)
     mat2 &lt;- results_list[[&#39;results_matrix&#39;]]
-    ftnames_order &lt;- results_list[[&#39;results_ft_order&#39;]]  
+    ftnames_order &lt;- results_list[[&#39;results_ft_order&#39;]]
     subtype_annotation &lt;- results_list[[&#39;subtype_annotation&#39;]]
     n_fts &lt;- length(ftnames_order)
   }
@@ -847,22 +1002,15 @@ for (prefix in platforms){
 ##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
-<pre><code>## [1] &quot;N:METH&quot;
-## [1] 459</code></pre>
+<pre><code>## [1] &quot;N:METH&quot;</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
 ## [1] &quot;Using this as main platform of interest:&quot;
 ## [1] &quot;N:METH&quot;
-## [1] &quot;N:MIR&quot;
-## [1] 15</code></pre>
+## [1] &quot;I:CNVR&quot;</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;I:CNVR&quot;
-## [1] 16</code></pre>
+## [1] &quot;B:MUTA&quot;</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;B:MUTA&quot;
-## [1] 23</code></pre>
-<pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;
-## [1] &quot;N:GEXP&quot;
-## [1] 478</code></pre>
+## [1] &quot;N:GEXP&quot;</code></pre>
 <pre><code>## [1] &quot;Distance metric =  euclidean . Method =  ward.D&quot;</code></pre>
 </div>
 <div id="section-2-explore-the-hallmarks-associated-with-gexp-features" class="section level3">
@@ -979,14 +1127,14 @@ for (h in top){
 }</code></pre>
 <pre><code>## [1] &quot;APICAL_JUNCTION&quot;
 ## [1] 200
-## [1] &quot;HYPOXIA&quot;
+## [1] &quot;COMPLEMENT&quot;
 ## [1] 200
-## [1] &quot;IL2_STAT5_SIGNALING&quot;
-## [1] 199
-## [1] &quot;MYOGENESIS&quot;
+## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
 ## [1] 200
-## [1] &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;
-## [1] 200</code></pre>
+## [1] &quot;INFLAMMATORY_RESPONSE&quot;
+## [1] 200
+## [1] &quot;APOPTOSIS&quot;
+## [1] 161</code></pre>
 <pre class="r"><code># TODO add these as argument input into function
 header_jadbio &lt;- models[&#39;JADBIO&#39;]
 header_cforest &lt;- models[&#39;CForest&#39;]
@@ -1043,8 +1191,6 @@ if (cancer == &#39;LGGGBM&#39; ){
   # 1B. Create MinMax Values
   ########
   aklimate_minmax &lt;- normalize_data(imp_aklimate, team_df)
-  jadbio_minmax &lt;- normalize_data(imp_jd, team_df)
-
 
   # 2. Pull just the team of interest
   jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
@@ -1064,13 +1210,13 @@ if (cancer == &#39;LGGGBM&#39; ){
 
     # B. ft importance
     AKLIMATE_importance = aklimate_minmax,
-    mock_team2_data = jadbio_minmax,
     
     # C. N teams selected
-    PercentSelected= anno_lines(
-      mapply(&#39;/&#39;,team_df$Total, 5) *100,
-      height = unit(10, &#39;mm&#39;)
+    Frequency= anno_barplot (
+      team_df$Total,
+      bar_width=1
     ),
+
     
     # TODO need to manually update the name
     # D. Hallmarks
@@ -1087,7 +1233,6 @@ if (cancer == &#39;LGGGBM&#39; ){
       JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
       SciKitGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       AKLIMATE_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
-      mock_team2_data = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;#D55B5B&quot;)),
       &#39;InterferonGammaResponse_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;MTORC1Signaling_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;IL2STAT5Signaling_199&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
@@ -1095,7 +1240,7 @@ if (cancer == &#39;LGGGBM&#39; ){
       &#39;EstrogenResponseLate_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot
@@ -1152,8 +1297,6 @@ if (cancer == &#39;LGGGBM&#39; ){
   # 1B. Create MinMax Values - for AKLIMATE only
   ########
   aklimate_minmax &lt;- normalize_data(imp_aklimate, team_df)
-  jadbio_minmax &lt;- normalize_data(imp_jd, team_df)
-
 
   # 2. Pull just the team of interest
   jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
@@ -1173,12 +1316,11 @@ if (cancer == &#39;LGGGBM&#39; ){
 
     # B. ft importance
     AKLIMATE_importance = aklimate_minmax,
-    mock_team2_data = jadbio_minmax,
-        
+
     # C. N teams selected
-    PercentSelected= anno_lines(
-      mapply(&#39;/&#39;,team_df$Total, 5) *100,
-      height = unit(10, &#39;mm&#39;)
+    Frequency= anno_barplot (
+      team_df$Total,
+      bar_width=1
     ),
     
     # TODO need to manually update the name + gene set size of each hallmark name + color pallate
@@ -1196,7 +1338,6 @@ if (cancer == &#39;LGGGBM&#39; ){
       JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
       SciKitGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       AKLIMATE_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
-      mock_team2_data = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;#D55B5B&quot;)),
       &#39;EstrogrenResponseEarly_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;EstrogrenResponseLate_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;MTORC1Signaling_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
@@ -1204,7 +1345,7 @@ if (cancer == &#39;LGGGBM&#39; ){
       &#39;Hypoxia_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot
@@ -1260,8 +1401,6 @@ if (cancer == &#39;LGGGBM&#39; ){
   # 1B. Create MinMax Values - for AKLIMATE only
   ########
   aklimate_minmax &lt;- normalize_data(imp_aklimate, team_df)
-  jadbio_minmax &lt;- normalize_data(imp_jd, team_df)
-
 
   # 2. Pull just the team of interest
   jadbio &lt;- team_df %&gt;% pull(header_jadbio) %&gt;% as.character()
@@ -1281,12 +1420,10 @@ if (cancer == &#39;LGGGBM&#39; ){
 
     # B. Ft importance
     AKLIMATE_importance = aklimate_minmax,
-    mock_team2_data = jadbio_minmax,
-        
     # C. N teams selected
-    PercentSelected= anno_lines(
-      mapply(&#39;/&#39;,team_df$Total, 5) *100,
-      height = unit(10, &#39;mm&#39;)
+    Frequency= anno_barplot (
+      team_df$Total,
+      bar_width=1
     ),
     
     # D. Hallmarks
@@ -1304,7 +1441,6 @@ if (cancer == &#39;LGGGBM&#39; ){
       JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
       SciKitGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       AKLIMATE_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
-      mock_team2_data = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;#D55B5B&quot;)),
       &#39;ApicalJunction_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;Hypoxia_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
       &#39;IL2STAT5Signaling_199&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
@@ -1312,7 +1448,7 @@ if (cancer == &#39;LGGGBM&#39; ){
       &#39;EpithelialMesenchymalTransition_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,1,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot
