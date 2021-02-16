@@ -683,28 +683,6 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
       draw(fig)
       dev.off()      
     }
-
-    #####
-    # unit tests
-    #####
-    # # sanity check 1 - 
-    # #that the row orders are the same in the two heatmaps
-    # assert(&#39;Assertion Error: order of feature rows on 
-    #        heatmap and final heatmap not same&#39;, 
-    #        colnames(mat2) == ftnames_order
-    # )
-    # sanity check 2 - 
-    #directly compare heatmap rows
-    heatmap_order &lt;- column_order(fig) # index vector
-    ftnames_order2 &lt;- c() # featurename vector
-    for (i in heatmap_order){
-      add_ft &lt;- colnames(mat2)[i]
-      ftnames_order2 &lt;- c(ftnames_order2, add_ft)
-    }
-    # assert(&#39;Assertion Error: order of feature rows on 
-    #        heatmap and final heatmap not same&#39;, 
-    #        ftnames_order2 == ftnames_order
-    # )
     print(
       paste(
         &#39;Distance metric = &#39;, 
