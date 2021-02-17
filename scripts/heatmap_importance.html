@@ -411,6 +411,7 @@ file_imp_aklimate &lt;- paste(
 
 yes_scale &lt;- c(&#39;N:METH&#39;, &#39;N:GEXP&#39;,&#39;N:MIR&#39;) # which fts to scale
 
+
 #####
 # Packages and Functions
 #####
@@ -778,6 +779,9 @@ imp_aklimate &lt;- fread(
   file_imp_aklimate
 ) %&gt;% as.data.frame()
 
+# C. Load Mauro&#39;s hallmark ranks for all cancer cohorts
+load(file=&#39;../src/mauro_files/Hallmark_nes_space_20210212.RData&#39;)
+
 ####
 # Define platform for hallmark heatmap
 ####
@@ -807,154 +811,6 @@ cols_to_keep &lt;- df_fts$featureID
 cols_to_keep &lt;- c(cancer, &#39;Labels&#39;, cols_to_keep)
 #second for df
 df &lt;- subset(df, select=cols_to_keep)</code></pre>
-<pre class="r"><code># # for (c in colnames(df_fts)[2:ncol(df_fts)]){
-# #   print(c)
-# #   print(sum(df_fts[,c]))
-# # }
-# results_list &lt;- get_base_heatmap(
-#   &#39;I:CNVR&#39;, 
-#   cancer, 
-#   models[&#39;JADBIO&#39;],
-#   models[&#39;CForest&#39;],
-#   models[&#39;AKLIMATE&#39;],
-#   models[&#39;SubSCOPE&#39;],
-#   models[&#39;SKGrid&#39;]
-# )
-# results_list
-
-df
-
-&#39;N:METH&#39;, &#39;N:MIR&#39;, &#39;I:CNVR&#39;, &#39;B:MUTA&#39;, &#39;N:GEXP&#39;
-
-prefix &lt;- &#39;N:METH&#39;
-test &lt;- df %&gt;%
-    select(-Labels) %&gt;%
-    select(-all_of(cancer)) %&gt;%
-    select(starts_with(prefix))
-ncol(test)
-
-
-test &lt;-test %&gt;%
-    as.matrix() %&gt;%
-    t()
-
-test&lt;- scale(t(test), center=TRUE, scale=TRUE) 
-
-Heatmap(test)
-
-
-ht_rows &lt;- nrow(test)
-ht_cols &lt;- ncol(test)
-fig &lt;- Heatmap(
-  test,
-  name = prefix,
-  # width = unit(12, &#39;cm&#39;),
-  # height = unit(12, &#39;cm&#39;),
-  cluster_rows = FALSE,
-  clustering_distance_columns = &quot;euclidean&quot;,
-  clustering_method_columns = &quot;ward.D&quot;,
-  column_order = NULL,
-  show_row_names = FALSE,
-  show_column_names = FALSE,
-  column_title = paste(&#39;Features (n=&#39;, ht_cols, &#39;)&#39;, sep=&#39;&#39;),
-  row_title = paste(&#39;Samples (n=&#39;, ht_rows, &#39;)&#39;, sep=&#39;&#39;),
-  right_annotation = NULL,
-  bottom_annotation = NULL,
-  na_col = &#39;white&#39;
-)
-draw(fig)
-    
-models &lt;- model2team(df_fts)
-
-header_jadbio &lt;- models[&#39;JADBIO&#39;]
-header_cforest &lt;- models[&#39;CForest&#39;]
-header_aklimate &lt;- models[&#39;AKLIMATE&#39;]
-header_subscope &lt;- models[&#39;SubSCOPE&#39;]
-header_skgrid &lt;- models[&#39;SKGrid&#39;]
-
-# 1. Get order of features post heatmap clustering
-heatmap_order &lt;- column_order(fig) # index vector
-ftnames_order &lt;- c() # featurename vector
-for (i in heatmap_order){
-  add_ft &lt;- colnames(test)[i]
-  ftnames_order &lt;- c(ftnames_order, add_ft)
-}
-# 2. Get new matrix that is ordered by heatmap clustering
-mat2 &lt;- test[,match(ftnames_order, colnames(test))]
-#####
-# Build annotation bars of teams feature sets
-#####
-# 1. df of all teams. match ft order in heatmap
-team_df&lt;- df_fts %&gt;% 
-  filter(featureID %in% ftnames_order) %&gt;% 
-  arrange(match(featureID, ftnames_order))
-# 2. Pull just the team of interest
-jadbio &lt;- team_df %&gt;% 
-  pull(header_jadbio) %&gt;% 
-  as.character()
-cforest &lt;- team_df %&gt;% 
-  pull(header_cforest) %&gt;% 
-  as.character()
-aklimate &lt;- team_df %&gt;% 
-  pull(header_aklimate) %&gt;% 
-  as.character()
-subscope &lt;- team_df %&gt;% 
-  pull(header_subscope) %&gt;% 
-  as.character()
-skgrid &lt;- team_df %&gt;% 
-  pull(header_skgrid) %&gt;% 
-  as.character()
-team_list &lt;- HeatmapAnnotation(
-  JADBio = jadbio,
-  CloudForest = cforest,
-  AKLIMATE = aklimate,
-  SubSCOPE = subscope,
-  SciKitGrid = skgrid,
-  col = list(
-    JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
-    CloudForest = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;mediumpurple1&quot;),
-    AKLIMATE = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
-    SubSCOPE = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;palegreen2&quot;),
-    SciKitGrid = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;)
-  ),
-  show_legend = FALSE,
-  Frequency= anno_barplot (
-    team_df$Total,
-    bar_width=1
-  )
-  # simple_anno_size = unit(2, &#39;mm&#39;) # height
-)
-
-
-# Draw
-ht_rows &lt;- nrow(mat2)
-ht_cols &lt;- ncol(mat2)
-
-# NEW
-# If only one feature set ht_rows/cols manually
-if (is.null(ht_rows) &amp;&amp; is.null(ht_cols)){
-  ht_rows &lt;- length(mat2)
-  ht_cols &lt;- 1
-}
-
-fig &lt;- Heatmap(
-  mat2,
-  name = prefix,
-  # width = unit(12, &#39;cm&#39;),
-  # height = unit(12, &#39;cm&#39;),
-  cluster_rows = FALSE,
-  clustering_distance_columns = &quot;euclidean&quot;,
-  clustering_method_columns = &quot;ward.D&quot;,
-  column_order = ftnames_order,
-  show_row_names = FALSE,
-  show_column_names = FALSE,
-  column_title = paste(&#39;Features (n=&#39;, ht_cols, &#39;)&#39;, sep=&#39;&#39;),
-  row_title = paste(&#39;Samples (n=&#39;, ht_rows, &#39;)&#39;, sep=&#39;&#39;),
-  right_annotation = NULL,
-  bottom_annotation = team_list,
-  na_col = &#39;white&#39;
-)
-draw(fig)</code></pre>
 </div>
 <div id="section-1-heatmaps-for-each-data-type" class="section level3">
 <h3>Section 1: Heatmaps for each data type</h3>
@@ -1102,14 +958,21 @@ dev.off()</code></pre>
 </div>
 <div id="section-3-wip-heatmap-with-hallmarks-and-feature-importance-top-5" class="section level3">
 <h3>Section 3: WIP Heatmap with Hallmarks and Feature Importance (Top 5)</h3>
-<pre class="r"><code># Get top data
+<pre class="r"><code># Version 1: Get top data from freq
 hallmark_data &lt;- sort(table(pooled_hallmarks), decreasing=T)
-
 # Find top hallmarks
 print(&#39;Heatmap below will use these hallmarks (order matches with heatmap)&#39;)</code></pre>
 <pre><code>## [1] &quot;Heatmap below will use these hallmarks (order matches with heatmap)&quot;</code></pre>
 <pre class="r"><code>top &lt;- hallmark_data[1:5]
-top &lt;- names(top)</code></pre>
+top &lt;- names(top)
+
+
+# Version 2: Find top hallmarks from Pathway NES score
+print(&#39;Heatmap below will use these hallmarks (order matches with heatmap) based on pathway NES values&#39;)</code></pre>
+<pre><code>## [1] &quot;Heatmap below will use these hallmarks (order matches with heatmap) based on pathway NES values&quot;</code></pre>
+<pre class="r"><code>importance &lt;- Hallmark.nes.space[,cancer]
+importance &lt;- sort(importance, decreasing = TRUE)
+top_NES &lt;- names(importance[1:5])</code></pre>
 <p><strong>NEED TO MANUALLY UPDATE THIS CODE CHUNK</strong></p>
 <pre class="r"><code>print(&#39;need to manually update this&#39;)</code></pre>
 <pre><code>## [1] &quot;need to manually update this&quot;</code></pre>
@@ -1176,11 +1039,19 @@ normalize_data &lt;- function(df, team_df){
 
 # TODO make less janky so autopopulates the annotation names 
 if (cancer == &#39;LGGGBM&#39; ){
+  # Version 1: Hallmarks by Freq
   vals_1 &lt;- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
   vals_2 &lt;- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
   vals_3 &lt;- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
   vals_4 &lt;- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
   vals_5 &lt;- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  
+  # Version 2: Hallmarks by Pathway NES score
+  vals_1_NES &lt;- build_hallmark_vect(top_NES[1],ftnames_order, platform_of_interest)
+  vals_2_NES &lt;- build_hallmark_vect(top_NES[2],ftnames_order, platform_of_interest)
+  vals_3_NES &lt;- build_hallmark_vect(top_NES[3],ftnames_order, platform_of_interest)
+  vals_4_NES &lt;- build_hallmark_vect(top_NES[4],ftnames_order, platform_of_interest)
+  vals_5_NES &lt;- build_hallmark_vect(top_NES[5],ftnames_order, platform_of_interest)
   
   # Build annotation bars of teams feature sets. 
   # 1A. df of all teams. match ft order in heatmap
@@ -1219,12 +1090,18 @@ if (cancer == &#39;LGGGBM&#39; ){
 
     
     # TODO need to manually update the name
-    # D. Hallmarks
-    &#39;InterferonGammaResponse_200&#39; = vals_1,
-    &#39;MTORC1Signaling_200&#39; = vals_2,
-    &#39;IL2STAT5Signaling_199&#39; = vals_3,
-    &#39;InflammatoryResponse_200&#39; = vals_4,
-    &#39;EstrogenResponseLate_200&#39; = vals_5, 
+    # D. Version 1: Hallmarks by freq
+    &quot;APICAL JUNCTION (n=200)&quot; = vals_1,    
+    &quot;COMPLEMENT (n=200)&quot;= vals_2,  
+    &quot;ESTROGEN RESPONSE LATE (n=200)&quot; = vals_3,  
+    &quot;INFLAMMATORY RESPONSE (n=200)&quot; = vals_4,  
+    &quot;APOPTOSIS (n=161)&quot; = vals_5,  
+    # D. Version 2: Hallmarks by NES
+    &#39;E2F TARGETS (n=200)&#39; = vals_1_NES,
+    &#39;G2M CHECKPOINT (n=200)&#39; = vals_2_NES,
+    &#39;INTERFERON GAMMA RESPONSE (n=200)&#39; = vals_3_NES,
+    &#39;EPITHELIAL MESENCHYMAL TRANSITION (n=200)&#39; = vals_4_NES,
+    &#39;INTERFERON ALPHA RESPONSE (n=200)&#39; = vals_5_NES, 
     
     col = list(
       AKLIMATE =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;cadetblue1&quot;),
@@ -1233,14 +1110,22 @@ if (cancer == &#39;LGGGBM&#39; ){
       JADBio = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#D55B5B&quot;),
       SciKitGrid =  c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;),
       AKLIMATE_importance = colorRamp2(c(0, 1), c(&quot;#333333&quot;, &quot;cadetblue1&quot;)),
-      &#39;InterferonGammaResponse_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-      &#39;MTORC1Signaling_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-      &#39;IL2STAT5Signaling_199&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-      &#39;InflammatoryResponse_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
-      &#39;EstrogenResponseLate_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
+      &quot;APICAL JUNCTION (n=200)&quot; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),  
+      &quot;COMPLEMENT (n=200)&quot;= c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &quot;ESTROGEN RESPONSE LATE (n=200)&quot; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &quot;INFLAMMATORY RESPONSE (n=200)&quot; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &quot;APOPTOSIS (n=161)&quot; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &#39;E2F TARGETS (n=200)&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &#39;G2M CHECKPOINT (n=200)&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &#39;INTERFERON GAMMA RESPONSE (n=200)&#39; =
+        c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &#39;EPITHELIAL MESENCHYMAL TRANSITION (n=200)&#39; =
+        c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;),
+      &#39;INTERFERON ALPHA RESPONSE (n=200)&#39; =
+        c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,1,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot

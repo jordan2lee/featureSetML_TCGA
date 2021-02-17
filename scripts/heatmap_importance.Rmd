@@ -54,6 +54,7 @@ file_imp_aklimate <- paste(
 
 yes_scale <- c('N:METH', 'N:GEXP','N:MIR') # which fts to scale
 
+
 #####
 # Packages and Functions
 #####
@@ -424,6 +425,9 @@ imp_aklimate <- fread(
   file_imp_aklimate
 ) %>% as.data.frame()
 
+# C. Load Mauro's hallmark ranks for all cancer cohorts
+load(file='../src/mauro_files/Hallmark_nes_space_20210212.RData')
+
 ####
 # Define platform for hallmark heatmap
 ####
@@ -588,13 +592,19 @@ dev.off()
 
 
 ```{r}
-# Get top data
+# Version 1: Get top data from freq
 hallmark_data <- sort(table(pooled_hallmarks), decreasing=T)
-
 # Find top hallmarks
 print('Heatmap below will use these hallmarks (order matches with heatmap)')
 top <- hallmark_data[1:5]
 top <- names(top)
+
+
+# Version 2: Find top hallmarks from Pathway NES score
+print('Heatmap below will use these hallmarks (order matches with heatmap) based on pathway NES values')
+importance <- Hallmark.nes.space[,cancer]
+importance <- sort(importance, decreasing = TRUE)
+top_NES <- names(importance[1:5])
 ```
 
 **NEED TO MANUALLY UPDATE THIS CODE CHUNK**
@@ -670,11 +680,19 @@ setwd(outdir)
 
 # TODO make less janky so autopopulates the annotation names 
 if (cancer == 'LGGGBM' ){
+  # Version 1: Hallmarks by Freq
   vals_1 <- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
   vals_2 <- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
   vals_3 <- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
   vals_4 <- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
   vals_5 <- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  
+  # Version 2: Hallmarks by Pathway NES score
+  vals_1_NES <- build_hallmark_vect(top_NES[1],ftnames_order, platform_of_interest)
+  vals_2_NES <- build_hallmark_vect(top_NES[2],ftnames_order, platform_of_interest)
+  vals_3_NES <- build_hallmark_vect(top_NES[3],ftnames_order, platform_of_interest)
+  vals_4_NES <- build_hallmark_vect(top_NES[4],ftnames_order, platform_of_interest)
+  vals_5_NES <- build_hallmark_vect(top_NES[5],ftnames_order, platform_of_interest)
   
   # Build annotation bars of teams feature sets. 
   # 1A. df of all teams. match ft order in heatmap
@@ -713,12 +731,18 @@ if (cancer == 'LGGGBM' ){
 
     
     # TODO need to manually update the name
-    # D. Hallmarks
-    'InterferonGammaResponse_200' = vals_1,
-    'MTORC1Signaling_200' = vals_2,
-    'IL2STAT5Signaling_199' = vals_3,
-    'InflammatoryResponse_200' = vals_4,
-    'EstrogenResponseLate_200' = vals_5, 
+    # D. Version 1: Hallmarks by freq
+    "APICAL JUNCTION (n=200)" = vals_1,    
+    "COMPLEMENT (n=200)"= vals_2,  
+    "ESTROGEN RESPONSE LATE (n=200)" = vals_3,  
+    "INFLAMMATORY RESPONSE (n=200)" = vals_4,  
+    "APOPTOSIS (n=161)" = vals_5,  
+    # D. Version 2: Hallmarks by NES
+    'E2F TARGETS (n=200)' = vals_1_NES,
+    'G2M CHECKPOINT (n=200)' = vals_2_NES,
+    'INTERFERON GAMMA RESPONSE (n=200)' = vals_3_NES,
+    'EPITHELIAL MESENCHYMAL TRANSITION (n=200)' = vals_4_NES,
+    'INTERFERON ALPHA RESPONSE (n=200)' = vals_5_NES, 
     
     col = list(
       AKLIMATE =  c('0' = "#333333", '1' = "cadetblue1"),
@@ -727,14 +751,22 @@ if (cancer == 'LGGGBM' ){
       JADBio = c('0' = "#333333", '1' = "#D55B5B"),
       SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
       AKLIMATE_importance = colorRamp2(c(0, 1), c("#333333", "cadetblue1")),
-      'InterferonGammaResponse_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'MTORC1Signaling_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'IL2STAT5Signaling_199' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'InflammatoryResponse_200' = c('0' = "#333333", '1' = "darkgoldenrod3"),
-      'EstrogenResponseLate_200' = c('0' = "#333333", '1' = "darkgoldenrod3")
+      "APICAL JUNCTION (n=200)" = c('0' = "#333333", '1' = "darkgoldenrod3"),  
+      "COMPLEMENT (n=200)"= c('0' = "#333333", '1' = "darkgoldenrod3"),
+      "ESTROGEN RESPONSE LATE (n=200)" = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      "INFLAMMATORY RESPONSE (n=200)" = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      "APOPTOSIS (n=161)" = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      'E2F TARGETS (n=200)' = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      'G2M CHECKPOINT (n=200)' = c('0' = "#333333", '1' = "darkgoldenrod3"),
+      'INTERFERON GAMMA RESPONSE (n=200)' =
+        c('0' = "#333333", '1' = "darkgoldenrod3"),
+      'EPITHELIAL MESENCHYMAL TRANSITION (n=200)' =
+        c('0' = "#333333", '1' = "darkgoldenrod3"),
+      'INTERFERON ALPHA RESPONSE (n=200)' =
+        c('0' = "#333333", '1' = "darkgoldenrod3")
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), 'mm')
+    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,1,0,0,0,0), 'mm')
   )
   
   # Plot
