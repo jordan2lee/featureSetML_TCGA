@@ -38,6 +38,7 @@ Rscript scripts/upset.R \
 echo 'completed upset plot - mode distinct'
 
 # 4. Create heatmap
-echo 'ACTION:'
-echo '-- next step: create heatmap --'
-echo '-- now manually run figures/heatmap_importance.Rmd --'
+Rscript scripts/heatmap_importance.R \
+    --cancer ${tumor_cohort} \
+    --outdir data/figure_panel_b/
+echo 'completed heatmap'
