@@ -605,7 +605,7 @@ get_base_heatmap &lt;- function(prefix, cancer, header_jadbio, header_cforest, h
         SciKitGrid = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;#EFA9A9&quot;)
       ),
       show_legend = FALSE,
-      Frequency= anno_barplot (
+      nTeams= anno_barplot (
         team_df$Total,
         bar_width=1
       )
@@ -958,13 +958,13 @@ dev.off()</code></pre>
 </div>
 <div id="section-3-wip-heatmap-with-hallmarks-and-feature-importance-top-5" class="section level3">
 <h3>Section 3: WIP Heatmap with Hallmarks and Feature Importance (Top 5)</h3>
-<pre class="r"><code># Version 1: Get top data from freq
-hallmark_data &lt;- sort(table(pooled_hallmarks), decreasing=T)
-# Find top hallmarks
-print(&#39;Heatmap below will use these hallmarks (order matches with heatmap)&#39;)</code></pre>
-<pre><code>## [1] &quot;Heatmap below will use these hallmarks (order matches with heatmap)&quot;</code></pre>
-<pre class="r"><code>top &lt;- hallmark_data[1:5]
-top &lt;- names(top)
+<pre class="r"><code># TODO: rm if using version 2
+# # Version 1: Get top data from freq
+# hallmark_data &lt;- sort(table(pooled_hallmarks), decreasing=T)
+# # Find top hallmarks
+# print(&#39;Heatmap below will use these hallmarks (order matches with heatmap)&#39;)
+# top &lt;- hallmark_data[1:5]
+# top &lt;- names(top)
 
 
 # Version 2: Find top hallmarks from Pathway NES score
@@ -984,20 +984,20 @@ top_NES &lt;- names(importance[1:5])</code></pre>
   return(length(genes))
 }
 
-for (h in top){
+for (h in top_NES){
   print(h)
   print(gene_set_size(h))
 }</code></pre>
-<pre><code>## [1] &quot;APICAL_JUNCTION&quot;
+<pre><code>## [1] &quot;E2F_TARGETS&quot;
 ## [1] 200
-## [1] &quot;COMPLEMENT&quot;
+## [1] &quot;G2M_CHECKPOINT&quot;
 ## [1] 200
-## [1] &quot;ESTROGEN_RESPONSE_LATE&quot;
+## [1] &quot;INTERFERON_GAMMA_RESPONSE&quot;
 ## [1] 200
-## [1] &quot;INFLAMMATORY_RESPONSE&quot;
+## [1] &quot;EPITHELIAL_MESENCHYMAL_TRANSITION&quot;
 ## [1] 200
-## [1] &quot;APOPTOSIS&quot;
-## [1] 161</code></pre>
+## [1] &quot;INTERFERON_ALPHA_RESPONSE&quot;
+## [1] 97</code></pre>
 <pre class="r"><code># TODO add these as argument input into function
 header_jadbio &lt;- models[&#39;JADBIO&#39;]
 header_cforest &lt;- models[&#39;CForest&#39;]
@@ -1039,12 +1039,12 @@ normalize_data &lt;- function(df, team_df){
 
 # TODO make less janky so autopopulates the annotation names 
 if (cancer == &#39;LGGGBM&#39; ){
-  # Version 1: Hallmarks by Freq
-  vals_1 &lt;- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
-  vals_2 &lt;- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
-  vals_3 &lt;- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
-  vals_4 &lt;- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
-  vals_5 &lt;- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
+  # # Version 1: Hallmarks by Freq
+  # vals_1 &lt;- build_hallmark_vect(top[1],ftnames_order, platform_of_interest)
+  # vals_2 &lt;- build_hallmark_vect(top[2],ftnames_order, platform_of_interest)
+  # vals_3 &lt;- build_hallmark_vect(top[3],ftnames_order, platform_of_interest)
+  # vals_4 &lt;- build_hallmark_vect(top[4],ftnames_order, platform_of_interest)
+  # vals_5 &lt;- build_hallmark_vect(top[5],ftnames_order, platform_of_interest)
   
   # Version 2: Hallmarks by Pathway NES score
   vals_1_NES &lt;- build_hallmark_vect(top_NES[1],ftnames_order, platform_of_interest)
@@ -1078,19 +1078,18 @@ if (cancer == &#39;LGGGBM&#39; ){
     SciKitGrid = skgrid,
     
     # B. N teams selected
-    Frequency= anno_barplot (
+    nTeams= anno_barplot (
       team_df$Total,
       bar_width=1
     ),
 
-    
     # TODO need to manually update the name
     # C. Version 1: Hallmarks by freq
-    &quot;APICAL JUNCTION (n=200)&quot; = vals_1,    
-    &quot;COMPLEMENT (n=200)&quot;= vals_2,  
-    &quot;ESTROGEN RESPONSE LATE (n=200)&quot; = vals_3,  
-    &quot;INFLAMMATORY RESPONSE (n=200)&quot; = vals_4,  
-    &quot;APOPTOSIS (n=161)&quot; = vals_5,  
+    # &quot;APICAL JUNCTION (n=200)&quot; = vals_1,    
+    # &quot;COMPLEMENT (n=200)&quot;= vals_2,  
+    # &quot;ESTROGEN RESPONSE LATE (n=200)&quot; = vals_3,  
+    # &quot;INFLAMMATORY RESPONSE (n=200)&quot; = vals_4,  
+    # &quot;APOPTOSIS (n=161)&quot; = vals_5,  
     # D. Version 2: Hallmarks by NES
     &#39;E2F TARGETS (n=200)&#39; = vals_1_NES,
     &#39;G2M CHECKPOINT (n=200)&#39; = vals_2_NES,
@@ -1197,7 +1196,7 @@ if (cancer == &#39;LGGGBM&#39; ){
     AKLIMATE_importance = aklimate_minmax,
 
     # C. N teams selected
-    Frequency= anno_barplot (
+    nTeams= anno_barplot (
       team_df$Total,
       bar_width=1
     ),
@@ -1300,7 +1299,7 @@ if (cancer == &#39;LGGGBM&#39; ){
     # B. Ft importance
     AKLIMATE_importance = aklimate_minmax,
     # C. N teams selected
-    Frequency= anno_barplot (
+    nTeams= anno_barplot (
       team_df$Total,
       bar_width=1
     ),
@@ -1327,7 +1326,7 @@ if (cancer == &#39;LGGGBM&#39; ){
       &#39;EpithelialMesenchymalTransition_200&#39; = c(&#39;0&#39; = &quot;#333333&quot;, &#39;1&#39; = &quot;darkgoldenrod3&quot;)
     ),
     show_legend = FALSE,
-    gap = unit(c(0,0,0,0,1,0,1,0,0,0,0,0), &#39;mm&#39;)
+    gap = unit(c(0,0,0,0,1,1,0,0,0,0,1,0,0,0,0), &#39;mm&#39;)
   )
   
   # Plot
