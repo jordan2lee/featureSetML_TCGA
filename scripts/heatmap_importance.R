@@ -387,6 +387,13 @@ normalize_data <- function(df, team_df){
   return(minmax_norm)
 }
 
+gene_set_size <- function(input_hallmark){
+  # subset for hallmark rows
+  tab<- mappings[mappings['gs_name']==input_hallmark,]
+  # count unique gene symbols
+  genes <- unique(unlist(tab['human_gene_symbol']))
+  return(length(genes))
+}
 
 
 ####
@@ -620,7 +627,11 @@ col_annot <- HeatmapAnnotation(
     c(
       'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid",
       "nTeams",
-      top_NES[1],top_NES[2],top_NES[3],top_NES[4],top_NES[5]
+      paste(top_NES[1], ' (n=',gene_set_size(top_NES[1]), ')', sep = ''),
+      paste(top_NES[2], ' (n=',gene_set_size(top_NES[2]), ')', sep = ''),
+      paste(top_NES[3], ' (n=',gene_set_size(top_NES[3]), ')', sep = ''),
+      paste(top_NES[4], ' (n=',gene_set_size(top_NES[4]), ')', sep = ''),
+      paste(top_NES[5], ' (n=',gene_set_size(top_NES[5]), ')', sep = '')
     )
   ),
 
