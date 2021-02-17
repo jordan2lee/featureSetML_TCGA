@@ -35,7 +35,7 @@ Run feature sets through Sci-kit Grid classifiers. Combine prediction results wi
 
 ## 3. Team Overlap Analysis
 
-Last updated: 2/11/21
+Last updated: 2/17/21
 
 Two parts:
 
@@ -68,10 +68,6 @@ Create upset plots and heatmaps
 ```
 # Upset Plot
 bash RUN_overlap.sh <cancer>
-
-# Create heatmaps
-# TODO: convert to R script
-## run scripts/heatmap_importance.Rmd
 ```
 
 Outputs two files in `data/figure_panel_a/` and `data/figure_panel_b/`:
