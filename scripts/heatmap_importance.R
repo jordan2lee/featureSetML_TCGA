@@ -21,6 +21,7 @@ suppressPackageStartupMessages(library(argparse))
 parser <- ArgumentParser()
 parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
 parser$add_argument('-op', '--outdir', type='character', help='output dir')
+parser$add_argument('-os', '--supplemental', type='character', help='supplemental dir')
 args <- parser$parse_args()
 
 ######
@@ -465,7 +466,7 @@ df <- subset(df, select=cols_to_keep)
 ##########
 ### Section 1: Heatmaps for each data type
 ##########
-setwd(args$outdir)
+setwd(args$supplemental)
 
 ####
 # Create Base Heatmap for ALL DATA TYPES
@@ -584,6 +585,7 @@ dev.off()
 ######
 ### Section 3: Heatmap with Hallmarks and Feature Importance (Top 5)
 ######
+setwd(args$outdir)
 # Find top hallmarks from Pathway NES score
 importance <- Hallmark.nes.space[,args$cancer]
 importance <- sort(importance, decreasing = TRUE)
