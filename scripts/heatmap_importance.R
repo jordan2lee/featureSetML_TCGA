@@ -23,6 +23,7 @@ parser <- ArgumentParser()
 parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
 parser$add_argument('-op', '--outdir', type='character', help='output dir')
 parser$add_argument('-os', '--supplemental', type='character', help='supplemental dir')
+parser$add_argument('-min', '--min_n_team_overlap', type='character', help='min number of teams to show overlaps on all heatmaps')
 args <- parser$parse_args()
 
 ######
@@ -84,7 +85,7 @@ platforms <- get_platforms_present(args$cancer)
 # Filter for ft rows that occur in >= 2 teams
 #####
 #first for df_fts
-df_fts <- df_fts[df_fts['Total']>=2,]
+df_fts <- df_fts[df_fts['Total']>=args$min_n_team_overlap,]
 rownames(df_fts) <- 1:nrow(df_fts) #reset row index names
 cols_to_keep <- df_fts$featureID
 cols_to_keep <- c(args$cancer, 'Labels', cols_to_keep)
