@@ -1,0 +1,216 @@
+
+get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid){
+  #' Create base heatmap - no hallmark info. For exploratory purposes
+  ######
+  # Preprocess
+  #####
+  # A. Order by subtype
+  df_transform <- df %>% arrange(Labels)
+  # B. Column annotation
+  s_matrix <- pull(df_transform, Labels) %>% as.vector()
+  s_matrix <- sapply(strsplit(s_matrix, '_'), "[", 2) %>% as.matrix()
+  subtype_ha <- rowAnnotation(
+    Subtype = s_matrix,
+    na_col = 'grey',
+    col = list(
+      Subtype = get_colors(df)
+    ),
+    show_annotation_name = FALSE,
+    simple_anno_size = unit(3, "mm") # width
+  )
+  # C. Select data type
+  df_transform <- df_transform %>%
+    select(-Labels) %>%
+    select(-all_of(cancer)) %>%
+    select(starts_with(prefix))
+  if (ncol(df_transform) != 0){
+
+    mat <- df_transform %>%
+      as.matrix() %>%
+      t()
+    print(prefix)
+
+    #####
+    # 1. Generate temp Heatmap
+    # and pull row/col order
+    #####
+    # Scale if appropriate
+    #z-scores == each ft row will have mean 0, sd 1. omit NAs
+    if (prefix %in% yes_scale){
+      mat <- scale(t(mat), center=TRUE, scale=TRUE)
+    } else {
+      mat <- t(mat) #flip for heatmap looks
+    }
+    # Heatmap
+    ht_rows <- nrow(mat)
+    ht_cols <- ncol(mat)
+    fig <- Heatmap(
+      mat,
+      name = 'first heatmap',
+      cluster_rows = FALSE,
+      clustering_distance_columns = "euclidean",
+      clustering_method_columns = "ward.D",
+      cluster_columns = TRUE,
+      show_row_names = FALSE,
+      show_column_names = FALSE,
+      column_title = paste('Selected Features (n=', ht_rows, ')', sep=''),
+      row_title = paste('Samples (n=', ht_cols, ')', sep=''),
+      right_annotation = subtype_ha
+    )
+    ####
+    # Add team annotation bar
+    ####
+    # Ordering
+    # 1. Get order of features post heatmap clustering
+    heatmap_order <- column_order(fig) # index vector
+    ftnames_order <- c() # featurename vector
+    for (i in heatmap_order){
+      add_ft <- colnames(mat)[i]
+      ftnames_order <- c(ftnames_order, add_ft)
+    }
+    # 2. Get new matrix that is ordered by heatmap clustering
+    mat2 <- mat[,match(ftnames_order, colnames(mat))]
+    #####
+    # Build annotation bars of teams feature sets
+    #####
+    # 1. df of all teams. match ft order in heatmap
+    team_df<- df_fts %>%
+      filter(featureID %in% ftnames_order) %>%
+      arrange(match(featureID, ftnames_order))
+    # 2. Pull just the team of interest
+    jadbio <- team_df %>%
+      pull(header_jadbio) %>%
+      as.character()
+    cforest <- team_df %>%
+      pull(header_cforest) %>%
+      as.character()
+    aklimate <- team_df %>%
+      pull(header_aklimate) %>%
+      as.character()
+    subscope <- team_df %>%
+      pull(header_subscope) %>%
+      as.character()
+    skgrid <- team_df %>%
+      pull(header_skgrid) %>%
+      as.character()
+    team_list <- HeatmapAnnotation(
+      JADBio = jadbio,
+      CloudForest = cforest,
+      AKLIMATE = aklimate,
+      SubSCOPE = subscope,
+      SciKitGrid = skgrid,
+      col = list(
+        JADBio = c('0' = "#333333", '1' = "#D55B5B"),
+        CloudForest = c('0' = "#333333", '1' = "mediumpurple1"),
+        AKLIMATE = c('0' = "#333333", '1' = "cadetblue1"),
+        SubSCOPE = c('0' = "#333333", '1' = "palegreen2"),
+        SciKitGrid = c('0' = "#333333", '1' = "#EFA9A9")
+      ),
+      show_legend = FALSE,
+      nTeams= anno_barplot (
+        team_df$Total,
+        bar_width=1,
+        axis_param = list(side = "right", facing='outside')
+      )
+      # simple_anno_size = unit(2, 'mm') # height
+    )
+    #####
+    # 3. Output Heatmap
+    #####
+    # Set up saving fig packet
+    tiff(
+      paste(
+        cancer,
+        '_ht_base_',
+        unlist(strsplit(prefix, ':'))[2],
+        '.tiff',
+        sep=''
+      ),
+      width = 1400,
+      height = 1200,
+      res = 200,
+      compression = "none"
+    )
+    # Draw
+    # handle if only 1 feature in heatmap
+    if (length(ftnames_order)==1){
+      # Sanity check
+      ht_rows <- nrow(mat2)
+      ht_cols <- ncol(mat2)
+      assert('Assertion Error: in if loop for 1 ft but mat2 object dim() does not match',
+             is.null(ht_rows) && is.null(ht_cols)
+      )
+
+      # If only one feature set ht_rows/cols manually
+      ht_rows <- length(mat2)
+      ht_cols <- 1
+
+      fig <- Heatmap(
+        mat2,
+        name = str_to_title(prefix),
+        # width = unit(12, 'cm'),
+        # height = unit(12, 'cm'),
+        cluster_rows = FALSE,
+        clustering_distance_columns = "euclidean",
+        clustering_method_columns = "ward.D",
+        # column_order = ftnames_order, # NO ORDERING NEEDED
+        show_row_names = FALSE,
+        show_column_names = FALSE,
+        column_title = paste('Features (n=', ht_cols, ')', sep=''),
+        row_title = paste('Samples (n=', ht_rows, ')', sep=''),
+        right_annotation = subtype_ha,
+        bottom_annotation = team_list,
+        na_col = 'white'
+      )
+      draw(fig)
+      dev.off()
+    } else {
+      ht_rows <- nrow(mat2)
+      ht_cols <- ncol(mat2)
+      fig <- Heatmap(
+        mat2,
+        name = str_to_title(prefix),
+        # width = unit(12, 'cm'),
+        # height = unit(12, 'cm'),
+        cluster_rows = FALSE,
+        clustering_distance_columns = "euclidean",
+        clustering_method_columns = "ward.D",
+        column_order = ftnames_order,
+        show_row_names = FALSE,
+        show_column_names = FALSE,
+        column_title = paste('Features (n=', ht_cols, ')', sep=''),
+        row_title = paste('Samples (n=', ht_rows, ')', sep=''),
+        right_annotation = subtype_ha,
+        bottom_annotation = team_list,
+        na_col = 'white'
+      )
+      draw(fig)
+      dev.off()
+    }
+    print(
+      paste(
+        'Distance metric = ',
+        fig@column_dend_param$distance,
+        '. Method = ',
+        fig@column_dend_param$method,
+        sep=' '
+      )
+    )
+    # Assign to 'output' variables
+    return(
+      list(
+        'results_matrix' = mat2,
+        'results_ft_order' = ftnames_order,
+        'subtype_annotation' = subtype_ha
+      )
+    )
+  } else {
+    return(
+      list(
+        'results_matrix' = NULL,
+        'results_ft_order' = NULL,
+        'subtype_annotation' = NULL
+      )
+    )
+  }
+}
