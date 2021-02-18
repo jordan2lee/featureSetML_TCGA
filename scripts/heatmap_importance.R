@@ -161,7 +161,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       cluster_columns = TRUE,
       show_row_names = FALSE,
       show_column_names = FALSE,
-      column_title = paste('Features (n=', ht_rows, ')', sep=''),
+      column_title = paste('Selected Features (n=', ht_rows, ')', sep=''),
       row_title = paste('Samples (n=', ht_cols, ')', sep=''),
       right_annotation = subtype_ha
     )
@@ -217,7 +217,8 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       show_legend = FALSE,
       nTeams= anno_barplot (
         team_df$Total,
-        bar_width=1
+        bar_width=1,
+        axis_param = list(side = "right", facing='outside')
       )
       # simple_anno_size = unit(2, 'mm') # height
     )
@@ -254,7 +255,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
 
       fig <- Heatmap(
         mat2,
-        name = prefix,
+        name = str_to_title(prefix),
         # width = unit(12, 'cm'),
         # height = unit(12, 'cm'),
         cluster_rows = FALSE,
@@ -276,7 +277,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       ht_cols <- ncol(mat2)
       fig <- Heatmap(
         mat2,
-        name = prefix,
+        name = str_to_title(prefix),
         # width = unit(12, 'cm'),
         # height = unit(12, 'cm'),
         cluster_rows = FALSE,
@@ -611,11 +612,7 @@ vals_5_NES <- build_hallmark_vect(top_NES[5],ftnames_order, platform_of_interest
 # 1A. df of all teams. match ft order in heatmap
 team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
 
-
-########
 # 2. Create MinMax Values where appropriate
-# or Pull just the team of interest
-########
 jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
 cforest <- team_df %>% pull(header_cforest) %>% as.character()
 aklimate_minmax <- normalize_data(imp_aklimate, team_df)
@@ -647,7 +644,8 @@ col_annot <- HeatmapAnnotation(
   # B. N teams selected
   nTeams= anno_barplot (
     team_df$Total,
-    bar_width=1
+    bar_width=1,
+    axis_param = list(side = "right", facing='outside')
   ),
 
   # C. Version 2: Hallmarks by NES
@@ -676,25 +674,52 @@ col_annot <- HeatmapAnnotation(
 # Plot
 ht_rows <- nrow(mat2)
 ht_cols <- ncol(mat2)
-fig <- Heatmap(
-  mat2, #each col will have mean 0, sd 1
-  # width = unit(10, 'cm'),
-  # height = unit(10, 'cm'),
-  name = unlist(strsplit(platform_of_interest, ':'))[2],
-  cluster_rows = FALSE,
-  cluster_columns = FALSE,
-  show_row_names = FALSE,
-  show_column_names = FALSE,
-  column_title = paste('Features (n=', ht_cols, ')', sep=''),
-  column_title_gp = gpar(fontsize = 12),
-  row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-  row_title_gp = gpar(fontsize = 12),
-  left_annotation = subtype_ha,
-  bottom_annotation = col_annot,
-  use_raster = TRUE,
-  na_col = 'white',
-  col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
-)
+plat <- unlist(strsplit(platform_of_interest, ':'))[2]
+#if z scores > add to heatmap legend
+if ( plat == 'METH' || plat == 'GEXP' || plat == 'MIR' ){
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    # width = unit(10, 'cm'),
+    # height = unit(10, 'cm'),
+    name = paste('Z-scores', plat, sep='\n'),
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
+    column_title_gp = gpar(fontsize = 12),
+    row_title = paste('Samples (n=', ht_rows, ')', sep=''),
+    row_title_gp = gpar(fontsize = 12),
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    row_title_side = "right",
+    use_raster = TRUE,
+    na_col = 'white',
+    col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
+  )
+} else {
+  fig <- Heatmap(
+    mat2, #each col will have mean 0, sd 1
+    # width = unit(10, 'cm'),
+    # height = unit(10, 'cm'),
+    name = str_to_title(plat),
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    show_row_names = FALSE,
+    show_column_names = FALSE,
+    column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
+    column_title_gp = gpar(fontsize = 12),
+    row_title = paste('Samples (n=', ht_rows, ')', sep=''),
+    row_title_gp = gpar(fontsize = 12),
+    right_annotation = subtype_ha,
+    bottom_annotation = col_annot,
+    row_title_side = "right",
+    use_raster = TRUE,
+    na_col = 'white',
+    col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
+  )
+}
+
 # Set up saving fig packet
 tiff(
   paste(
@@ -709,5 +734,5 @@ tiff(
   res = 200,
   compression = "none"
 )
-draw(fig,heatmap_legend_side = c('left'))
+draw(fig,heatmap_legend_side = c('right'))
 dev.off()
