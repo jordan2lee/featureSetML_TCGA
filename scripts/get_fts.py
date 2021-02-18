@@ -7,6 +7,7 @@ def get_arguments():
     parser = argparse.ArgumentParser(description='')
     parser.add_argument("-t", "--tumor", help ="cancer cohort", required=True, type=str)
     parser.add_argument("-m", "--metric", help ="classification performance metric", required=True, type=str)
+    parser.add_argument("-fil", "--filters", help ="none or integer for feature set filter max size to be considered for best model", required=True, type=str)
     parser.add_argument("-f1", "--file1_fts", help ="classification performance file with all groups", required=True, type=str)
     parser.add_argument("-f2", "--file2_perform", help ="feature set file with all groups", required=True, type=str)
     parser.add_argument("-o", "--out", help ="output file", required=True, type=str)
@@ -18,6 +19,7 @@ pmetric = args.metric
 file_fts = args.file1_fts
 file_preds = args.file2_perform
 file_output = args.out
+filters = args.filters
 
 ############# Hardcoded Object
 groups = ['gnosis', 'CF|All', 'AKLIMATE', 'nn', ['rfe15', 'fbedeBIC']]
@@ -34,14 +36,18 @@ for group in groups:
         subset = performance_df[performance_df['feature_list_method'].isin(['rfe15', 'fbedeBIC'])]
         subset = subset[subset['cohort'] == cancer]
         subset = subset[subset['performance_metric'] == pmetric].reset_index(drop=True)
-        subset = subset[subset['total_features'] < 1000].reset_index(drop=True)
+        if filters != 'none':
+            max_ft_size = int(filters)
+            subset = subset[subset['total_features'] < max_ft_size].reset_index(drop=True)
         subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
     else:
         print(group)
         subset = performance_df[performance_df['feature_list_method'] == group]
         subset = subset[subset['cohort'] == cancer]
         subset = subset[subset['performance_metric'] == pmetric].reset_index(drop=True)
-        subset = subset[subset['total_features'] < 1000].reset_index(drop=True)
+        if filters != 'none':
+            max_ft_size = int(filters)
+            subset = subset[subset['total_features'] < 1000].reset_index(drop=True)
         subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
     # Grab the name of the model with highest MEAN performance metric
     ftID = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)['featureID'][0]
