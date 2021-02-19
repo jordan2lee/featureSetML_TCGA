@@ -156,7 +156,7 @@ if (platform_of_interest == 'N:GEXP'){
 tiff(
   paste(
     args$cancer,
-    'hallmark_fts',
+    '_hallmark_fts',
     unlist(strsplit(platform_of_interest, ':'))[2],
     '.tiff',
     sep=''
@@ -179,7 +179,7 @@ dev.off()
 tiff(
   paste(
     args$cancer,
-    'hallmark_hist',
+    '_hallmark_hist',
     unlist(strsplit(platform_of_interest, ':'))[2],
     '.tiff',
     sep=''
@@ -342,7 +342,7 @@ if ( plat == 'METH' || plat == 'GEXP' || plat == 'MIR' ){
 tiff(
   paste(
     args$cancer,
-    'ht_ftimportance_top5',
+    '_ht_ftimportance_top5',
     unlist(strsplit(platform_of_interest, ':'))[2],
     '.tiff',
     sep=''
