@@ -115,23 +115,8 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       # simple_anno_size = unit(2, 'mm') # height
     )
     #####
-    # 3. Output Heatmap
+    # 3. Draw Heatmap
     #####
-    # Set up saving fig packet
-    tiff(
-      paste(
-        cancer,
-        '_ht_base_',
-        unlist(strsplit(prefix, ':'))[2],
-        '.tiff',
-        sep=''
-      ),
-      width = 1400,
-      height = 1200,
-      res = 200,
-      compression = "none"
-    )
-    # Draw
     # handle if only 1 feature in heatmap
     if (length(ftnames_order)==1){
       # Sanity check
@@ -147,7 +132,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
 
       fig <- Heatmap(
         mat2,
-        name = str_to_title(prefix),
+        name = unlist(strsplit(prefix, ':'))[2],
         # width = unit(12, 'cm'),
         # height = unit(12, 'cm'),
         cluster_rows = FALSE,
@@ -162,14 +147,12 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         bottom_annotation = team_list,
         na_col = 'white'
       )
-      draw(fig)
-      dev.off()
     } else {
       ht_rows <- nrow(mat2)
       ht_cols <- ncol(mat2)
       fig <- Heatmap(
         mat2,
-        name = str_to_title(prefix),
+        name = unlist(strsplit(prefix, ':'))[2],
         # width = unit(12, 'cm'),
         # height = unit(12, 'cm'),
         cluster_rows = FALSE,
@@ -184,8 +167,6 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         bottom_annotation = team_list,
         na_col = 'white'
       )
-      draw(fig)
-      dev.off()
     }
     print(
       paste(
@@ -199,6 +180,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     # Assign to 'output' variables
     return(
       list(
+        'figure' = fig,
         'results_matrix' = mat2,
         'results_ft_order' = ftnames_order,
         'subtype_annotation' = subtype_ha
@@ -207,6 +189,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
   } else {
     return(
       list(
+        'figure' = NULL,
         'results_matrix' = NULL,
         'results_ft_order' = NULL,
         'subtype_annotation' = NULL
