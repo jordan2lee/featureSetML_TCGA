@@ -43,6 +43,7 @@ normalize_data <- function(df, team_df){
   #' Input df that contains columns c("features","importance")
   #' Input df of all teams
   #' Return vector of normalized values
+  #' runs min max norm across all data types together
 
   # Min max normalize importance scores
   subset_df <- df[,c('features', 'importance')]
