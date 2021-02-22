@@ -42,7 +42,7 @@ tumor_cohort=${1}
 # TODO update min_n_team to 2
 Rscript scripts/heatmap_importance.R \
     --cancer ${tumor_cohort} \
-    --min_n_team_overlap 1 \
+    --min_n_team_overlap 2 \
     --supplemental data/figure_panel_b/supplemental/ \
     --outdir ../main/
 

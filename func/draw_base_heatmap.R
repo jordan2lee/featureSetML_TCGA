@@ -28,7 +28,6 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     mat <- df_transform %>%
       as.matrix() %>%
       t()
-    print(prefix)
 
     #####
     # 1. Generate temp Heatmap
