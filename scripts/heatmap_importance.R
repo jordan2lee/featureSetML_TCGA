@@ -192,7 +192,7 @@ for (prefix in platforms){
       tiff(
         paste(
           args$cancer,
-          '_hallmark_fts',
+          '_hallmark_fts_',
           unlist(strsplit(prefix, ':'))[2],
           '.tiff',
           sep=''
@@ -216,7 +216,7 @@ for (prefix in platforms){
       tiff(
         paste(
           args$cancer,
-          '_hallmark_hist',
+          '_hallmark_hist_',
           unlist(strsplit(prefix, ':'))[2],
           '.tiff',
           sep=''
@@ -426,6 +426,9 @@ for (prefix in platforms){
       )
       draw(fig,heatmap_legend_side = c('right'))
       dev.off()
+
+      # Save tsv of heatmap data
+      write.table(mat2, file =paste(args$cancer, '_ht_matrix_', unlist(strsplit(prefix, ':'))[2], '.tsv', sep = ''), sep='\t', row.names=TRUE, col.names = TRUE)
     } else {
 
       print(paste('No features shared by at least', args$min_n_team_overlap, 'groups for', prefix, sep = ' '))
