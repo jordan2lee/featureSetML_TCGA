@@ -47,7 +47,7 @@ for group in groups:
         subset = subset[subset['performance_metric'] == pmetric].reset_index(drop=True)
         if filters != 'none':
             max_ft_size = int(filters)
-            subset = subset[subset['total_features'] < 1000].reset_index(drop=True)
+            subset = subset[subset['total_features'] < max_ft_size].reset_index(drop=True)
         subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
     # Grab the name of the model with highest MEAN performance metric
     ftID = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)['featureID'][0]
