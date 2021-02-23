@@ -33,9 +33,24 @@ bash RUN_to_synapse.sh
 
 Run feature sets through Sci-kit Grid classifiers. Combine prediction results with the results from other team members and download the merged feature set file and classifier performance file into `src/`
 
-## 3. Team Overlap Analysis
+## 3. [Exploratory] Prediction Performance Loss with Feature Set Size
 
-Last updated: 2/18/21
+Last updated: 2/23/21
+
+Purpose: Explore how much prediction performance is loss with smaller feature set size.
+
+This will help inform step 4 on the threshold cutoff for feature set size when determining the best model from each team.
+
+```
+# Create figure showing loss of prediction performance
+notebooks/wip/Feature_set_gain_loss.ipynb
+```
+
+This outputs 3 file per team per cancer in `notebooks/wip/wip/figures/`
+
+## 4. Team Overlap Analysis
+
+Last updated: 2/23/21
 
 Two parts:
 
