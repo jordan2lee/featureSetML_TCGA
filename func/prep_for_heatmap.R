@@ -43,6 +43,7 @@ normalize_data <- function(df, team_df){
   #' Input df that contains columns c("features","importance")
   #' Input df of all teams
   #' Return vector of normalized values
+  #' runs min max norm across all data types together
 
   # Min max normalize importance scores
   subset_df <- df[,c('features', 'importance')]
@@ -77,7 +78,7 @@ build_hallmark_vect <- function(hallmark, ftnames_order, platform_of_interest){
     if (platform_of_interest == 'N:GEXP'){
       GENE <- unlist(strsplit(feature, '::'))[2]
       GENE <- unlist(strsplit(GENE, ':'))[1]
-    } else if (platform_of_interest == 'N:METH'){
+  } else if (platform_of_interest == 'N:METH' || platform_of_interest == 'B:MUTA' || platform_of_interest == 'I:CNVR'){
       GENE <- unlist(strsplit(feature, ':'))[4]
     }
     # 2. Hallmark Mapping
