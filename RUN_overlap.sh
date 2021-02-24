@@ -2,7 +2,7 @@
 # Exact Feature Match - Overlaps
 
 timestamp() {
-  date # current time
+  date
 }
 timestamp
 
