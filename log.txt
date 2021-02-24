@@ -1,0 +1,837 @@
+Tue Feb 23 17:28:45 PST 2021
+ACC
+gnosis
+gnosis_7_ACC  selected as best model for group
+CF|All
+CF|All_Top 100_ACC  selected as best model for group
+AKLIMATE
+AKLIMATE_ACC_reduced_model_500_feature_set_ACC  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:ACC_ACC  selected as best model for group
+fbedeBIC_ACC  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 10"
+[1] "WORKING ON: N:MIR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "in mir loop"
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 2"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 48"
+completed heatmap
+
+
+BLCA
+gnosis
+gnosis_1_BLCA  selected as best model for group
+CF|All
+CF|All_Top 100_BLCA  selected as best model for group
+AKLIMATE
+AKLIMATE_BLCA_reduced_model_200_feature_set_BLCA  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:BLCA_BLCA  selected as best model for group
+fbedeBIC_BLCA  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 1"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 70"
+completed heatmap
+
+
+BRCA
+gnosis
+gnosis_1_BRCA  selected as best model for group
+CF|All
+CF|All_Top 100_BRCA  selected as best model for group
+AKLIMATE
+AKLIMATE_BRCA_reduced_model_100_feature_set_BRCA  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:BRCA_BRCA  selected as best model for group
+fbedeBIC_BRCA  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 1"
+[1] "no hallmarks found to features, skipping creation of hallmark_hist fig"
+[1] "WORKING ON: N:MIR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "in mir loop"
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 69"
+completed heatmap
+
+
+CESC
+gnosis
+gnosis_8_CESC  selected as best model for group
+CF|All
+CF|All_Top 100_CESC  selected as best model for group
+AKLIMATE
+AKLIMATE_CESC_reduced_model_100_feature_set_CESC  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:CESC_CESC  selected as best model for group
+fbedeBIC_CESC  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 1"
+[1] "WORKING ON: N:MIR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "in mir loop"
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 55"
+completed heatmap
+
+
+COADREAD
+gnosis
+gnosis_1_COADREAD  selected as best model for group
+CF|All
+CF|All_Top 100_COADREAD  selected as best model for group
+AKLIMATE
+AKLIMATE_COADREAD_reduced_model_500_feature_set_COADREAD  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:COADREAD_COADREAD  selected as best model for group
+rfe15_COADREAD  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 73"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 1"
+[1] "no hallmarks found to features, skipping creation of hallmark_hist fig"
+[1] "WORKING ON B:MUTA"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 3"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 28"
+completed heatmap
+
+
+ESCC
+gnosis
+gnosis_4_ESCC  selected as best model for group
+CF|All
+CF|All_Top 100_ESCC  selected as best model for group
+AKLIMATE
+AKLIMATE_ESCC_reduced_model_500_feature_set_ESCC  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:ESCC_ESCC  selected as best model for group
+fbedeBIC_ESCC  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 23"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 52"
+completed heatmap
+
+
+GEA
+gnosis
+gnosis_2_GEA  selected as best model for group
+CF|All
+CF|All_Top 100_GEA  selected as best model for group
+AKLIMATE
+AKLIMATE_GEA_reduced_model_500_feature_set_GEA  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:GEA_GEA  selected as best model for group
+rfe15_GEA  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 84"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 6"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 16"
+completed heatmap
+
+
+HNSC
+gnosis
+gnosis_1_HNSC  selected as best model for group
+CF|All
+CF|All_Top 100_HNSC  selected as best model for group
+AKLIMATE
+AKLIMATE_HNSC_reduced_model_500_feature_set_HNSC  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:HNSC_HNSC  selected as best model for group
+fbedeBIC_HNSC  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 4"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 1"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 105"
+completed heatmap
+
+
+KIRCKICH
+gnosis
+gnosis_2_KIRCKICH  selected as best model for group
+CF|All
+CF|All_Top 100_KIRCKICH  selected as best model for group
+AKLIMATE
+AKLIMATE_KIRCKICH_reduced_model_100_feature_set_KIRCKICH  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:KIRCKICH_KIRCKICH  selected as best model for group
+fbedeBIC_KIRCKICH  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+completed heatmap
+
+
+KIRP
+gnosis
+gnosis_1_KIRP  selected as best model for group
+CF|All
+CF|All_Top 100_KIRP  selected as best model for group
+AKLIMATE
+AKLIMATE_KIRP_reduced_model_500_feature_set_KIRP  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:KIRP_KIRP  selected as best model for group
+fbedeBIC_KIRP  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 9"
+[1] "WORKING ON: N:MIR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "in mir loop"
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 1"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 68"
+completed heatmap
+
+
+LGGGBM
+gnosis
+gnosis_1_LGGGBM  selected as best model for group
+CF|All
+CF|All_Top 100_LGGGBM  selected as best model for group
+AKLIMATE
+AKLIMATE_LGGGBM_reduced_model_500_feature_set_LGGGBM  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:LGGGBM_LGGGBM  selected as best model for group
+rfe15_LGGGBM  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON B:MUTA"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 2"
+[1] "no hallmarks found to features, skipping creation of hallmark_hist fig"
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 69"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 19"
+[1] "WORKING ON I:CNVR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 2"
+completed heatmap
+
+
+LIHCCHOL
+gnosis
+gnosis_8_LIHCCHOL  selected as best model for group
+CF|All
+CF|All_Top 100_LIHCCHOL  selected as best model for group
+AKLIMATE
+AKLIMATE_LIHCCHOL_reduced_model_100_feature_set_LIHCCHOL  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:LIHCCHOL_LIHCCHOL  selected as best model for group
+fbedeBIC_LIHCCHOL  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+completed heatmap
+
+
+LUAD
+gnosis
+gnosis_3_LUAD  selected as best model for group
+CF|All
+CF|All_Top 100_LUAD  selected as best model for group
+AKLIMATE
+AKLIMATE_LUAD_reduced_model_500_feature_set_LUAD  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:LUAD_LUAD  selected as best model for group
+fbedeBIC_LUAD  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 2"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 109"
+completed heatmap
+
+
+LUSC
+gnosis
+gnosis_1_LUSC  selected as best model for group
+CF|All
+CF|All_Top 100_LUSC  selected as best model for group
+AKLIMATE
+AKLIMATE_LUSC_reduced_model_500_feature_set_LUSC  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:LUSC_LUSC  selected as best model for group
+fbedeBIC_LUSC  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 2"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 123"
+completed heatmap
+
+
+MESO
+gnosis
+gnosis_4_MESO  selected as best model for group
+CF|All
+CF|All_Top 100_MESO  selected as best model for group
+AKLIMATE
+AKLIMATE_MESO_reduced_model_500_feature_set_MESO  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:MESO_MESO  selected as best model for group
+fbedeBIC_MESO  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 15"
+[1] "WORKING ON: N:MIR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "in mir loop"
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 35"
+completed heatmap
+
+
+OV
+gnosis
+gnosis_2_OV  selected as best model for group
+CF|All
+CF|All_Top 50_OV  selected as best model for group
+AKLIMATE
+AKLIMATE_OV_reduced_model_500_feature_set_OV  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:OV_OV  selected as best model for group
+fbedeBIC_OV  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for N:METH"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 72"
+completed heatmap
+
+
+PAAD
+gnosis
+gnosis_5_PAAD  selected as best model for group
+CF|All
+CF|All_Top 100_PAAD  selected as best model for group
+AKLIMATE
+AKLIMATE_PAAD_reduced_model_20_feature_set_PAAD  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:PAAD_PAAD  selected as best model for group
+fbedeBIC_PAAD  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for N:METH"
+[1] "WORKING ON: N:MIR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "in mir loop"
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 24"
+completed heatmap
+
+
+PCPG
+gnosis
+gnosis_4_PCPG  selected as best model for group
+CF|All
+CF|All_Top 100_PCPG  selected as best model for group
+AKLIMATE
+AKLIMATE_PCPG_reduced_model_500_feature_set_PCPG  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:PCPG_PCPG  selected as best model for group
+fbedeBIC_PCPG  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 14"
+[1] "WORKING ON: N:MIR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "in mir loop"
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 80"
+completed heatmap
+
+
+PRAD
+gnosis
+gnosis_5_PRAD  selected as best model for group
+CF|All
+CF|All_Top 100_PRAD  selected as best model for group
+AKLIMATE
+AKLIMATE_PRAD_reduced_model_100_feature_set_PRAD  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:PRAD_PRAD  selected as best model for group
+fbedeBIC_PRAD  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 23"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 2"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 29"
+completed heatmap
+
+
+SARC
+gnosis
+gnosis_5_SARC  selected as best model for group
+CF|All
+CF|All_Top 50_SARC  selected as best model for group
+AKLIMATE
+AKLIMATE_SARC_reduced_model_200_feature_set_SARC  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:SARC_SARC  selected as best model for group
+fbedeBIC_SARC  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 1"
+[1] "WORKING ON: N:MIR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "in mir loop"
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 3"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 32"
+completed heatmap
+
+
+SKCM
+gnosis
+gnosis_4_SKCM  selected as best model for group
+CF|All
+CF|All_Top 10_SKCM  selected as best model for group
+AKLIMATE
+AKLIMATE_SKCM_reduced_model_20_feature_set_SKCM  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:SKCM_SKCM  selected as best model for group
+rfe15_SKCM  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for N:METH"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 9"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 4"
+completed heatmap
+
+
+TGCT
+gnosis
+gnosis_5_TGCT  selected as best model for group
+CF|All
+CF|All_Top 100_TGCT  selected as best model for group
+AKLIMATE
+AKLIMATE_TGCT_reduced_model_1000_feature_set_TGCT  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:TGCT_TGCT  selected as best model for group
+fbedeBIC_TGCT  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 1"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 6"
+completed heatmap
+
+
+THCA
+gnosis
+gnosis_4_THCA  selected as best model for group
+CF|All
+CF|All_Top 100_THCA  selected as best model for group
+AKLIMATE
+AKLIMATE_THCA_reduced_model_10_feature_set_THCA  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:THCA_THCA  selected as best model for group
+fbedeBIC_THCA  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for N:METH"
+[1] "WORKING ON: N:MIR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "in mir loop"
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 6"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 14"
+completed heatmap
+
+
+THYM
+gnosis
+gnosis_5_THYM  selected as best model for group
+CF|All
+CF|All_Top 100_THYM  selected as best model for group
+AKLIMATE
+AKLIMATE_THYM_reduced_model_200_feature_set_THYM  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:THYM_THYM  selected as best model for group
+fbedeBIC_THYM  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for N:METH"
+[1] "WORKING ON: N:MIR"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "in mir loop"
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 1"
+[1] "no hallmarks found to features, skipping creation of hallmark_hist fig"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 31"
+completed heatmap
+
+
+UCEC
+gnosis
+gnosis_2_UCEC  selected as best model for group
+CF|All
+CF|All_Top 50_UCEC  selected as best model for group
+AKLIMATE
+AKLIMATE_UCEC_reduced_model_50_feature_set_UCEC  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:UCEC_UCEC  selected as best model for group
+fbedeBIC_UCEC  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+completed heatmap
+
+
+UVM
+gnosis
+gnosis_6_UVM  selected as best model for group
+CF|All
+CF|All_Top 100_UVM  selected as best model for group
+AKLIMATE
+AKLIMATE_UVM_reduced_model_20_feature_set_UVM  selected as best model for group
+nn
+nn_jg_2020-03-20_top1kfreq:UVM_UVM  selected as best model for group
+fbedeBIC_UVM  selected as best model for group
+completed ft list formatting
+completed pulling group best and file cleaning
+null device 
+          1 
+completed upset plot - mode distinct
+[1] "WORKING ON N:METH"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 1"
+[1] "WORKING ON: N:MIR"
+[1] "in mir loop"
+NULL
+[1] "in mir loop DONE"
+[1] "WORKING ON I:CNVR"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for I:CNVR"
+[1] "WORKING ON B:MUTA"
+[1] "n fts are 0"
+[1] "No features shared by at least 2 groups for B:MUTA"
+[1] "WORKING ON N:GEXP"
+[1] "Distance metric =  euclidean . Method =  ward.D"
+[1] "n fts are 8"
+completed heatmap
+
+
