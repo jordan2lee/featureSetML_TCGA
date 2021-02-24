@@ -75,8 +75,8 @@ load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
 #####
 # Set up
 #####
-# Define platform for hallmark heatmap
-platform_of_interest <- get_platform_of_interest(args$cancer)
+# # Define platform for hallmark heatmap
+# platform_of_interest <- get_platform_of_interest(args$cancer)
 
 # Build list of data types present
 platforms <- get_platforms_present(args$cancer)

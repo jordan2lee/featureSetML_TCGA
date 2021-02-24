@@ -66,7 +66,7 @@ Purpose 3B: create heatmap of all features of best models and cluster based on o
 
 + Methods: select a cancer cohort. pull the best model per team (based on mean `overall weighted F1` score). Pull corresponding feature set for each model. Scale if needed (depends on data platform). Cluster features and show on heatmap.
 
-Cancers: BRCA, LGGGBM, GEA
+Cancers: All 26 cancer cohorts
 
 **Implements a feature set threshold of <1K features. Feature sets with larger sizes will not be considered for "top model"**
 
@@ -82,7 +82,7 @@ Create upset plots and heatmaps
 
 ```
 # Upset Plot
-bash RUN_overlap.sh <cancer>
+bash RUN_overlap.sh > log.txt
 ```
 
 Outputs two files in `data/figure_panel_a/` and `data/figure_panel_b/`:
