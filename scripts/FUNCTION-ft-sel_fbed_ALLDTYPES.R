@@ -58,7 +58,7 @@ setwd(args$output_path)
 
 # Run algorithm
 ###########################
-FtS = "fbed"
+FtS = paste("fbedreg.K.", args$kmax, ",test.", args$conditional_test, ",threshold.", args$thres, ",method.", args$method, ",backward.", args$backphase, sep='')
 platform = 'ALL'
 ###########################
 #If not features of this platform of raw data, then DON'T run feature selection
@@ -69,15 +69,15 @@ if (dim(ALL_ft_matrix)[2] == 0){
 #If features then run feature selection
 if (dim(ALL_ft_matrix)[2] != 0){
 
-    ALL_ebic <- MXM::fbed.reg(target = label_matrix, dataset = ALL_ft_matrix, K = args$kmax, threshold = args$thres, test = args$conditional_test, method = args$method, backward = args$backphase)
+    fbed_results <- MXM::fbed.reg(target = label_matrix, dataset = ALL_ft_matrix, K = args$kmax, test = args$conditional_test, threshold = args$thres, method = args$method, backward = args$backphase)
     # Results + Output
     # 1. Create a list of selected features   -downstream summary .tsv
-    ALL_select  <- c(colnames(ALL_ft_matrix[ALL_ebic$res[,'Vars']])) # fix this
+    ALL_select  <- c(colnames(ALL_ft_matrix[fbed_results$res[,'Vars']])) # fix this
     # print("selected ALL features")
     # print(ALL_select)
 
     #naMIng convention
-    name = paste(args$cancer, "_", FtS, args$method, "--", platform, sep="")
+    name = paste(args$cancer, "_", FtS, "--", platform, sep="")
 
 
     # 3. Summary Txt
@@ -97,32 +97,37 @@ if (dim(ALL_ft_matrix)[2] != 0){
     print(ALL_select)
     print("------------------------------------------------------")
     print("Selected <method> results:")
-    print("R object: ALL_ebic$res")
+    print("R object: fbed_results$res")
     print('Cols = [Selected ft index, method, ft importance]')
-    print(ALL_ebic$res)
+    print(fbed_results$res)
     print("------------------------------------------------------")
     print("info matrix: FORWARD PHASE")
-    print(ALL_ebic$info)
+    print(fbed_results$info)
     print("------------------------------------------------------")
     print("info matrix: BACKWARD PHASE")
     print("shows variables removed from bkward phase")
-    print(ALL_ebic$back.rem)
+    print(fbed_results$back.rem)
     print("------------------------------------------------------")
     print("number of models that were fitted to the backward phase")
-    print(ALL_ebic$back.n.tests)
+    print(fbed_results$back.n.tests)
     print("------------------------------------------------------")
     print('Runtime')
-    print(ALL_ebic$runtime)
+    print(fbed_results$runtime)
+    print("------------------------------------------------------")
+    print('matrix')
+    print('R object: fbed_results$univ$ebic')
+    print(fbed_results$univ$ebic)
     sink()
 }
 print('saving file: ')
 print(args$output_path)
 print(txtname)
 
+
 # 2. Create selected features tsv
 # all <- cbind.fill(MUT_select, CNVR_select, GEXP_select, MI_select, MET_select, fill=NA)
 # colnames(all) <- c("MUTA", "CNVR", "GEXP", "MI", "MET")
-outputname = paste(args$cancer, "_", FtS, args$method, "--combined_platform.tsv", sep="")
+outputname = paste(args$cancer, "_", FtS, "--combined_platform.tsv", sep="")
 write.table(ALL_select, file=outputname, quote=FALSE, sep=' ', col.names = TRUE, row.names=TRUE)
 print('saving file: ')
 print(args$output_path)
