@@ -25,7 +25,7 @@ for tumor_cohort in ${StringArray[@]}; do
   python scripts/pull_grp_best.py \
       --tumor ${tumor_cohort} \
       -f1 data/figure_panel_a/best_models_${tumor_cohort}.tsv \
-      -f2 src/tarball/${tumor_cohort}_v9_20201029.tsv \
+      -f2 src/tarball/${tumor_cohort}_v11_20210220.tsv \
       --out1 data/figure_panel_b/${tumor_cohort}_fts_by_TEAM.tsv \
       --out2 data/figure_panel_b/${tumor_cohort}_fts_by_VALUE.tsv
   echo 'completed pulling group best and file cleaning'
