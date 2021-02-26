@@ -46,7 +46,7 @@ This will help inform step 4 on the threshold cutoff for feature set size when d
 notebooks/wip/Feature_set_gain_loss.ipynb
 ```
 
-This outputs 3 file per team per cancer in `notebooks/wip/wip/figures/`
+This outputs 3 file per team per cancer in `notebooks/wip/wip_figures/`
 
 ## 4. Team Overlap Analysis
 
@@ -58,11 +58,11 @@ Two parts:
 
 2. Exact Feature Overlap Heatmap - Clustering features
 
-Purpose 3A: create an upset plot that shows how much overlap there is between the feature sets of the best models
+Purpose 4.1: create an upset plot that shows how much overlap there is between the feature sets of the best models
 
 + Methods: pull the best model per team (based on mean `overall weighted F1` score). pull corresponding feature set for each model. look at raw overlap of features across teams
 
-Purpose 3B: create heatmap of all features of best models and cluster based on original molecular tarball signatures
+Purpose 4.2: create heatmap of all features of best models and cluster based on original molecular tarball signatures
 
 + Methods: select a cancer cohort. pull the best model per team (based on mean `overall weighted F1` score). Pull corresponding feature set for each model. Scale if needed (depends on data platform). Cluster features and show on heatmap.
 
@@ -81,7 +81,7 @@ bash RUN_Extract_Hallmark_file.sh
 Create upset plots and heatmaps
 
 ```
-# Upset Plot
+# Upset Plot + Heatmaps
 bash RUN_overlap.sh > log.txt
 ```
 
