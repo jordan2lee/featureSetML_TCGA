@@ -326,7 +326,7 @@ for (prefix in platforms){
         hallmark5 = vals_5_NES,
 
         col = list(
-          AKLIMATE =  colorRamp2(c(0, 1), c("cadetblue1", "cadetblue4")),
+          AKLIMATE =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "cadetblue1")),
           SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
           CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
           JADBio = c('0' = "#333333", '1' = "#D55B5B"),
@@ -337,7 +337,7 @@ for (prefix in platforms){
           hallmark4 = c('0' = "#333333", '1' = "darkgoldenrod3"),
           hallmark5 = c('0' = "#333333", '1' = "darkgoldenrod3")
         ),
-        show_legend = TRUE,
+        show_legend = FALSE,
         gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
       )
 
