@@ -15,7 +15,7 @@ for tumor_cohort in ${StringArray[@]}; do
   python scripts/get_fts.py \
       --tumor ${tumor_cohort} \
       -m overall_weighted_f1 \
-      --filters 1000 \
+      --filters 100 \
       -f1 src/collected_features_matrix_20200722.tsv.gz \
       -f2 src/feature_list_with_performance_with_subtype_names_20200828.tsv.gz \
       --out data/figure_panel_a/best_models_${tumor_cohort}.tsv
