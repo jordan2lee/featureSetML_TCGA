@@ -82,11 +82,16 @@ best_models_not_present = dict()
 for i in range(0, len(best)):
     # Create Index for each model - to maintain order in final df
     best_orders[i]= best[i]
+    m = best[i]
     # Add to list models that actually exist
-    if not best[i].startswith('NO_MODEL_MATCH'):
-        best_models_present.append(best[i])
+    if not m.startswith('NO_MODEL_MATCH'):
+        best_models_present.append(m)
     else:
-        best_models_not_present[i]=best[i]
+        # if nn then add nn_jg to ensure uniq naming
+        if m == 'NO_MODEL_MATCH_nn':
+            m = 'NO_MODEL_MATCH_nn_jg'
+        # add it
+        best_models_not_present[i]=m
 
 # Create output df of teams with models found
 ft_df = ft_df[best_models_present].drop(['feature_list_method','feature_list_cohort','feature_list_size']) # rm annotat rows
