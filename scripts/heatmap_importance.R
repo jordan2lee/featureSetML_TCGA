@@ -98,6 +98,9 @@ df <- subset(df, select=cols_to_keep)
 setwd(args$supplemental)
 # Get models
 models <- model2team(df_fts)
+print('##################')
+print(models)
+print('##################')
 # Set up saving fig packet
 for (prefix in platforms){
 
