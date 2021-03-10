@@ -50,7 +50,12 @@ for group in groups:
             subset = subset[subset['total_features'] < max_ft_size].reset_index(drop=True)
         subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
     # Grab the name of the model with highest MEAN performance metric
-    ftID = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)['featureID'][0]
+    # if found at least one model
+    if subset.shape[0] > 0:
+        ftID = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)['featureID'][0]
+    #else no models fitting the above filters, need to finish
+    else:
+        ftID = 'NO_MODEL_MATCH_' + group
 
     ##
     # Fix naming of CloudForest (to match ft file)
@@ -61,10 +66,33 @@ for group in groups:
     best.append(ftID)
     print(ftID, ' selected as best model for group')
 
+
 assert len(best) == 5, 'best model not found for all 5 groups'
 
 
 # Subset feature matrix for only best model per team
 ft_df = pd.read_csv(file_fts, sep = '\t', index_col=0, low_memory=False)
-ft_df = ft_df[best].drop(['feature_list_method','feature_list_cohort','feature_list_size']) # rm annotat rows
+
+# likely want to refactor below to be more streamline and short #
+
+# Handle instances where no model for a team found
+best_orders = dict()
+best_models_present = []
+best_models_not_present = dict()
+for i in range(0, len(best)):
+    # Create Index for each model - to maintain order in final df
+    best_orders[i]= best[i]
+    # Add to list models that actually exist
+    if not best[i].startswith('NO_MODEL_MATCH'):
+        best_models_present.append(best[i])
+    else:
+        best_models_not_present[i]=best[i]
+
+# Create output df of teams with models found
+ft_df = ft_df[best_models_present].drop(['feature_list_method','feature_list_cohort','feature_list_size']) # rm annotat rows
+
+# if present, Add back in team without models
+if len(best_models_not_present) != 0:
+    for i, model in best_models_not_present.items():
+        ft_df.insert(i, model, [0] * ft_df.shape[0])
 ft_df.to_csv(file_output, sep='\t')
