@@ -35,7 +35,14 @@ df_fts['Platform']<- col_vals
 
 # Plot
 setwd(args$outdir)
-pdf(args$outname, onefile=TRUE, width=10)
+# pdf(args$outname, onefile=TRUE, width=10)
+tiff(
+  args$outname,
+  width = 1000,
+  height = 1200,
+  res = 200,
+  compression = "none"
+)
 upset(
   # Main plot
   data = df_fts,
