@@ -33,12 +33,16 @@ for tumor_cohort in ${StringArray[@]}; do
 
   # 3. Create upset plots
   # Note that --headers must match order of --infile headers
-  if [[ ${tumor_cohort} == 'LGGGBM' ]]; then
-      msize='800'
-  elif [[ ${tumor_cohort} == 'GEA' ]]; then
-      msize='600'
-  elif [[  ${tumor_cohort} == 'BRCA' ]]; then
-      msize='1000'
+  if [[ ${tumor_cohort} == 'MESO' || ${tumor_cohort} == 'LGGGBM' || ${tumor_cohort} == 'UVM' || ${tumor_cohort} == 'BRCA' ]]; then
+      msize='75'
+  elif [[ ${tumor_cohort} == 'ESCC' ]]; then
+      msize='80'
+  elif [[ ${tumor_cohort} == 'SKCM' || ${tumor_cohort} == 'COADREAD' || ${tumor_cohort} == 'GEA' ]]; then
+      msize='100'
+  elif [[ ${tumor_cohort} == 'PAAD' ]]; then
+      msize='30'
+  elif [[ ${tumor_cohort} == 'TGCT' ]]; then
+      msize='45'
   else
       msize='60'
   fi
@@ -47,20 +51,20 @@ for tumor_cohort in ${StringArray[@]}; do
       -c ${tumor_cohort} \
       --model_headers JADBIO,CForest,AKLIMATE,SubSCOPE,SKGrid \
       --max_ftsize ${msize} \
-      --outdir data/figure_panel_a --outname upsetplot_${tumor_cohort}.pdf
+      --outdir data/figure_panel_a --outname upsetplot_${tumor_cohort}.tiff
   echo 'completed upset plot - mode distinct'
 
-  # # 4. Create heatmap
-  # Rscript scripts/heatmap_importance.R \
-  #     --cancer ${tumor_cohort} \
-  #     --min_n_team_overlap 2 \
-  #     --supplemental data/figure_panel_b/supplemental/ \
-  #     --outdir ../main/
-  # echo 'completed heatmap'
-  #
-  # # 5. Clean up workspace
-  # mv data/figure_panel_b/supplemental/*heatmap*.tiff data/figure_panel_b/heatmaps/
-  #
-  # echo ''
-  # echo ''
+  # 4. Create heatmap
+  Rscript scripts/heatmap_importance.R \
+      --cancer ${tumor_cohort} \
+      --min_n_team_overlap 2 \
+      --supplemental data/figure_panel_b/supplemental/ \
+      --outdir ../main/
+  echo 'completed heatmap'
+
+  # 5. Clean up workspace
+  mv data/figure_panel_b/supplemental/*heatmap*.tiff data/figure_panel_b/heatmaps/
+
+  echo ''
+  echo ''
 done

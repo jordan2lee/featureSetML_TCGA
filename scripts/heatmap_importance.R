@@ -127,7 +127,7 @@ for (prefix in platforms){
         '.tiff',
         sep=''
       ),
-      width = 1400,
+      width = 2400,
       height = 1200,
       res = 200,
       compression = "none"
@@ -200,7 +200,7 @@ for (prefix in platforms){
           '.tiff',
           sep=''
         ),
-        width = 1400,
+        width = 2400,
         height = 1200,
         res = 200,
         compression = "none"
@@ -224,7 +224,7 @@ for (prefix in platforms){
           '.tiff',
           sep=''
         ),
-        width = 1400,
+        width = 2400,
         height = 1200,
         res = 200,
         compression = "none"
@@ -422,8 +422,8 @@ for (prefix in platforms){
           '.tiff',
           sep=''
         ),
-        width = 1600,
-        height = 1400,
+        width = 2400,
+        height = 1200,
         res = 200,
         compression = "none"
       )
