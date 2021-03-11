@@ -19,11 +19,14 @@ suppressPackageStartupMessages(library(argparse))
 source('func/cohort_config.R')
 source('func/prep_for_heatmap.R')
 source('func/draw_base_heatmap.R')
+source('func/draw_upset.R')
 parser <- ArgumentParser()
 parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
-parser$add_argument('-op', '--outdir', type='character', help='output dir')
-parser$add_argument('-os', '--supplemental', type='character', help='supplemental dir')
+parser$add_argument('-upset', '--outdir_upset', type='character', help='output dir for upset plots')
+parser$add_argument('-os', '--supplemental', type='character', help='supplemental dir for heatmap plots')
 parser$add_argument('-min', '--min_n_team_overlap', type='character', help='min number of teams to show overlaps on all heatmaps')
+parser$add_argument('-m', '--max_ftsize', type='integer', help='upset plot max value for team ft set size plot')
+
 args <- parser$parse_args()
 
 ######
@@ -36,7 +39,6 @@ file_imp_aklimate <- paste(
   sep=''
 )
 yes_scale <- c('N:METH', 'N:GEXP','N:MIR') # which fts to scale
-
 
 ####
 # Read in files
@@ -72,6 +74,35 @@ imp_aklimate <- fread(
 # C. Load Mauro's hallmark ranks for all cancer cohorts
 load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
 
+
+
+
+
+
+###### PART 1: UPSET PLOT ######
+# upset_fig <- get_upset(cancer, outdir, outname, model_headers, max_ftsize)
+upset_fig <- get_upset(args$cancer, 'JADBIO,CForest,AKLIMATE,SubSCOPE,SKGrid', args$max_ftsize)
+setwd(args$outdir_upset)
+tiff(
+  paste('upsetplot_', args$cancer, '.tiff', sep=''),
+  width = 1000,
+  height = 1200,
+  res = 200,
+  compression = "none"
+)
+upset_fig
+dev.off()
+print('completed upset plot - mode distinct')
+
+
+
+
+
+
+
+
+
+###### PART 2: HEATMAP #########
 #####
 # Set up
 #####
@@ -261,7 +292,6 @@ for (prefix in platforms){
       ######
       # Section 3: Heatmap with Hallmarks and Feature Importance (Top 5)
       ######
-      # setwd(args$outdir)
       # Find top hallmarks from Pathway NES score
       importance <- Hallmark.nes.space[,args$cancer]
       importance <- sort(importance, decreasing = TRUE)
