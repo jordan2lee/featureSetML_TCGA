@@ -7,6 +7,7 @@ timestamp() {
 timestamp
 
 declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LGGGBM' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'SKCM' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
+# declare -a StringArray=('ACC')
 
 for tumor_cohort in ${StringArray[@]}; do
   echo $tumor_cohort
@@ -39,7 +40,7 @@ for tumor_cohort in ${StringArray[@]}; do
   elif [[  ${tumor_cohort} == 'BRCA' ]]; then
       msize='1000'
   else
-      msize='1000'
+      msize='60'
   fi
 
   Rscript scripts/upset.R \
@@ -49,17 +50,17 @@ for tumor_cohort in ${StringArray[@]}; do
       --outdir data/figure_panel_a --outname upsetplot_${tumor_cohort}.pdf
   echo 'completed upset plot - mode distinct'
 
-  # 4. Create heatmap
-  Rscript scripts/heatmap_importance.R \
-      --cancer ${tumor_cohort} \
-      --min_n_team_overlap 2 \
-      --supplemental data/figure_panel_b/supplemental/ \
-      --outdir ../main/
-  echo 'completed heatmap'
-
-  # 5. Clean up workspace
-  mv data/figure_panel_b/supplemental/*heatmap*.tiff data/figure_panel_b/heatmaps/
-
-  echo ''
-  echo ''
+  # # 4. Create heatmap
+  # Rscript scripts/heatmap_importance.R \
+  #     --cancer ${tumor_cohort} \
+  #     --min_n_team_overlap 2 \
+  #     --supplemental data/figure_panel_b/supplemental/ \
+  #     --outdir ../main/
+  # echo 'completed heatmap'
+  #
+  # # 5. Clean up workspace
+  # mv data/figure_panel_b/supplemental/*heatmap*.tiff data/figure_panel_b/heatmaps/
+  #
+  # echo ''
+  # echo ''
 done
