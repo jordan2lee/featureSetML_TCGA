@@ -21,12 +21,11 @@ source('func/prep_for_heatmap.R')
 source('func/draw_base_heatmap.R')
 source('func/draw_upset.R')
 parser <- ArgumentParser()
-parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
-parser$add_argument('-upset', '--outdir_upset', type='character', help='output dir for upset plots')
-parser$add_argument('-os', '--supplemental', type='character', help='supplemental dir for heatmap plots')
 parser$add_argument('-min', '--min_n_team_overlap', type='character', help='min number of teams to show overlaps on all heatmaps')
+parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
 parser$add_argument('-m', '--max_ftsize', type='integer', help='upset plot max value for team ft set size plot')
-
+parser$add_argument('-upset', '--outdir_upset', type='character', help='output dir for upset plots')
+parser$add_argument('-os', '--outdir_ht', type='character', help='supplemental dir for heatmap plots')
 args <- parser$parse_args()
 
 ######
@@ -126,7 +125,7 @@ df <- subset(df, select=cols_to_keep)
 ##########
 # Section 1: Heatmaps for each data type
 ##########
-setwd(args$supplemental)
+setwd(paste(args$outdir_ht, '/supplemental/', sep=''))
 # Get models
 models <- model2team(df_fts)
 print('##################')

@@ -52,12 +52,11 @@ for tumor_cohort in ${StringArray[@]}; do
       --min_n_team_overlap 2 \
       --max_ftsize ${msize} \
       --outdir_upset data/figure_panel_a \
-      --supplemental ../figure_panel_b/supplemental/
+      --outdir_ht ../figure_panel_b
   echo 'completed heatmap'
 
   # 5. Clean up workspace
   mv data/figure_panel_b/supplemental/*heatmap*.tiff data/figure_panel_b/heatmaps/
-
   echo ''
   echo ''
 done
