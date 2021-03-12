@@ -99,7 +99,7 @@ get_upset <- function(cancer, model_headers, max_ftsize){
           'CNVR'='#00688b', 'GEXP'='#FFA500','METH'='#43CD80', 'MIR'='#FF7F00','MUTA' = '#00BFFF'
         )
       )
-      # + coord_cartesian(ylim=c(0,max(max_size)))
+      # + coord_cartesian(ylim=c(0,max(60))) #manually adjust the y limits
   ),
   ) +
   ggtitle(paste('Feature Overlap Between Top ', cancer, ' Models', sep = ''))
