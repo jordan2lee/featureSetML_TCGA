@@ -22,6 +22,34 @@ get_upset <- function(cancer, model_headers, max_ftsize){
   }
   df_fts['Platform']<- col_vals
 
+  # Set up highlighted queries
+  highlighted <- list(
+    upset_query(intersect=c('SKGrid', 'AKLIMATE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'CForest'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'CForest'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('CForest', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('CForest', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'CForest', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'CForest', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'CForest', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('CForest', 'JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size'))
+  )
+
   # Create figure object
   upset_plot <- upset(
     # Main plot
@@ -35,6 +63,7 @@ get_upset <- function(cancer, model_headers, max_ftsize){
     guides = 'over',
     sort_intersections_by = 'degree',
     sort_intersections = 'ascending',
+    queries= highlighted,
     # Set Size plot
     set_sizes=(
       upset_set_size(
