@@ -43,7 +43,7 @@ for tumor_cohort in ${StringArray[@]}; do
   elif [[ ${tumor_cohort} == 'TGCT' ]]; then
       msize='45'
   else
-      msize='60'
+      msize='110'
   fi
 
   # 4. Create upset and heatmap
