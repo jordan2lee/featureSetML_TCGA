@@ -24,30 +24,30 @@ get_upset <- function(cancer, model_headers, max_ftsize){
 
   # Set up highlighted queries
   highlighted <- list(
-    upset_query(intersect=c('SKGrid', 'AKLIMATE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'CForest'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('AKLIMATE', 'CForest'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('AKLIMATE', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('AKLIMATE', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('CForest', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('CForest', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'CForest', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'CForest', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('AKLIMATE', 'JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('CForest', 'JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='lightsalmon4',fill='lightsalmon4', only_components=c('Intersection size'))
+    upset_query(intersect=c('SKGrid', 'AKLIMATE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'CForest'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'JADBIO'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'CForest'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'JADBIO'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('CForest', 'JADBIO'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('CForest', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('JADBIO', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'JADBIO'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'CForest', 'JADBIO'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'CForest', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'JADBIO', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'CForest', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'JADBIO', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('CForest', 'JADBIO', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='black', only_components=c('Intersection size')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='black', only_components=c('Intersection size'))
   )
 
   # Create figure object
@@ -85,19 +85,25 @@ get_upset <- function(cancer, model_headers, max_ftsize){
     matrix=(
       intersection_matrix(geom=geom_point(size = 1.75)) # Circle size
     ),
-    annotations = list(
-          'Data Platform'=(
-              ggplot(mapping=aes(fill=Platform))
-              + geom_bar(stat='count', position='fill')
-              + scale_y_continuous(labels=scales::percent_format())
-    + scale_fill_manual(values=c(
-        'CNVR'='#00688b', 'GEXP'='#FFA500',
-        'METH'='#43CD80', 'MIR'='#FF7F00',
-        'MUTA' = '#00BFFF'
-              ))
-              + ylab('Data Platform')
-          )
-    ),
+    # annotations = list(
+    #       'Data Platform'=(
+    #           ggplot(mapping=aes(fill=Platform))
+    #           + geom_bar(stat='count', position='fill')
+    #           + scale_y_continuous(labels=scales::percent_format())
+    # + scale_fill_manual(values=c(
+    #     'CNVR'='#00688b', 'GEXP'='#FFA500',
+    #     'METH'='#43CD80', 'MIR'='#FF7F00',
+    #     'MUTA' = '#00BFFF'
+    #           ))
+    #           + ylab('Data Platform')
+    #       )
+    # ),
+  base_annotations=list(
+      'Intersection size'=intersection_size(
+          counts=FALSE,
+          mapping=aes(fill=Platform),
+      )
+  ),
   ) +
   ggtitle(paste('Feature Overlap Between Top ', cancer, ' Models', sep = ''))
   return(upset_plot)
