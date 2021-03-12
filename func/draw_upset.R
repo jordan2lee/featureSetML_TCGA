@@ -49,7 +49,6 @@ get_upset <- function(cancer, model_headers, max_ftsize){
     upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
     upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix'))
   )
-
   # Create figure object
   upset_plot <- upset(
     # Main plot
@@ -88,21 +87,8 @@ get_upset <- function(cancer, model_headers, max_ftsize){
         geom=geom_point(size = 1.75),
         segment = geom_segment(color='red3'),
         outline_color = list(active = "white", inactive = "grey70")
-      ) # Circle size
+      )
     ),
-    # annotations = list(
-    #       'Data Platform'=(
-    #           ggplot(mapping=aes(fill=Platform))
-    #           + geom_bar(stat='count', position='fill')
-    #           + scale_y_continuous(labels=scales::percent_format())
-    # + scale_fill_manual(values=c(
-    #     'CNVR'='#00688b', 'GEXP'='#FFA500',
-    #     'METH'='#43CD80', 'MIR'='#FF7F00',
-    #     'MUTA' = '#00BFFF'
-    #           ))
-    #           + ylab('Data Platform')
-    #       )
-    # ),
   base_annotations=list(
       'Intersection size'=intersection_size(
           counts=TRUE,
@@ -113,6 +99,7 @@ get_upset <- function(cancer, model_headers, max_ftsize){
           'CNVR'='#00688b', 'GEXP'='#FFA500','METH'='#43CD80', 'MIR'='#FF7F00','MUTA' = '#00BFFF'
         )
       )
+      # + coord_cartesian(ylim=c(0,max(max_size)))
   ),
   ) +
   ggtitle(paste('Feature Overlap Between Top ', cancer, ' Models', sep = ''))
