@@ -20,34 +20,34 @@ get_upset <- function(cancer, model_headers, max_ftsize){
     shorten <- unlist(strsplit(ft, ':'))[2]
     col_vals <- c(col_vals, shorten)
   }
-  df_fts['Platform']<- col_vals
+  df_fts['Platform']<- factor(col_vals, levels = c('MUTA', 'CNVR', 'METH', 'GEXP', 'MIR'))
 
   # Set up highlighted queries
   highlighted <- list(
-    upset_query(intersect=c('SKGrid', 'AKLIMATE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'CForest'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'JADBIO'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'JADBIO'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('CForest', 'JADBIO'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('CForest', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('JADBIO', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'JADBIO'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'CForest', 'JADBIO'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'CForest', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'JADBIO', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'JADBIO', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('CForest', 'JADBIO', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='red3', only_components=c('intersections_matrix'))
+    upset_query(intersect=c('SKGrid', 'AKLIMATE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'CForest'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('AKLIMATE', 'CForest'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('AKLIMATE', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('AKLIMATE', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('AKLIMATE', 'CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('AKLIMATE', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('CForest', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
+    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix'))
   )
   # Create figure object
   upset_plot <- upset(
@@ -77,7 +77,7 @@ get_upset <- function(cancer, model_headers, max_ftsize){
       geom_text(aes(label=..count..), hjust = -0.25,  size=rel(3),stat='count') + # Bar counts
       theme(axis.text.x=element_text(size=rel(1.125))) +  # set size x axis
       expand_limits(y=max_ftsize) + # set max x value
-      scale_fill_manual(values=c('CNVR'='#00688b', 'GEXP'='#FFA500','METH'='#43CD80', 'MIR'='#FF7F00','MUTA' = '#00BFFF')) +
+      scale_fill_manual(values=c('MUTA' = '#00BFFF', 'CNVR'='#00688b', 'METH'='#43CD80', 'GEXP'='#FFA500', 'MIR'='#FF7F00')) +
       theme(legend.position = "none") # no legend
     ),
     # Intersection matrix
@@ -85,7 +85,7 @@ get_upset <- function(cancer, model_headers, max_ftsize){
     matrix=(
       intersection_matrix(
         geom=geom_point(size = 1.75),
-        segment = geom_segment(color='red3'),
+        segment = geom_segment(color='#7C3F11'),
         outline_color = list(active = "white", inactive = "grey70")
       )
     ),
@@ -96,10 +96,11 @@ get_upset <- function(cancer, model_headers, max_ftsize){
           mapping=aes(fill=Platform)
       ) + scale_fill_manual(
         values=c(
-          'CNVR'='#00688b', 'GEXP'='#FFA500','METH'='#43CD80', 'MIR'='#FF7F00','MUTA' = '#00BFFF'
+          'MUTA' = '#00BFFF', 'CNVR'='#00688b', 'METH'='#43CD80', 'GEXP'='#FFA500', 'MIR'='#FF7F00'
         )
       )
       # + coord_cartesian(ylim=c(0,max(60))) #manually adjust the y limits
+
   ),
   ) +
   ggtitle(paste('Feature Overlap Between Top ', cancer, ' Models', sep = ''))
