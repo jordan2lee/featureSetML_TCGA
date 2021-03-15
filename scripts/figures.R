@@ -323,8 +323,6 @@ for (prefix in platforms){
       skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
       # Build annotation
       col_annot <- HeatmapAnnotation(
-        gp = gpar(fontsize = 5),
-
         # Names of Annot Bars
         annotation_label  = gt_render(
           c(
@@ -336,17 +334,17 @@ for (prefix in platforms){
             paste(top_NES[5], ' (n=',gene_set_size(top_NES[5]), ')', sep = '')
           )
         ),
-        # B. N teams selected
+        # A. N teams selected
         nTeams= anno_barplot(
           team_df$Total,
           bar_width=1,
           gp = gpar(fill = 'darkgray', col = 'azure4'),
           border = FALSE,
           rot = 45,
-          axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=6)) #yaxis size
+          axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
         ),
 
-        # A. ft binary membership
+        # B. ft binary membership
         AKLIMATE = aklimate_minmax,
         SubSCOPE = subscope,
         CloudForest = cforest,
@@ -375,6 +373,8 @@ for (prefix in platforms){
           hallmark5 = c('0' = "#333333", '1' = "darkgoldenrod3")
         ),
         show_legend = FALSE,
+        gp = gpar(fontsize = 1), # grid all col annot
+        annotation_name_gp= gpar(fontsize = 8),
         gap = unit(c(0,0,0,0,0,1,0,0,0,0), 'mm')
       )
 
@@ -394,9 +394,9 @@ for (prefix in platforms){
           show_row_names = FALSE,
           show_column_names = FALSE,
           column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
-          column_title_gp = gpar(fontsize = 12),
+          column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
           row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-          row_title_gp = gpar(fontsize = 12),
+          row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
           right_annotation = subtype_ha,
           bottom_annotation = col_annot,
           row_title_side = "right",
