@@ -32,18 +32,12 @@ for tumor_cohort in ${StringArray[@]}; do
 
   # 3. Create upset plots
   # Note that --headers must match order of --infile headers
-  if [[ ${tumor_cohort} == 'MESO' || ${tumor_cohort} == 'LGGGBM' || ${tumor_cohort} == 'UVM' || ${tumor_cohort} == 'BRCA' ]]; then
-      msize='75'
-  elif [[ ${tumor_cohort} == 'ESCC' ]]; then
-      msize='80'
-  elif [[ ${tumor_cohort} == 'SKCM' || ${tumor_cohort} == 'COADREAD' || ${tumor_cohort} == 'GEA' ]]; then
+  if [[ ${tumor_cohort} == 'SKCM' ]]; then
       msize='100'
-  elif [[ ${tumor_cohort} == 'PAAD' ]]; then
-      msize='30'
-  elif [[ ${tumor_cohort} == 'TGCT' ]]; then
-      msize='45'
+  elif [[ ${tumor_cohort} == 'SARC' ]]; then
+      msize='70'
   else
-      msize='110'
+      msize='130'
   fi
 
   # 4. Create upset and heatmap
