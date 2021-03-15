@@ -323,17 +323,27 @@ for (prefix in platforms){
       skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
       # Build annotation
       col_annot <- HeatmapAnnotation(
+        gp = gpar(fontsize = 5),
+
         # Names of Annot Bars
         annotation_label  = gt_render(
           c(
-            'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid",
-            "nTeams",
+            'nTeams', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid",
             paste(top_NES[1], ' (n=',gene_set_size(top_NES[1]), ')', sep = ''),
             paste(top_NES[2], ' (n=',gene_set_size(top_NES[2]), ')', sep = ''),
             paste(top_NES[3], ' (n=',gene_set_size(top_NES[3]), ')', sep = ''),
             paste(top_NES[4], ' (n=',gene_set_size(top_NES[4]), ')', sep = ''),
             paste(top_NES[5], ' (n=',gene_set_size(top_NES[5]), ')', sep = '')
           )
+        ),
+        # B. N teams selected
+        nTeams= anno_barplot(
+          team_df$Total,
+          bar_width=1,
+          gp = gpar(fill = 'darkgray', col = 'azure4'),
+          border = FALSE,
+          rot = 45,
+          axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=6)) #yaxis size
         ),
 
         # A. ft binary membership
@@ -343,15 +353,6 @@ for (prefix in platforms){
         JADBio = jadbio,
         SciKitGrid = skgrid,
 
-        # B. N teams selected
-        nTeams= anno_barplot(
-          team_df$Total,
-          bar_width=1,
-          gp = gpar(fill = 'springgreen3', col = 'springgreen4'),
-          border = FALSE,
-          rot = 45,
-          axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=6)) #yaxis size
-        ),
         annotation_name_rot = 0,
 
         # C. Version 2: Hallmarks by NES
@@ -374,7 +375,7 @@ for (prefix in platforms){
           hallmark5 = c('0' = "#333333", '1' = "darkgoldenrod3")
         ),
         show_legend = FALSE,
-        gap = unit(c(0,0,0,0,1.5,1.5,0,0,0,0), 'mm')
+        gap = unit(c(0,0,0,0,0,1,0,0,0,0), 'mm')
       )
 
       # Plot
