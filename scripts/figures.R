@@ -344,11 +344,15 @@ for (prefix in platforms){
         SciKitGrid = skgrid,
 
         # B. N teams selected
-        nTeams= anno_barplot (
+        nTeams= anno_barplot(
           team_df$Total,
           bar_width=1,
-          axis_param = list(side = "right", facing='outside')
+          gp = gpar(fill = 'springgreen3', col = 'springgreen4'),
+          border = FALSE,
+          rot = 45,
+          axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=6)) #yaxis size
         ),
+        annotation_name_rot = 0,
 
         # C. Version 2: Hallmarks by NES
         hallmark1 = vals_1_NES,
@@ -370,7 +374,7 @@ for (prefix in platforms){
           hallmark5 = c('0' = "#333333", '1' = "darkgoldenrod3")
         ),
         show_legend = FALSE,
-        gap = unit(c(0,0,0,0,1,1,0,0,0,0), 'mm')
+        gap = unit(c(0,0,0,0,1.5,1.5,0,0,0,0), 'mm')
       )
 
       # Plot
