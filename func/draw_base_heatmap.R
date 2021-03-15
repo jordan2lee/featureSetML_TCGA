@@ -1,5 +1,5 @@
 
-get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid){
+get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid, to_scale_types){
   #' Create base heatmap - no hallmark info. For exploratory purposes
   ######
   # Preprocess
@@ -35,9 +35,11 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     #####
     # Scale if appropriate
     #z-scores == each ft row will have mean 0, sd 1. omit NAs
-    if (prefix %in% yes_scale){
+    if (prefix %in% to_scale_types){
+      print(paste('Calculating z-score for', prefix, sep=' '))
       mat <- scale(t(mat), center=TRUE, scale=TRUE)
     } else {
+      print(paste('SKIP calculating z-score for', prefix, sep=' '))
       mat <- t(mat) #flip for heatmap looks
     }
     # Heatmap

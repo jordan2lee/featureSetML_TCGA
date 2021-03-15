@@ -37,7 +37,7 @@ file_imp_aklimate <- paste(
   '_20200423_aklimate_ranked_feature_importance.tsv',
   sep=''
 )
-yes_scale <- c('N:METH', 'N:GEXP','N:MIR') # which fts to scale
+yes_scale <- c('N:GEXP','N:MIR') # which fts to scale
 
 ####
 # Read in files
@@ -145,7 +145,8 @@ for (prefix in platforms){
       models['CForest'],
       models['AKLIMATE'],
       models['SubSCOPE'],
-      models['SKGrid']
+      models['SKGrid'],
+      yes_scale
     )
     # Save figure and exit
     figure <- results_list[['figure']]
@@ -177,7 +178,8 @@ for (prefix in platforms){
       models['CForest'],
       models['AKLIMATE'],
       models['SubSCOPE'],
-      models['SKGrid']
+      models['SKGrid'],
+      yes_scale
     )
     mat2 <- results_list[['results_matrix']]
     ftnames_order <- results_list[['results_ft_order']]
@@ -375,7 +377,7 @@ for (prefix in platforms){
         show_legend = FALSE,
         gp = gpar(fontsize = 1), # grid all col annot
         annotation_name_gp= gpar(fontsize = 8),
-        gap = unit(c(0,0,0,0,0,1,0,0,0,0), 'mm')
+        gap = unit(c(1,0,0,0,0,1,0,0,0,0), 'mm')
       )
 
       # Plot
@@ -383,7 +385,8 @@ for (prefix in platforms){
       ht_cols <- ncol(mat2)
       plat <- unlist(strsplit(prefix, ':'))[2]
       #if z scores > add to heatmap legend
-      if ( plat == 'METH' || plat == 'GEXP' || plat == 'MIR' ){
+      if ( prefix %in% yes_scale ){
+      # if ( plat == 'METH' || plat == 'GEXP' || plat == 'MIR' ){
         fig <- Heatmap(
           mat2, #each col will have mean 0, sd 1
           # width = unit(10, 'cm'),
@@ -424,6 +427,26 @@ for (prefix in platforms){
           use_raster = TRUE,
           na_col = 'white',
           col = structure(c('blue','red'), names = c(0, 1))
+        )
+      } else if (plat == 'METH'){
+        fig <- Heatmap(
+          mat2, #each col will have mean 0, sd 1
+          # width = unit(10, 'cm'),
+          # height = unit(10, 'cm'),
+          name = plat,
+          cluster_rows = FALSE,
+          cluster_columns = FALSE,
+          show_row_names = FALSE,
+          show_column_names = FALSE,
+          column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
+          column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
+          row_title = paste('Samples (n=', ht_rows, ')', sep=''),
+          row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
+          right_annotation = subtype_ha,
+          bottom_annotation = col_annot,
+          row_title_side = "right",
+          use_raster = TRUE,
+          na_col = 'white',
         )
       } else if (plat == 'CNVR') {
         fig <- Heatmap(
