@@ -374,7 +374,7 @@ for (prefix in platforms){
           hallmark4 = c('0' = "#333333", '1' = "darkgoldenrod3"),
           hallmark5 = c('0' = "#333333", '1' = "darkgoldenrod3")
         ),
-        show_legend = FALSE,
+        show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
         gp = gpar(fontsize = 1), # grid all col annot
         annotation_name_gp= gpar(fontsize = 8),
         gap = unit(c(1,0,0,0,0,1,0,0,0,0), 'mm')
@@ -387,11 +387,12 @@ for (prefix in platforms){
       #if z scores > add to heatmap legend
       if ( prefix %in% yes_scale ){
       # if ( plat == 'METH' || plat == 'GEXP' || plat == 'MIR' ){
+        main_ht_name = paste('Z-scores', plat, sep='\n')
         fig <- Heatmap(
           mat2, #each col will have mean 0, sd 1
           # width = unit(10, 'cm'),
           # height = unit(10, 'cm'),
-          name = paste('Z-scores', plat, sep='\n'),
+          name = main_ht_name,
           cluster_rows = FALSE,
           cluster_columns = FALSE,
           show_row_names = FALSE,
@@ -405,6 +406,9 @@ for (prefix in platforms){
           row_title_side = "right",
           use_raster = TRUE,
           na_col = 'white',
+          heatmap_legend_param = list(
+            title = main_ht_name
+          ),
           col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
         )
       } else if (plat == 'MUTA'){
