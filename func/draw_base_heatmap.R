@@ -95,6 +95,13 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       pull(header_skgrid) %>%
       as.character()
     team_list <- HeatmapAnnotation(
+      # Names of Annot Bars
+      annotation_label  = gt_render(
+        c(
+          'Model Overlap', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid"
+        )
+      ),
+
       annotation_name_rot = 0,
       nTeams= anno_barplot (
         team_df$Total,

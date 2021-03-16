@@ -164,7 +164,8 @@ for (prefix in platforms){
       compression = "none"
     )
     print('in mir loop')
-    print(figure)
+    draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+    # print(figure)
     print('in mir loop DONE')
     dev.off()
 
@@ -328,7 +329,7 @@ for (prefix in platforms){
         # Names of Annot Bars
         annotation_label  = gt_render(
           c(
-            'nTeams', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid",
+            'Model Overlap', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid",
             paste(top_NES[1], ' (n=',gene_set_size(top_NES[1]), ')', sep = ''),
             paste(top_NES[2], ' (n=',gene_set_size(top_NES[2]), ')', sep = ''),
             paste(top_NES[3], ' (n=',gene_set_size(top_NES[3]), ')', sep = ''),
@@ -488,7 +489,7 @@ for (prefix in platforms){
         res = 200,
         compression = "none"
       )
-      draw(fig,heatmap_legend_side = c('right'))
+      draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
       dev.off()
 
       # Save tsv of heatmap data
