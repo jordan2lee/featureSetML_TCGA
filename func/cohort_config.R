@@ -9,48 +9,48 @@ get_colors <- function(df){
     as.integer()
   if (nsubs == 2){
     color_codes <- c(
-      "1" = 'salmon4',
-      "2"='red3'
+      "1"='pink4',
+      "2"='darkorange2'
     )
   } else if (nsubs == 3){
     color_codes <- c(
-      "1" = 'salmon4',
-      "2"='red3',
-      "3"='orangered'
+      "1"='pink4',
+      "2"='darkorange2',
+      "3"= 'sandybrown'
     )
   } else if (nsubs == 4){
     color_codes <- c(
-      "1" = 'salmon4',
-      "2"='red3',
-      "3"='orangered',
-      "4"='orange1'
+      "1"='pink4',
+      "2"='darkorange2',
+      "3"= 'sandybrown',
+      "4" = 'orange3'
     )
   } else if (nsubs == 5){
     color_codes <- c(
-      "1" = 'salmon4',
-      "2"='red3',
-      "3"='orangered',
-      "4"='orange1',
-      "5"="lightgoldenrod1"
+      "1"='tan',
+      "2"='pink4',
+      "3"='darkorange2',
+      "4"= 'sandybrown',
+      "5" = 'orange3'
     )
   } else if (nsubs == 6){
     color_codes <- c(
-      "1" = 'salmon4',
-      "2"='red3',
-      "3"='orangered',
-      "4"='orange1',
-      "5"="lightgoldenrod1",
-      "6"="lemonchiffon3"
+      "1" = 'saddlebrown',
+      "2"='tan',
+      "3"='pink4',
+      "4"='darkorange2',
+      "5"= 'sandybrown',
+      "6" = 'orange3'
     )
   } else if (nsubs == 7){
     color_codes <- c(
-      "1" = '#F58748',
-      "2" ='#A95757',
-      "3"='#4A2918',
-      "4"='red3',
-      "5"='orangered',
-      "6"= 'salmon',
-      "7" = 'orange1'
+      "1" = 'saddlebrown',
+      "2" ='lightsalmon3',
+      "3"='tan',
+      "4"='pink4',
+      "5"='darkorange2',
+      "6"= 'sandybrown',
+      "7" = 'orange3'
     )
   }
   return(color_codes)
