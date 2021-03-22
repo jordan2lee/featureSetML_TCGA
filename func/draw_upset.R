@@ -1,4 +1,4 @@
-get_upset <- function(cancer, model_headers, max_ftsize){
+get_upset <- function(cancer, model_headers, max_ftsize, ymax){
   suppressPackageStartupMessages(library(dplyr))
   suppressPackageStartupMessages(library(data.table))
   suppressPackageStartupMessages(library(ComplexUpset))
@@ -74,7 +74,7 @@ get_upset <- function(cancer, model_headers, max_ftsize){
         position = 'right',
       ) +
       theme(axis.ticks.x=element_line()) +
-      geom_text(aes(label=..count..), hjust = -0.25,  size=rel(3),stat='count') + # Bar counts
+      geom_text(aes(label=..count..), hjust = -0.25,  size=rel(3),stat='count') + # Set size cts
       theme(axis.text.x=element_text(size=rel(1.125))) +  # set size x axis
       expand_limits(y=max_ftsize) + # set max x value
       scale_fill_manual(values=c('MUTA' = '#00BFFF', 'CNVR'='#00688b', 'METH'='#43CD80', 'GEXP'='#FFA500', 'MIR'='#FF7F00')) +
@@ -84,7 +84,7 @@ get_upset <- function(cancer, model_headers, max_ftsize){
     encode_sets = FALSE,
     matrix=(
       intersection_matrix(
-        geom=geom_point(size = 1.75),
+        geom=geom_point(size = 1.75), # dot size
         segment = geom_segment(color='#7C3F11'),
         outline_color = list(active = "white", inactive = "grey70")
       )
@@ -94,12 +94,15 @@ get_upset <- function(cancer, model_headers, max_ftsize){
           counts=TRUE,
           bar_number_threshold = 1,
           mapping=aes(fill=Platform)
-      ) + scale_fill_manual(
+      )
+      + scale_fill_manual(
         values=c(
-          'MUTA' = '#00BFFF', 'CNVR'='#00688b', 'METH'='#43CD80', 'GEXP'='#FFA500', 'MIR'='#FF7F00'
+          'MUTA' = '#00BFFF', 'CNVR'='#00688b',
+          'METH'='#43CD80', 'GEXP'='#FFA500',
+          'MIR'='#FF7F00'
         )
       )
-      # + coord_cartesian(ylim=c(0,max(60))) #manually adjust the y limits
+      + coord_cartesian(ylim=c(0,ymax)) #manually adjust the y limits
 
   ),
   ) +

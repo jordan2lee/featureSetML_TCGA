@@ -80,7 +80,7 @@ load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
 
 ###### PART 1: UPSET PLOT ######
 # upset_fig <- get_upset(cancer, outdir, outname, model_headers, max_ftsize)
-upset_fig <- get_upset(args$cancer, 'JADBIO,CForest,AKLIMATE,SubSCOPE,SKGrid', args$max_ftsize)
+upset_fig <- get_upset(args$cancer, 'JADBIO,CForest,AKLIMATE,SubSCOPE,SKGrid', args$max_ftsize, get_ymax_upset(args$cancer))
 setwd(args$outdir_upset)
 tiff(
   paste('upsetplot_', args$cancer, '.tiff', sep=''),
@@ -150,24 +150,27 @@ for (prefix in platforms){
     )
     # Save figure and exit
     figure <- results_list[['figure']]
-    tiff(
-      paste(
-        args$cancer,
-        '_heatmap_basic_',
-        unlist(strsplit(prefix, ':'))[2],
-        '.tiff',
-        sep=''
-      ),
-      width = 2400,
-      height = 1200,
-      res = 200,
-      compression = "none"
-    )
     print('in mir loop')
-    draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
-    # print(figure)
+    # If not null fig then save
+    if (is.null(figure) == FALSE){
+      tiff(
+        paste(
+          args$cancer,
+          '_heatmap_basic_',
+          unlist(strsplit(prefix, ':'))[2],
+          '.tiff',
+          sep=''
+        ),
+        width = 2400,
+        height = 1200,
+        res = 200,
+        compression = "none"
+      )
+      draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+      # print(figure)
+      dev.off()
+    }
     print('in mir loop DONE')
-    dev.off()
 
   } else {
     print(paste("WORKING ON", prefix, sep=' '))
@@ -348,7 +351,7 @@ for (prefix in platforms){
         ),
 
         # B. ft binary membership
-        AKLIMATE = aklimate_minmax,
+        "AKLIMATE\nmin-max" = aklimate_minmax,
         SubSCOPE = subscope,
         CloudForest = cforest,
         JADBio = jadbio,
@@ -364,7 +367,7 @@ for (prefix in platforms){
         hallmark5 = vals_5_NES,
 
         col = list(
-          AKLIMATE =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "cadetblue1")),
+          'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "cadetblue1")),
           SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
           CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
           JADBio = c('0' = "#333333", '1' = "#D55B5B"),
@@ -388,7 +391,7 @@ for (prefix in platforms){
       #if z scores > add to heatmap legend
       if ( prefix %in% yes_scale ){
       # if ( plat == 'METH' || plat == 'GEXP' || plat == 'MIR' ){
-        main_ht_name = paste('Z-scores', plat, sep='\n')
+        main_ht_name = paste(plat, 'z-score', sep='\n')
         fig <- Heatmap(
           mat2, #each col will have mean 0, sd 1
           # width = unit(10, 'cm'),

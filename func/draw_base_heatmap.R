@@ -111,7 +111,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         bar_width=1,
         axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
       ),
-      AKLIMATE = aklimate,
+      "AKLIMATE\nmin-max" = aklimate,
       SubSCOPE = subscope,
       JADBio = jadbio,
       CloudForest = cforest,
@@ -119,7 +119,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       col = list(
         JADBio = c('0' = "#333333", '1' = "#D55B5B"),
         CloudForest = c('0' = "#333333", '1' = "mediumpurple1"),
-        AKLIMATE = c('0' = "#333333", '1' = "cadetblue1"),
+        "AKLIMATE\nmin-max" = c('0' = "#333333", '1' = "cadetblue1"),
         SubSCOPE = c('0' = "#333333", '1' = "palegreen2"),
         SciKitGrid = c('0' = "#333333", '1' = "#EFA9A9")
       ),
