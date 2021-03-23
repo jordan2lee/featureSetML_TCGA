@@ -6,7 +6,8 @@ output files here. includes
 
 hallmarks.tsv
 
-heatmaps/
+heatmaps/<cancer>_heatmap_<platform>.tiff
+heatmaps/<cancer>_heatmap_basic_MIR.tiff
 
 supplemental/
 ```
