@@ -22,6 +22,7 @@ data/figure_panel_a/*.tiff
 data/figure_panel_a/*.tsv
 data/figure_panel_b/*.tsv
 data/figure_panel_b/heatmaps/*.tiff
+data/figure_panel_b/supplemental/*.tiff
 
 # Scripts
 scripts/feature_list_with_performance_with_subtype_names_20200828-CW.py
