@@ -46,11 +46,11 @@ This will help inform step 4 on the threshold cutoff for feature set size when d
 notebooks/wip/Feature_set_gain_loss.ipynb
 ```
 
-This outputs 3 file per team per cancer in `notebooks/wip/wip/figures/`
+This outputs 3 file per team per cancer in `notebooks/wip/wip_figures/`
 
 ## 4. Team Overlap Analysis
 
-Last updated: 2/23/21
+Last updated: 3/22/21
 
 Two parts:
 
@@ -58,15 +58,15 @@ Two parts:
 
 2. Exact Feature Overlap Heatmap - Clustering features
 
-Purpose 3A: create an upset plot that shows how much overlap there is between the feature sets of the best models
+Purpose 4.1: create an upset plot that shows how much overlap there is between the feature sets of the best models
 
 + Methods: pull the best model per team (based on mean `overall weighted F1` score). pull corresponding feature set for each model. look at raw overlap of features across teams
 
-Purpose 3B: create heatmap of all features of best models and cluster based on original molecular tarball signatures
+Purpose 4.2: create heatmap of all features of best models and cluster based on original molecular tarball signatures
 
 + Methods: select a cancer cohort. pull the best model per team (based on mean `overall weighted F1` score). Pull corresponding feature set for each model. Scale if needed (depends on data platform). Cluster features and show on heatmap.
 
-Cancers: BRCA, LGGGBM, GEA
+Cancers: All 26 cancer cohorts
 
 **Implements a feature set threshold of <1K features. Feature sets with larger sizes will not be considered for "top model"**
 
@@ -81,8 +81,8 @@ bash RUN_Extract_Hallmark_file.sh
 Create upset plots and heatmaps
 
 ```
-# Upset Plot
-bash RUN_overlap.sh <cancer>
+# Upset Plot + Heatmaps
+bash RUN_overlap.sh > log.txt
 ```
 
 Outputs two files in `data/figure_panel_a/` and `data/figure_panel_b/`:

@@ -1,5 +1,5 @@
 
-get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid){
+get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid, to_scale_types){
   #' Create base heatmap - no hallmark info. For exploratory purposes
   ######
   # Preprocess
@@ -35,9 +35,11 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     #####
     # Scale if appropriate
     #z-scores == each ft row will have mean 0, sd 1. omit NAs
-    if (prefix %in% yes_scale){
+    if (prefix %in% to_scale_types){
+      print(paste('Calculating z-score for', prefix, sep=' '))
       mat <- scale(t(mat), center=TRUE, scale=TRUE)
     } else {
+      print(paste('SKIP calculating z-score for', prefix, sep=' '))
       mat <- t(mat) #flip for heatmap looks
     }
     # Heatmap
@@ -93,24 +95,37 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       pull(header_skgrid) %>%
       as.character()
     team_list <- HeatmapAnnotation(
+      # Names of Annot Bars
+      annotation_label  = gt_render(
+        c(
+          'Model Overlap', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid"
+        )
+      ),
+
+      annotation_name_rot = 0,
+      nTeams= anno_barplot (
+        team_df$Total,
+        gp = gpar(fill = 'darkgray', col = 'azure4'),
+        border = FALSE,
+        rot = 45,
+        bar_width=1,
+        axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
+      ),
+      "AKLIMATE\nmin-max" = aklimate,
+      SubSCOPE = subscope,
       JADBio = jadbio,
       CloudForest = cforest,
-      AKLIMATE = aklimate,
-      SubSCOPE = subscope,
       SciKitGrid = skgrid,
       col = list(
         JADBio = c('0' = "#333333", '1' = "#D55B5B"),
         CloudForest = c('0' = "#333333", '1' = "mediumpurple1"),
-        AKLIMATE = c('0' = "#333333", '1' = "cadetblue1"),
+        "AKLIMATE\nmin-max" = c('0' = "#333333", '1' = "cadetblue1"),
         SubSCOPE = c('0' = "#333333", '1' = "palegreen2"),
         SciKitGrid = c('0' = "#333333", '1' = "#EFA9A9")
       ),
-      show_legend = FALSE,
-      nTeams= anno_barplot (
-        team_df$Total,
-        bar_width=1,
-        axis_param = list(side = "right", facing='outside')
-      )
+      show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+      annotation_name_gp= gpar(fontsize = 8),
+      gp = gpar(fontsize = 1) # grid all col annot
       # simple_anno_size = unit(2, 'mm') # height
     )
     #####
@@ -137,11 +152,13 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         cluster_rows = FALSE,
         clustering_distance_columns = "euclidean",
         clustering_method_columns = "ward.D",
+        column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
         # column_order = ftnames_order, # NO ORDERING NEEDED
         show_row_names = FALSE,
         show_column_names = FALSE,
         column_title = paste('Features (n=', ht_cols, ')', sep=''),
         row_title = paste('Samples (n=', ht_rows, ')', sep=''),
+        row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
         right_annotation = subtype_ha,
         bottom_annotation = team_list,
         na_col = 'white'
@@ -157,11 +174,13 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         cluster_rows = FALSE,
         clustering_distance_columns = "euclidean",
         clustering_method_columns = "ward.D",
+        column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
         column_order = ftnames_order,
         show_row_names = FALSE,
         show_column_names = FALSE,
         column_title = paste('Features (n=', ht_cols, ')', sep=''),
         row_title = paste('Samples (n=', ht_rows, ')', sep=''),
+        row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
         right_annotation = subtype_ha,
         bottom_annotation = team_list,
         na_col = 'white'
