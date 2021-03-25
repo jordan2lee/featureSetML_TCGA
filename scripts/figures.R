@@ -372,11 +372,11 @@ for (prefix in platforms){
           CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
           JADBio = c('0' = "#333333", '1' = "#D55B5B"),
           SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
-          hallmark1 = c('0' = "#333333", '1' = "darkgoldenrod3"),
-          hallmark2 = c('0' = "#333333", '1' = "darkgoldenrod3"),
-          hallmark3 = c('0' = "#333333", '1' = "darkgoldenrod3"),
-          hallmark4 = c('0' = "#333333", '1' = "darkgoldenrod3"),
-          hallmark5 = c('0' = "#333333", '1' = "darkgoldenrod3")
+          hallmark1 = c('0' = "#333333", '1' = "azure4"),
+          hallmark2 = c('0' = "#333333", '1' = "azure4"),
+          hallmark3 = c('0' = "#333333", '1' = "azure4"),
+          hallmark4 = c('0' = "#333333", '1' = "azure4"),
+          hallmark5 = c('0' = "#333333", '1' = "azure4")
         ),
         show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
         gp = gpar(fontsize = 1), # grid all col annot
