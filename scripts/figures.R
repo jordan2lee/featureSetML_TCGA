@@ -84,8 +84,8 @@ upset_fig <- get_upset(args$cancer, 'JADBIO,CForest,AKLIMATE,SubSCOPE,SKGrid', a
 setwd(args$outdir_upset)
 tiff(
   paste('upsetplot_', args$cancer, '.tiff', sep=''),
-  width = 1000,
-  height = 1200,
+  width = 1200,
+  height = 900,
   res = 200,
   compression = "none"
 )

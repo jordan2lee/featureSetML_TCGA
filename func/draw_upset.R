@@ -22,33 +22,6 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
   }
   df_fts['Platform']<- factor(col_vals, levels = c('MUTA', 'CNVR', 'METH', 'GEXP', 'MIR'))
 
-  # Set up highlighted queries
-  highlighted <- list(
-    upset_query(intersect=c('SKGrid', 'AKLIMATE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'CForest'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('CForest', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix'))
-  )
   # Create figure object
   upset_plot <- upset(
     # Main plot
@@ -56,13 +29,12 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     intersect = model_headers,
     mode = 'distinct',
     name='',
-    width_ratio=0.3,
-    height_ratio = 0.75,
+    width_ratio= 0.5, #0.3,
+    height_ratio = 0.5, #0.75,
     wrap=TRUE,
     guides = 'over',
     sort_intersections_by = 'degree',
     sort_intersections = 'ascending',
-    queries= highlighted,
     # Set Size plot
     set_sizes=(
       upset_set_size(
@@ -85,7 +57,6 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     matrix=(
       intersection_matrix(
         geom=geom_point(size = 1.75), # dot size
-        segment = geom_segment(color='#7C3F11'),
         outline_color = list(active = "white", inactive = "grey70")
       )
     ),
