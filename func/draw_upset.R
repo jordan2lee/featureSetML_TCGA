@@ -45,9 +45,12 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
         ),
         position = 'right',
       ) +
-      theme(axis.ticks.x=element_line()) +
+      theme(
+        axis.ticks.x=element_line(colour="darkgrey"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+      ) +
       geom_text(aes(label=..count..), hjust = -0.25,  size=rel(3),stat='count') + # Set size cts
-      theme(axis.text.x=element_text(size=rel(1.125))) +  # set size x axis
       expand_limits(y=max_ftsize) + # set max x value
       scale_fill_manual(values=c('MUTA' = '#00BFFF', 'CNVR'='#00688b', 'METH'='#43CD80', 'GEXP'='#FFA500', 'MIR'='#FF7F00')) +
       theme(legend.position = "none") # no legend
@@ -74,6 +77,12 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
         )
       )
       + coord_cartesian(ylim=c(0,ymax)) #manually adjust the y limits
+      + theme(
+        # axis.line.y = element_line(color="darkgrey", size=0.4),
+        axis.ticks.y=element_line(colour="darkgrey"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+      )
 
   ),
   ) +
