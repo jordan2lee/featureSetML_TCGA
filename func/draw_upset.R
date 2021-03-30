@@ -42,8 +42,8 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     height_ratio = 0.5, #0.75,
     wrap=TRUE,
     guides = 'over',
-    sort_intersections_by = 'degree',
-    sort_intersections = 'ascending',
+    sort_intersections_by = c('degree','cardinality'),
+    # sort_intersections = 'descending',
     sort_sets =FALSE,
     # stripes = c('lightgrey', 'darkgrey'),
     # Set Size plot
