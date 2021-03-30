@@ -3,14 +3,23 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
   suppressPackageStartupMessages(library(data.table))
   suppressPackageStartupMessages(library(ComplexUpset))
   suppressPackageStartupMessages(library(ggplot2))
-  # Read in file
-  df_fts <- fread(paste('data/figure_panel_b/', cancer, '_fts_by_TEAM.tsv', sep=''))%>% as.data.frame()
+
+  # Upset df col order mataches user input
+  models <- model2team(df_fts)
+  model_headers <- unlist(as.vector(strsplit(model_headers, ",")))
+  col_order <- c('featureID')
+  for (m in model_headers){
+    exact_name <- models[[m]]
+    col_order <- c(col_order, exact_name)
+  }
+  col_order <- c(col_order, 'Total')
+  df_fts <- df_fts %>% relocate(all_of(col_order))
+  colnames(df_fts) <- c('featureID', model_headers, 'Total')
 
   # Move index col and rm non model cols
   row.names(df_fts) <- df_fts$featureID
   df_fts <- df_fts[,!names(df_fts) %in% c('featureID', 'Total')]
-  model_headers <- unlist(as.vector(strsplit(model_headers, ",")))
-  colnames(df_fts) <- model_headers
+
   # Transform matrix for input into upset
   df_fts[model_headers] = df_fts[model_headers] == 1
 
@@ -21,7 +30,6 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     col_vals <- c(col_vals, shorten)
   }
   df_fts['Platform']<- factor(col_vals, levels = c('MUTA', 'CNVR', 'METH', 'GEXP', 'MIR'))
-
   # Create figure object
   upset_plot <- upset(
     # Main plot
@@ -35,6 +43,7 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     guides = 'over',
     sort_intersections_by = 'degree',
     sort_intersections = 'ascending',
+    sort_sets =FALSE,
     # Set Size plot
     set_sizes=(
       upset_set_size(

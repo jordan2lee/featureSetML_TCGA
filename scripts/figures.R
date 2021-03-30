@@ -26,6 +26,7 @@ parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all
 parser$add_argument('-m', '--max_ftsize', type='integer', help='upset plot max value for team ft set size plot')
 parser$add_argument('-upset', '--outdir_upset', type='character', help='output dir for upset plots')
 parser$add_argument('-os', '--outdir_ht', type='character', help='supplemental dir for heatmap plots')
+parser$add_argument('-t', '--input_team_display', type='character', help='desired team order in plots, but in reverse order')
 args <- parser$parse_args()
 
 ######
@@ -77,8 +78,7 @@ load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
 
 
 ###### PART 1: UPSET PLOT ######
-# upset_fig <- get_upset(cancer, outdir, outname, model_headers, max_ftsize)
-upset_fig <- get_upset(args$cancer, 'JADBIO,CForest,AKLIMATE,SubSCOPE,SKGrid', args$max_ftsize, get_ymax_upset(args$cancer))
+upset_fig <- get_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
 setwd(args$outdir_upset)
 tiff(
   paste('upsetplot_', args$cancer, '.tiff', sep=''),

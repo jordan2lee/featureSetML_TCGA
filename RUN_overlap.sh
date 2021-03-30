@@ -6,8 +6,8 @@ timestamp() {
 }
 timestamp
 
-# declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LGGGBM' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'SKCM' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
-declare -a StringArray=('BRCA')
+declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LGGGBM' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'SKCM' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
+# declare -a StringArray=('BRCA')
 
 for tumor_cohort in ${StringArray[@]}; do
   echo $tumor_cohort
@@ -47,7 +47,8 @@ for tumor_cohort in ${StringArray[@]}; do
       --min_n_team_overlap 2 \
       --max_ftsize ${msize} \
       --outdir_upset data/figure_panel_a \
-      --outdir_ht ../figure_panel_b
+      --outdir_ht ../figure_panel_b \
+      --input_team_display SKGrid,JADBIO,CForest,SubSCOPE,AKLIMATE
   echo 'completed heatmap'
 
   # 5. Clean up workspace
