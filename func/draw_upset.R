@@ -45,20 +45,22 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     sort_intersections_by = 'degree',
     sort_intersections = 'ascending',
     sort_sets =FALSE,
+    # stripes = c('lightgrey', 'darkgrey'),
     # Set Size plot
     set_sizes=(
       upset_set_size(
         # Color set size plot
         geom=geom_bar(
             aes(fill=Platform, x=group),
-            width=0.8
+            width=.90
         ),
         position = 'right',
       ) +
+      ylab('Set Size') +
       theme(
         axis.ticks.x=element_line(colour="darkgrey"),
         panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()
+        panel.grid.minor = element_blank(),
       ) +
       geom_text(aes(label=..count..), hjust = -0.25,  size=rel(3),stat='count') + # Set size cts
       expand_limits(y=max_ftsize) + # set max x value
@@ -74,7 +76,7 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
       )
     ),
   base_annotations=list(
-      'Intersection size'=intersection_size(
+      'Feature Set Size'=intersection_size(
           counts=TRUE,
           bar_number_threshold = 1,
           mapping=aes(fill=Platform)
