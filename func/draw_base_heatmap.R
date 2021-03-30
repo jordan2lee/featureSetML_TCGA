@@ -79,17 +79,17 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       filter(featureID %in% ftnames_order) %>%
       arrange(match(featureID, ftnames_order))
     # 2. Pull just the team of interest
-    jadbio <- team_df %>%
-      pull(header_jadbio) %>%
-      as.character()
-    cforest <- team_df %>%
-      pull(header_cforest) %>%
-      as.character()
     aklimate <- team_df %>%
       pull(header_aklimate) %>%
       as.character()
     subscope <- team_df %>%
       pull(header_subscope) %>%
+      as.character()
+    cforest <- team_df %>%
+      pull(header_cforest) %>%
+      as.character()
+    jadbio <- team_df %>%
+      pull(header_jadbio) %>%
       as.character()
     skgrid <- team_df %>%
       pull(header_skgrid) %>%
@@ -112,16 +112,16 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
       ),
       "AKLIMATE\nmin-max" = aklimate,
-      SubSCOPE = subscope,
-      JADBio = jadbio,
-      CloudForest = cforest,
-      SciKitGrid = skgrid,
+      "SubSCOPE" = subscope,
+      "JADBio" = jadbio,
+      "CloudForest" = cforest,
+      "SciKitGrid" = skgrid,
       col = list(
-        JADBio = c('0' = "#333333", '1' = "#D55B5B"),
-        CloudForest = c('0' = "#333333", '1' = "mediumpurple1"),
+        "JADBio" = c('0' = "#333333", '1' = "#D55B5B"),
+        "CloudForest" = c('0' = "#333333", '1' = "mediumpurple1"),
         "AKLIMATE\nmin-max" = c('0' = "#333333", '1' = "cadetblue1"),
-        SubSCOPE = c('0' = "#333333", '1' = "palegreen2"),
-        SciKitGrid = c('0' = "#333333", '1' = "#EFA9A9")
+        "SubSCOPE" = c('0' = "#333333", '1' = "palegreen2"),
+        "SciKitGrid" = c('0' = "#333333", '1' = "#EFA9A9")
       ),
       show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
       annotation_name_gp= gpar(fontsize = 8),

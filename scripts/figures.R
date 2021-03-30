@@ -76,8 +76,6 @@ load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
 
 
 
-
-
 ###### PART 1: UPSET PLOT ######
 # upset_fig <- get_upset(cancer, outdir, outname, model_headers, max_ftsize)
 upset_fig <- get_upset(args$cancer, 'JADBIO,CForest,AKLIMATE,SubSCOPE,SKGrid', args$max_ftsize, get_ymax_upset(args$cancer))
@@ -302,10 +300,10 @@ for (prefix in platforms){
       importance <- sort(importance, decreasing = TRUE)
       top_NES <- names(importance[1:5])
 
-      header_jadbio <- models['JADBIO']
-      header_cforest <- models['CForest']
       header_aklimate <- models['AKLIMATE']
       header_subscope <- models['SubSCOPE']
+      header_cforest <- models['CForest']
+      header_jadbio <- models['JADBIO']
       header_skgrid <- models['SKGrid']
 
       subtype_ha <- subtype_annotation
@@ -322,10 +320,10 @@ for (prefix in platforms){
       team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
 
       # 2. Create MinMax Values where appropriate
-      jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
-      cforest <- team_df %>% pull(header_cforest) %>% as.character()
       aklimate_minmax <- normalize_data(imp_aklimate, team_df)
       subscope <- team_df %>% pull(header_subscope) %>% as.character()
+      cforest <- team_df %>% pull(header_cforest) %>% as.character()
+      jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
       skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
       # Build annotation
       col_annot <- HeatmapAnnotation(
@@ -352,10 +350,10 @@ for (prefix in platforms){
 
         # B. ft binary membership
         "AKLIMATE\nmin-max" = aklimate_minmax,
-        SubSCOPE = subscope,
-        CloudForest = cforest,
-        JADBio = jadbio,
-        SciKitGrid = skgrid,
+        "SubSCOPE" = subscope,
+        "CloudForest" = cforest,
+        "JADBio" = jadbio,
+        "SciKitGrid" = skgrid,
 
         annotation_name_rot = 0,
 
@@ -368,10 +366,10 @@ for (prefix in platforms){
 
         col = list(
           'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "cadetblue1")),
-          SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
-          CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
-          JADBio = c('0' = "#333333", '1' = "#D55B5B"),
-          SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+          "SubSCOPE" =  c('0' = "#333333", '1' = "palegreen2"),
+          "CloudForest" =  c('0' = "#333333", '1' = "mediumpurple1"),
+          "JADBio" = c('0' = "#333333", '1' = "#D55B5B"),
+          "SciKitGrid" =  c('0' = "#333333", '1' = "#EFA9A9"),
           hallmark1 = c('0' = "#333333", '1' = "azure4"),
           hallmark2 = c('0' = "#333333", '1' = "azure4"),
           hallmark3 = c('0' = "#333333", '1' = "azure4"),
