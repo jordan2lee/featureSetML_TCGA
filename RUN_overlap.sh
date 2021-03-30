@@ -7,7 +7,7 @@ timestamp() {
 timestamp
 
 # declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LGGGBM' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'SKCM' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
-declare -a StringArray=('ACC')
+declare -a StringArray=('SKCM')
 
 for tumor_cohort in ${StringArray[@]}; do
   echo $tumor_cohort
@@ -34,11 +34,11 @@ for tumor_cohort in ${StringArray[@]}; do
   # 3. Create upset plots
   # Note that --headers must match order of --infile headers
   if [[ ${tumor_cohort} == 'SKCM' ]]; then
-      msize='100'
+      msize='80'
   elif [[ ${tumor_cohort} == 'SARC' ]]; then
-      msize='70'
+      msize='55'
   else
-      msize='130'
+      msize='110'
   fi
 
   # 4. Create upset and heatmap
