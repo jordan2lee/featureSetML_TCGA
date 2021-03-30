@@ -140,10 +140,10 @@ for (prefix in platforms){
       prefix,
       args$cancer,
       models['JADBIO'],
-      models['CForest'],
+      models['CloudForest'],
       models['AKLIMATE'],
       models['SubSCOPE'],
-      models['SKGrid'],
+      models['ScikitGrid'],
       yes_scale
     )
     # Save figure and exit
@@ -177,10 +177,10 @@ for (prefix in platforms){
       prefix,
       args$cancer,
       models['JADBIO'],
-      models['CForest'],
+      models['CloudForest'],
       models['AKLIMATE'],
       models['SubSCOPE'],
-      models['SKGrid'],
+      models['ScikitGrid'],
       yes_scale
     )
     mat2 <- results_list[['results_matrix']]
@@ -302,9 +302,9 @@ for (prefix in platforms){
 
       header_aklimate <- models['AKLIMATE']
       header_subscope <- models['SubSCOPE']
-      header_cforest <- models['CForest']
+      header_cforest <- models['CloudForest']
       header_jadbio <- models['JADBIO']
-      header_skgrid <- models['SKGrid']
+      header_skgrid <- models['ScikitGrid']
 
       subtype_ha <- subtype_annotation
 
@@ -330,7 +330,7 @@ for (prefix in platforms){
         # Names of Annot Bars
         annotation_label  = gt_render(
           c(
-            'Model Overlap', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid",
+            'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid",
             paste(top_NES[1], ' (n=',gene_set_size(top_NES[1]), ')', sep = ''),
             paste(top_NES[2], ' (n=',gene_set_size(top_NES[2]), ')', sep = ''),
             paste(top_NES[3], ' (n=',gene_set_size(top_NES[3]), ')', sep = ''),
@@ -351,7 +351,7 @@ for (prefix in platforms){
         # B. ft binary membership
         "AKLIMATE\nmin-max" = aklimate_minmax,
         "SubSCOPE" = subscope,
-        "CloudForest" = cforest,
+        "Cloud Forest" = cforest,
         "JADBio" = jadbio,
         "SciKitGrid" = skgrid,
 
@@ -367,7 +367,7 @@ for (prefix in platforms){
         col = list(
           'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "cadetblue1")),
           "SubSCOPE" =  c('0' = "#333333", '1' = "palegreen2"),
-          "CloudForest" =  c('0' = "#333333", '1' = "mediumpurple1"),
+          "Cloud Forest" =  c('0' = "#333333", '1' = "mediumpurple1"),
           "JADBio" = c('0' = "#333333", '1' = "#D55B5B"),
           "SciKitGrid" =  c('0' = "#333333", '1' = "#EFA9A9"),
           hallmark1 = c('0' = "#333333", '1' = "azure4"),

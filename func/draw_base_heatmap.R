@@ -98,7 +98,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       # Names of Annot Bars
       annotation_label  = gt_render(
         c(
-          'Model Overlap', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid"
+          'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid"
         )
       ),
 
@@ -114,11 +114,11 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       "AKLIMATE\nmin-max" = aklimate,
       "SubSCOPE" = subscope,
       "JADBio" = jadbio,
-      "CloudForest" = cforest,
+      "Cloud Forest" = cforest,
       "SciKitGrid" = skgrid,
       col = list(
         "JADBio" = c('0' = "#333333", '1' = "#D55B5B"),
-        "CloudForest" = c('0' = "#333333", '1' = "mediumpurple1"),
+        "Cloud Forest" = c('0' = "#333333", '1' = "mediumpurple1"),
         "AKLIMATE\nmin-max" = c('0' = "#333333", '1' = "cadetblue1"),
         "SubSCOPE" = c('0' = "#333333", '1' = "palegreen2"),
         "SciKitGrid" = c('0' = "#333333", '1' = "#EFA9A9")

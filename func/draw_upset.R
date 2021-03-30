@@ -14,6 +14,7 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
   }
   col_order <- c(col_order, 'Total')
   df_fts <- df_fts %>% relocate(all_of(col_order))
+  model_headers <- replace(model_headers, model_headers=='CloudForest', 'Cloud Forest')
   colnames(df_fts) <- c('featureID', model_headers, 'Total')
 
   # Move index col and rm non model cols

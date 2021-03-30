@@ -48,7 +48,7 @@ for tumor_cohort in ${StringArray[@]}; do
       --max_ftsize ${msize} \
       --outdir_upset data/figure_panel_a \
       --outdir_ht ../figure_panel_b \
-      --input_team_display SKGrid,JADBIO,CForest,SubSCOPE,AKLIMATE
+      --input_team_display ScikitGrid,JADBIO,CloudForest,SubSCOPE,AKLIMATE
   echo 'completed heatmap'
 
   # 5. Clean up workspace
