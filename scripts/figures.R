@@ -27,6 +27,7 @@ parser$add_argument('-m', '--max_ftsize', type='integer', help='upset plot max v
 parser$add_argument('-upset', '--outdir_upset', type='character', help='output dir for upset plots')
 parser$add_argument('-os', '--outdir_ht', type='character', help='supplemental dir for heatmap plots')
 parser$add_argument('-t', '--input_team_display', type='character', help='desired team order in plots, but in reverse order')
+parser$add_argument('-s', '--show_features', action='store_true', default=FALSE, help='boolean if show features on heatmap, include flag if want to see figures')
 args <- parser$parse_args()
 
 ######
@@ -73,9 +74,6 @@ imp_aklimate <- fread(
 
 # C. Load Mauro's hallmark ranks for all cancer cohorts
 load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
-
-
-
 
 ###### PART 1: UPSET PLOT ######
 upset_fig <- get_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
@@ -388,7 +386,7 @@ for (prefix in platforms){
       plat <- unlist(strsplit(prefix, ':'))[2]
       #if z scores > add to heatmap legend
       if ( prefix %in% yes_scale ){
-      # if ( plat == 'METH' || plat == 'GEXP' || plat == 'MIR' ){
+      # if ( plat == 'GEXP' || plat == 'MIR' ){
         main_ht_name = paste(plat, 'z-score', sep='\n')
         fig <- Heatmap(
           mat2, #each col will have mean 0, sd 1
@@ -398,7 +396,7 @@ for (prefix in platforms){
           cluster_rows = FALSE,
           cluster_columns = FALSE,
           show_row_names = FALSE,
-          show_column_names = FALSE,
+          show_column_names = args$show_features,
           column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
           column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
           row_title = paste('Samples (n=', ht_rows, ')', sep=''),
@@ -422,7 +420,7 @@ for (prefix in platforms){
           cluster_rows = FALSE,
           cluster_columns = FALSE,
           show_row_names = FALSE,
-          show_column_names = FALSE,
+          show_column_names = args$show_features,
           column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
           column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
           row_title = paste('Samples (n=', ht_rows, ')', sep=''),
@@ -443,7 +441,7 @@ for (prefix in platforms){
           cluster_rows = FALSE,
           cluster_columns = FALSE,
           show_row_names = FALSE,
-          show_column_names = FALSE,
+          show_column_names = args$show_features,
           column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
           column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
           row_title = paste('Samples (n=', ht_rows, ')', sep=''),
@@ -463,7 +461,7 @@ for (prefix in platforms){
           cluster_rows = FALSE,
           cluster_columns = FALSE,
           show_row_names = FALSE,
-          show_column_names = FALSE,
+          show_column_names = args$show_features,
           column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
           column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
           row_title = paste('Samples (n=', ht_rows, ')', sep=''),
@@ -477,22 +475,40 @@ for (prefix in platforms){
         )
       }
       # Set up saving fig packet
-      tiff(
-        paste(
-          args$cancer,
-          '_heatmap_',
-          unlist(strsplit(prefix, ':'))[2],
-          '.tiff',
-          sep=''
-        ),
-        width = 2400,
-        height = 1200,
-        res = 200,
-        compression = "none"
-      )
-      draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
-      dev.off()
-
+      if (args$show_features == TRUE){
+        tiff(
+          paste(
+            args$cancer,
+            '_heatmap_',
+            unlist(strsplit(prefix, ':'))[2],
+            '_NAMES',
+            '.tiff',
+            sep=''
+          ),
+          width = 2400,
+          height = 1200,
+          res = 200,
+          compression = "none"
+        )
+        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+        dev.off()
+      } else {
+        tiff(
+          paste(
+            args$cancer,
+            '_heatmap_',
+            unlist(strsplit(prefix, ':'))[2],
+            '.tiff',
+            sep=''
+          ),
+          width = 2400,
+          height = 1200,
+          res = 200,
+          compression = "none"
+        )
+        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+        dev.off()
+    }
       # Save tsv of heatmap data
       write.table(mat2, file =paste(args$cancer, '_matrix_heatmap_', unlist(strsplit(prefix, ':'))[2], '.tsv', sep = ''), sep='\t', row.names=TRUE, col.names = TRUE)
     } else {
