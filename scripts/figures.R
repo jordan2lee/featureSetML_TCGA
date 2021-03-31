@@ -197,7 +197,7 @@ for (prefix in platforms){
       # 1. Prep: look up if in hallmark mappings table
       n_hallmarks <- c()
       pooled_hallmarks <- c()
-
+      symbols <- c()
       if (prefix == 'N:GEXP'){
         for (feature in ftnames_order){
           # 1. Preprocess - to gene symbol
@@ -208,6 +208,8 @@ for (prefix in platforms){
           # Multiple Hallmarks
           n_hallmarks <- c(n_hallmarks, length(halls))
           pooled_hallmarks <- c(pooled_hallmarks, halls)
+          # TODO dev for symbol reporting on ht
+          symbols <- c(symbols, GENE)
         }
       } else if (prefix == 'N:METH' || prefix == 'B:MUTA' || prefix == 'I:CNVR'){
         for (feature in ftnames_order){
@@ -403,6 +405,7 @@ for (prefix in platforms){
           row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
           right_annotation = subtype_ha,
           bottom_annotation = col_annot,
+          # top_annotation = HeatmapAnnotation(highlight_fts = anno_mark(at = c(4,6,12,17,28,31,37,38,43,49,54), labels = symbols[c(4,6,12,17,28,31,37,38,43,49,54)]),annotation_width=unit(1, 'mm')), #HeatmapAnnotation(foo = anno_mark(at = c(1:n_fts), labels = symbols),annotation_width=unit(1, 'mm')),
           row_title_side = "right",
           use_raster = TRUE,
           na_col = 'white',
