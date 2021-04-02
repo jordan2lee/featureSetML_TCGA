@@ -407,7 +407,9 @@ for (prefix in platforms){
           for (i in seq(1, length(mat_fts))){
             f <- mat_fts[i]
             if (f %in% pam == TRUE){
-              in_pam <- c(in_pam, i)
+              in_pam <- c(in_pam, "*")
+            } else {
+              in_pam <- c(in_pam, '')
             }
           }
         }

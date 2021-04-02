@@ -124,8 +124,8 @@ get_top_annot <- function(k){
   #' and heatmap will plot without gene names shown
   l1 <- list(
     'BRCA_GEXP' = HeatmapAnnotation(
+      in_pam = anno_text(in_pam, just = "center", gp = gpar(fontfamily = 'sans')),
       highlight_fts = anno_mark(at = c(4,6,12,17,28,31,37,38,43,49,54), labels = symbols[c(4,6,12,17,28,31,37,38,43,49,54)]),
-      in_pam = anno_mark(at = in_pam, labels = rep('*', length(in_pam))),
       annotation_width=unit(1, 'mm'))
   )
   return(l1[[k]])
