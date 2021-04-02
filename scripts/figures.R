@@ -75,6 +75,11 @@ imp_aklimate <- fread(
 # C. Load Mauro's hallmark ranks for all cancer cohorts
 load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
 
+# D. PAM50 for breast cancer
+f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/brca_pam50_hits.tsv'
+pam <- fread(f) %>% as.data.frame(row.names=1)
+pam <- pam %>% select(-V1) %>% colnames()
+
 ###### PART 1: UPSET PLOT ######
 upset_fig <- get_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
 setwd(args$outdir_upset)
@@ -390,6 +395,23 @@ for (prefix in platforms){
       #if z scores > add to heatmap legend
       if ( prefix %in% yes_scale ){
       # if ( plat == 'GEXP' || plat == 'MIR' ){
+
+        ######
+        # Set up for PAM if BRCA
+        #####
+        # otherwise in_pam == NULL
+        if (args$cancer == 'BRCA'){
+          mat_fts  <- colnames(mat2)
+          # Mark if ft is in PAM50
+          in_pam <- c()
+          for (i in seq(1, length(mat_fts))){
+            f <- mat_fts[i]
+            if (f %in% pam == TRUE){
+              in_pam <- c(in_pam, i)
+            }
+          }
+        }
+
         main_ht_name = paste(plat, 'z-score', sep='\n')
         fig <- Heatmap(
           mat2, #each col will have mean 0, sd 1
@@ -406,7 +428,7 @@ for (prefix in platforms){
           row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
           right_annotation = subtype_ha,
           bottom_annotation = col_annot,
-          top_annotation = get_symbols(paste(args$cancer, plat, sep='_')),
+          top_annotation = get_top_annot(paste(args$cancer, plat, sep='_')), # TODO temp once done combine with astrick
           row_title_side = "right",
           use_raster = TRUE,
           na_col = 'white',
