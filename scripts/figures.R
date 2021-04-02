@@ -386,6 +386,7 @@ for (prefix in platforms){
       ht_rows <- nrow(mat2)
       ht_cols <- ncol(mat2)
       plat <- unlist(strsplit(prefix, ':'))[2]
+      col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
       #if z scores > add to heatmap legend
       if ( prefix %in% yes_scale ){
       # if ( plat == 'GEXP' || plat == 'MIR' ){
@@ -399,7 +400,7 @@ for (prefix in platforms){
           cluster_columns = FALSE,
           show_row_names = FALSE,
           show_column_names = args$show_features,
-          column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
+          column_title = col_title,
           column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
           row_title = paste('Samples (n=', ht_rows, ')', sep=''),
           row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
@@ -424,7 +425,7 @@ for (prefix in platforms){
           cluster_columns = FALSE,
           show_row_names = FALSE,
           show_column_names = args$show_features,
-          column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
+          column_title = col_title,
           column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
           row_title = paste('Samples (n=', ht_rows, ')', sep=''),
           row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
@@ -445,7 +446,7 @@ for (prefix in platforms){
           cluster_columns = FALSE,
           show_row_names = FALSE,
           show_column_names = args$show_features,
-          column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
+          column_title = col_title,
           column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
           row_title = paste('Samples (n=', ht_rows, ')', sep=''),
           row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
@@ -465,7 +466,7 @@ for (prefix in platforms){
           cluster_columns = FALSE,
           show_row_names = FALSE,
           show_column_names = args$show_features,
-          column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
+          column_title = col_title,
           column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
           row_title = paste('Samples (n=', ht_rows, ')', sep=''),
           row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
