@@ -365,11 +365,11 @@ for (prefix in platforms){
         hallmark5 = vals_5_NES,
 
         col = list(
-          'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "cadetblue1")),
-          "SubSCOPE" =  c('0' = "#333333", '1' = "palegreen2"),
-          "Cloud Forest" =  c('0' = "#333333", '1' = "mediumpurple1"),
-          "JADBio" = c('0' = "#333333", '1' = "#D55B5B"),
-          "SciKitGrid" =  c('0' = "#333333", '1' = "#EFA9A9"),
+          'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
+          "SubSCOPE" =  c('0' = "#333333", '1' = "#AEFEB0"),
+          "Cloud Forest" =  c('0' = "#333333", '1' = "#BFBFFF"),
+          "JADBio" = c('0' = "#333333", '1' = "#FBBD91"),
+          "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF"),
           hallmark1 = c('0' = "#333333", '1' = "azure4"),
           hallmark2 = c('0' = "#333333", '1' = "azure4"),
           hallmark3 = c('0' = "#333333", '1' = "azure4"),
