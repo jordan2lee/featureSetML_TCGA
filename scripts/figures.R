@@ -269,7 +269,7 @@ for (prefix in platforms){
         for (i in seq(1, length(ftnames_order))){
           f <- ftnames_order[i]
           if (f %in% pam == TRUE){
-            in_pam <- c(in_pam, "*")
+            in_pam <- c(in_pam, "+")
           } else {
             in_pam <- c(in_pam, '')
           }
@@ -369,7 +369,7 @@ for (prefix in platforms){
         gap = unit(c(1,0,0,0,0,1,0,0,0,0), 'mm')
       )
 
-      # Plot
+      # prepare for plotting
       ht_rows <- nrow(mat2)
       ht_cols <- ncol(mat2)
       plat <- unlist(strsplit(prefix, ':'))[2]
