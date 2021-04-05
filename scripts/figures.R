@@ -20,6 +20,7 @@ source('func/cohort_config.R')
 source('func/prep_for_heatmap.R')
 source('func/draw_base_heatmap.R')
 source('func/draw_upset.R')
+source('func/save_fig.R')
 parser <- ArgumentParser()
 parser$add_argument('-min', '--min_n_team_overlap', type='character', help='min number of teams to show overlaps on all heatmaps')
 parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
@@ -83,13 +84,8 @@ pam <- pam %>% select(-V1) %>% colnames()
 ###### PART 1: UPSET PLOT ######
 upset_fig <- get_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
 setwd(args$outdir_upset)
-tiff(
-  paste('upsetplot_', args$cancer, '.tiff', sep=''),
-  width = 1200,
-  height = 900,
-  res = 200,
-  compression = "none"
-)
+image_name <- paste('upsetplot_', args$cancer, '.tiff', sep='')
+image_capture(image_name)
 upset_fig
 dev.off()
 print('completed upset plot - mode distinct')
@@ -154,19 +150,8 @@ for (prefix in platforms){
     print('in mir loop')
     # If not null fig then save
     if (is.null(figure) == FALSE){
-      tiff(
-        paste(
-          args$cancer,
-          '_heatmap_basic_',
-          unlist(strsplit(prefix, ':'))[2],
-          '.tiff',
-          sep=''
-        ),
-        width = 2400,
-        height = 1200,
-        res = 200,
-        compression = "none"
-      )
+      image_name <- paste(args$cancer,'_heatmap_basic_',unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
+      image_capture(image_name)
       draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
       # print(figure)
       dev.off()
@@ -231,19 +216,8 @@ for (prefix in platforms){
       }
 
       # 2. Plot fig: How many hallmarks is a feature associated with?
-      tiff(
-        paste(
-          args$cancer,
-          '_bars_ft2hall_',
-          unlist(strsplit(prefix, ':'))[2],
-          '.tiff',
-          sep=''
-        ),
-        width = 2400,
-        height = 1200,
-        res = 200,
-        compression = "none"
-      )
+      image_name <- paste(args$cancer, '_bars_ft2hall_', unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
+      image_capture(image_name)
       df2 <- table(n_hallmarks) %>% as.data.frame()
       colnames(df2)<- c('nHallmarks', 'Freq')
       p <- ggplot(data=df2, aes(x=nHallmarks, y=Freq, fill='blue')) +
@@ -255,19 +229,8 @@ for (prefix in platforms){
       dev.off()
 
       # 3. Plot fig: What hallmarks are fts most often associated with?
-      tiff(
-        paste(
-          args$cancer,
-          '_bars_hall_',
-          unlist(strsplit(prefix, ':'))[2],
-          '.tiff',
-          sep=''
-        ),
-        width = 2400,
-        height = 1200,
-        res = 200,
-        compression = "none"
-      )
+      image_name <- paste(args$cancer, '_bars_hall_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
+      image_capture(image_name)
       df2 <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
       # If there are no hallmarks
       if (nrow(df2) == 0 ){
@@ -504,36 +467,13 @@ for (prefix in platforms){
       }
       # Set up saving fig packet
       if (args$show_features == TRUE){
-        tiff(
-          paste(
-            args$cancer,
-            '_heatmap_',
-            unlist(strsplit(prefix, ':'))[2],
-            '_NAMES',
-            '.tiff',
-            sep=''
-          ),
-          width = 2400,
-          height = 1200,
-          res = 200,
-          compression = "none"
-        )
+        image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '_NAMES', '.tiff', sep='')
+        image_capture(image_name)
         draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
         dev.off()
       } else {
-        tiff(
-          paste(
-            args$cancer,
-            '_heatmap_',
-            unlist(strsplit(prefix, ':'))[2],
-            '.tiff',
-            sep=''
-          ),
-          width = 2400,
-          height = 1200,
-          res = 200,
-          compression = "none"
-        )
+        image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
+        image_capture(image_name)
         draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
         dev.off()
     }
