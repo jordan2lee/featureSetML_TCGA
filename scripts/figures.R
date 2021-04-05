@@ -374,9 +374,8 @@ for (prefix in platforms){
       ht_cols <- ncol(mat2)
       plat <- unlist(strsplit(prefix, ':'))[2]
       col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
-      #if z scores > add to heatmap legend
 
-      # if gexp or mir
+      # Create fig object
       if ( prefix %in% yes_scale ){
         main_ht_name = paste(plat, 'z-score', sep='\n')
         if (prefix == 'N:MIR' ){
@@ -384,31 +383,7 @@ for (prefix in platforms){
         } else if (prefix == 'N:GEXP') {
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
         }
-
-        # fig <- Heatmap(
-        #   mat2, #each col will have mean 0, sd 1
-        #   # width = unit(10, 'cm'),
-        #   # height = unit(10, 'cm'),
-        #   name = main_ht_name,
-        #   cluster_rows = FALSE,
-        #   cluster_columns = FALSE,
-        #   show_row_names = FALSE,
-        #   show_column_names = args$show_features,
-        #   column_title = col_title,
-        #   column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
-        #   row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-        #   row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
-        #   right_annotation = subtype_ha,
-        #   bottom_annotation = col_annot,
-        #   top_annotation = get_top_annot(paste(args$cancer, plat, sep='_')), # TODO temp once done combine with astrick
-        #   row_title_side = "right",
-        #   use_raster = TRUE,
-        #   na_col = 'white',
-        #   heatmap_legend_param = list(title = main_ht_name),
-        #   col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
-        # )
       } else if (plat == 'MUTA' || plat == 'METH' || plat == 'CNVR'){
-        print('########## check9')
         fig <- get_main_heatmap(plat, plat, args$cancer)
       }
 
