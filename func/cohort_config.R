@@ -118,7 +118,7 @@ get_ymax_upset <- function(cancer){
   return(l1[[cancer]])
 }
 
-get_top_annot <- function(k){
+get_top_annot <- function(k, in_pam){
   #' Gene indcies to show on heatmap
   #' If input cancer not in list then will return NULL
   #' and heatmap will plot without gene names shown

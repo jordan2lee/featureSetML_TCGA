@@ -21,6 +21,7 @@ source('func/prep_for_heatmap.R')
 source('func/draw_base_heatmap.R')
 source('func/draw_upset.R')
 source('func/save_fig.R')
+source('func/draw_main_heatmap.R')
 parser <- ArgumentParser()
 parser$add_argument('-min', '--min_n_team_overlap', type='character', help='min number of teams to show overlaps on all heatmaps')
 parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
@@ -214,7 +215,6 @@ for (prefix in platforms){
       } else if (prefix == 'N:MIR'){
         print('MIR fts will not be mapped to hallmarks')
       }
-
       # 2. Plot fig: How many hallmarks is a feature associated with?
       image_name <- paste(args$cancer, '_bars_ft2hall_', unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
       image_capture(image_name)
@@ -257,6 +257,25 @@ for (prefix in platforms){
           coord_flip()
         print(p)
         dev.off()
+      }
+
+      ######
+      # Set up for PAM if BRCA
+      #####
+      # otherwise in_pam == NULL
+      # Mark if ft is in PAM50
+      if (args$cancer == 'BRCA'){
+        in_pam <- c()
+        for (i in seq(1, length(ftnames_order))){
+          f <- ftnames_order[i]
+          if (f %in% pam == TRUE){
+            in_pam <- c(in_pam, "*")
+          } else {
+            in_pam <- c(in_pam, '')
+          }
+        }
+      } else {
+        in_pam = NULL
       }
 
 
@@ -356,115 +375,43 @@ for (prefix in platforms){
       plat <- unlist(strsplit(prefix, ':'))[2]
       col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
       #if z scores > add to heatmap legend
-      if ( prefix %in% yes_scale ){
-      # if ( plat == 'GEXP' || plat == 'MIR' ){
 
-        ######
-        # Set up for PAM if BRCA
-        #####
-        # otherwise in_pam == NULL
-        if (args$cancer == 'BRCA'){
-          mat_fts  <- colnames(mat2)
-          # Mark if ft is in PAM50
-          in_pam <- c()
-          for (i in seq(1, length(mat_fts))){
-            f <- mat_fts[i]
-            if (f %in% pam == TRUE){
-              in_pam <- c(in_pam, "*")
-            } else {
-              in_pam <- c(in_pam, '')
-            }
-          }
+      # if gexp or mir
+      if ( prefix %in% yes_scale ){
+        main_ht_name = paste(plat, 'z-score', sep='\n')
+        if (prefix == 'N:MIR' ){
+          fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
+        } else if (prefix == 'N:GEXP') {
+          fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
         }
 
-        main_ht_name = paste(plat, 'z-score', sep='\n')
-        fig <- Heatmap(
-          mat2, #each col will have mean 0, sd 1
-          # width = unit(10, 'cm'),
-          # height = unit(10, 'cm'),
-          name = main_ht_name,
-          cluster_rows = FALSE,
-          cluster_columns = FALSE,
-          show_row_names = FALSE,
-          show_column_names = args$show_features,
-          column_title = col_title,
-          column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
-          row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-          row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
-          right_annotation = subtype_ha,
-          bottom_annotation = col_annot,
-          top_annotation = get_top_annot(paste(args$cancer, plat, sep='_')), # TODO temp once done combine with astrick
-          row_title_side = "right",
-          use_raster = TRUE,
-          na_col = 'white',
-          heatmap_legend_param = list(
-            title = main_ht_name
-          ),
-          col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
-        )
-      } else if (plat == 'MUTA'){
-        fig <- Heatmap(
-          mat2, #each col will have mean 0, sd 1
-          # width = unit(10, 'cm'),
-          # height = unit(10, 'cm'),
-          name = plat,
-          cluster_rows = FALSE,
-          cluster_columns = FALSE,
-          show_row_names = FALSE,
-          show_column_names = args$show_features,
-          column_title = col_title,
-          column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
-          row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-          row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
-          right_annotation = subtype_ha,
-          bottom_annotation = col_annot,
-          row_title_side = "right",
-          use_raster = TRUE,
-          na_col = 'white',
-          col = structure(c('blue','red'), names = c(0, 1))
-        )
-      } else if (plat == 'METH'){
-        fig <- Heatmap(
-          mat2, #each col will have mean 0, sd 1
-          # width = unit(10, 'cm'),
-          # height = unit(10, 'cm'),
-          name = plat,
-          cluster_rows = FALSE,
-          cluster_columns = FALSE,
-          show_row_names = FALSE,
-          show_column_names = args$show_features,
-          column_title = col_title,
-          column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
-          row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-          row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
-          right_annotation = subtype_ha,
-          bottom_annotation = col_annot,
-          row_title_side = "right",
-          use_raster = TRUE,
-          na_col = 'white',
-        )
-      } else if (plat == 'CNVR') {
-        fig <- Heatmap(
-          mat2, #each col will have mean 0, sd 1
-          # width = unit(10, 'cm'),
-          # height = unit(10, 'cm'),
-          name = plat,
-          cluster_rows = FALSE,
-          cluster_columns = FALSE,
-          show_row_names = FALSE,
-          show_column_names = args$show_features,
-          column_title = col_title,
-          column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
-          row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-          row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
-          right_annotation = subtype_ha,
-          bottom_annotation = col_annot,
-          row_title_side = "right",
-          use_raster = TRUE,
-          na_col = 'white',
-          col = structure(c('blue', 'white', 'red'), names = c(-1, 0, 1))
-        )
+        # fig <- Heatmap(
+        #   mat2, #each col will have mean 0, sd 1
+        #   # width = unit(10, 'cm'),
+        #   # height = unit(10, 'cm'),
+        #   name = main_ht_name,
+        #   cluster_rows = FALSE,
+        #   cluster_columns = FALSE,
+        #   show_row_names = FALSE,
+        #   show_column_names = args$show_features,
+        #   column_title = col_title,
+        #   column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+        #   row_title = paste('Samples (n=', ht_rows, ')', sep=''),
+        #   row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+        #   right_annotation = subtype_ha,
+        #   bottom_annotation = col_annot,
+        #   top_annotation = get_top_annot(paste(args$cancer, plat, sep='_')), # TODO temp once done combine with astrick
+        #   row_title_side = "right",
+        #   use_raster = TRUE,
+        #   na_col = 'white',
+        #   heatmap_legend_param = list(title = main_ht_name),
+        #   col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
+        # )
+      } else if (plat == 'MUTA' || plat == 'METH' || plat == 'CNVR'){
+        print('########## check9')
+        fig <- get_main_heatmap(plat, plat, args$cancer)
       }
+
       # Set up saving fig packet
       if (args$show_features == TRUE){
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '_NAMES', '.tiff', sep='')
