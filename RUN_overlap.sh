@@ -10,7 +10,7 @@ declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC
 
 for tumor_cohort in ${StringArray[@]}; do
   echo $tumor_cohort
-
+  #
   # 1. Format feature lists of groups (best performing model)
   python scripts/get_fts.py \
       --tumor ${tumor_cohort} \
@@ -33,20 +33,30 @@ for tumor_cohort in ${StringArray[@]}; do
   # 3. Create upset plots
   # Note that --headers must match order of --infile headers
   if [[ ${tumor_cohort} == 'SKCM' ]]; then
-      msize='100'
+      msize='80'
   elif [[ ${tumor_cohort} == 'SARC' ]]; then
-      msize='70'
+      msize='55'
   else
-      msize='130'
+      msize='110'
   fi
 
-  # 4. Create upset and heatmap
+  # 4. Create upset and heatmap. once without and once with ft names displayed on ht
   Rscript scripts/figures.R \
       --cancer ${tumor_cohort} \
       --min_n_team_overlap 2 \
       --max_ftsize ${msize} \
       --outdir_upset data/figure_panel_a \
-      --outdir_ht ../figure_panel_b
+      --outdir_ht ../figure_panel_b \
+      --input_team_display ScikitGrid,JADBIO,CloudForest,SubSCOPE,AKLIMATE
+
+  Rscript scripts/figures.R \
+      --show_features \
+      --cancer ${tumor_cohort} \
+      --min_n_team_overlap 2 \
+      --max_ftsize ${msize} \
+      --outdir_upset data/figure_panel_a \
+      --outdir_ht ../figure_panel_b \
+      --input_team_display ScikitGrid,JADBIO,CloudForest,SubSCOPE,AKLIMATE
   echo 'completed heatmap'
 
   # 5. Clean up workspace

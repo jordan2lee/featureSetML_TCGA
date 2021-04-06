@@ -50,7 +50,7 @@ This outputs 3 file per team per cancer in `notebooks/wip/wip_figures/`
 
 ## 4. Team Overlap Analysis
 
-Last updated: 3/22/21
+Last updated: 4/2/21
 
 Two parts:
 
@@ -68,7 +68,7 @@ Purpose 4.2: create heatmap of all features of best models and cluster based on 
 
 Cancers: All 26 cancer cohorts
 
-**Implements a feature set threshold of <1K features. Feature sets with larger sizes will not be considered for "top model"**
+**Implements a feature set threshold of <=100 features. Feature sets with larger sizes will not be considered for "top model"**
 
 First, save a local file containing hallmark gene sets
 

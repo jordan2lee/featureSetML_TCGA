@@ -3,14 +3,24 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
   suppressPackageStartupMessages(library(data.table))
   suppressPackageStartupMessages(library(ComplexUpset))
   suppressPackageStartupMessages(library(ggplot2))
-  # Read in file
-  df_fts <- fread(paste('data/figure_panel_b/', cancer, '_fts_by_TEAM.tsv', sep=''))%>% as.data.frame()
+
+  # Upset df col order mataches user input
+  models <- model2team(df_fts)
+  model_headers <- unlist(as.vector(strsplit(model_headers, ",")))
+  col_order <- c('featureID')
+  for (m in model_headers){
+    exact_name <- models[[m]]
+    col_order <- c(col_order, exact_name)
+  }
+  col_order <- c(col_order, 'Total')
+  df_fts <- df_fts %>% relocate(all_of(col_order))
+  model_headers <- replace(model_headers, model_headers=='CloudForest', 'Cloud Forest')
+  colnames(df_fts) <- c('featureID', model_headers, 'Total')
 
   # Move index col and rm non model cols
   row.names(df_fts) <- df_fts$featureID
   df_fts <- df_fts[,!names(df_fts) %in% c('featureID', 'Total')]
-  model_headers <- unlist(as.vector(strsplit(model_headers, ",")))
-  colnames(df_fts) <- model_headers
+
   # Transform matrix for input into upset
   df_fts[model_headers] = df_fts[model_headers] == 1
 
@@ -21,34 +31,6 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     col_vals <- c(col_vals, shorten)
   }
   df_fts['Platform']<- factor(col_vals, levels = c('MUTA', 'CNVR', 'METH', 'GEXP', 'MIR'))
-
-  # Set up highlighted queries
-  highlighted <- list(
-    upset_query(intersect=c('SKGrid', 'AKLIMATE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'CForest'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('CForest', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix')),
-    upset_query(intersect=c('SKGrid', 'AKLIMATE', 'CForest', 'JADBIO', 'SubSCOPE'), color='#7C3F11', only_components=c('intersections_matrix'))
-  )
   # Create figure object
   upset_plot <- upset(
     # Main plot
@@ -56,26 +38,31 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     intersect = model_headers,
     mode = 'distinct',
     name='',
-    width_ratio=0.3,
-    height_ratio = 0.75,
+    width_ratio= 0.5, #0.3,
+    height_ratio = 0.5, #0.75,
     wrap=TRUE,
     guides = 'over',
-    sort_intersections_by = 'degree',
-    sort_intersections = 'ascending',
-    queries= highlighted,
+    sort_intersections_by = c('degree','cardinality'),
+    # sort_intersections = 'descending',
+    sort_sets =FALSE,
+    # stripes = c('lightgrey', 'darkgrey'),
     # Set Size plot
     set_sizes=(
       upset_set_size(
         # Color set size plot
         geom=geom_bar(
             aes(fill=Platform, x=group),
-            width=0.8
+            width=.90
         ),
         position = 'right',
       ) +
-      theme(axis.ticks.x=element_line()) +
+      ylab('Set Size') +
+      theme(
+        axis.ticks.x=element_line(colour="darkgrey"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+      ) +
       geom_text(aes(label=..count..), hjust = -0.25,  size=rel(3),stat='count') + # Set size cts
-      theme(axis.text.x=element_text(size=rel(1.125))) +  # set size x axis
       expand_limits(y=max_ftsize) + # set max x value
       scale_fill_manual(values=c('MUTA' = '#00BFFF', 'CNVR'='#00688b', 'METH'='#43CD80', 'GEXP'='#FFA500', 'MIR'='#FF7F00')) +
       theme(legend.position = "none") # no legend
@@ -85,12 +72,11 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     matrix=(
       intersection_matrix(
         geom=geom_point(size = 1.75), # dot size
-        segment = geom_segment(color='#7C3F11'),
         outline_color = list(active = "white", inactive = "grey70")
       )
     ),
   base_annotations=list(
-      'Intersection size'=intersection_size(
+      'Feature Set Size'=intersection_size(
           counts=TRUE,
           bar_number_threshold = 1,
           mapping=aes(fill=Platform)
@@ -103,6 +89,12 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
         )
       )
       + coord_cartesian(ylim=c(0,ymax)) #manually adjust the y limits
+      + theme(
+        # axis.line.y = element_line(color="darkgrey", size=0.4),
+        axis.ticks.y=element_line(colour="darkgrey"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+      )
 
   ),
   ) +

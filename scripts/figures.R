@@ -20,12 +20,16 @@ source('func/cohort_config.R')
 source('func/prep_for_heatmap.R')
 source('func/draw_base_heatmap.R')
 source('func/draw_upset.R')
+source('func/save_fig.R')
+source('func/draw_main_heatmap.R')
 parser <- ArgumentParser()
 parser$add_argument('-min', '--min_n_team_overlap', type='character', help='min number of teams to show overlaps on all heatmaps')
 parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
 parser$add_argument('-m', '--max_ftsize', type='integer', help='upset plot max value for team ft set size plot')
 parser$add_argument('-upset', '--outdir_upset', type='character', help='output dir for upset plots')
 parser$add_argument('-os', '--outdir_ht', type='character', help='supplemental dir for heatmap plots')
+parser$add_argument('-t', '--input_team_display', type='character', help='desired team order in plots, but in reverse order')
+parser$add_argument('-s', '--show_features', action='store_true', default=FALSE, help='boolean if show features on heatmap, include flag if want to see figures')
 args <- parser$parse_args()
 
 ######
@@ -73,22 +77,16 @@ imp_aklimate <- fread(
 # C. Load Mauro's hallmark ranks for all cancer cohorts
 load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
 
-
-
-
-
+# D. PAM50 for breast cancer
+f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/brca_pam50_hits.tsv'
+pam <- fread(f) %>% as.data.frame(row.names=1)
+pam <- pam %>% select(-V1) %>% colnames()
 
 ###### PART 1: UPSET PLOT ######
-# upset_fig <- get_upset(cancer, outdir, outname, model_headers, max_ftsize)
-upset_fig <- get_upset(args$cancer, 'JADBIO,CForest,AKLIMATE,SubSCOPE,SKGrid', args$max_ftsize, get_ymax_upset(args$cancer))
+upset_fig <- get_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
 setwd(args$outdir_upset)
-tiff(
-  paste('upsetplot_', args$cancer, '.tiff', sep=''),
-  width = 1000,
-  height = 1200,
-  res = 200,
-  compression = "none"
-)
+image_name <- paste('upsetplot_', args$cancer, '.tiff', sep='')
+image_capture(image_name)
 upset_fig
 dev.off()
 print('completed upset plot - mode distinct')
@@ -142,10 +140,10 @@ for (prefix in platforms){
       prefix,
       args$cancer,
       models['JADBIO'],
-      models['CForest'],
+      models['CloudForest'],
       models['AKLIMATE'],
       models['SubSCOPE'],
-      models['SKGrid'],
+      models['ScikitGrid'],
       yes_scale
     )
     # Save figure and exit
@@ -153,19 +151,8 @@ for (prefix in platforms){
     print('in mir loop')
     # If not null fig then save
     if (is.null(figure) == FALSE){
-      tiff(
-        paste(
-          args$cancer,
-          '_heatmap_basic_',
-          unlist(strsplit(prefix, ':'))[2],
-          '.tiff',
-          sep=''
-        ),
-        width = 2400,
-        height = 1200,
-        res = 200,
-        compression = "none"
-      )
+      image_name <- paste(args$cancer,'_heatmap_basic_',unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
+      image_capture(image_name)
       draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
       # print(figure)
       dev.off()
@@ -179,10 +166,10 @@ for (prefix in platforms){
       prefix,
       args$cancer,
       models['JADBIO'],
-      models['CForest'],
+      models['CloudForest'],
       models['AKLIMATE'],
       models['SubSCOPE'],
-      models['SKGrid'],
+      models['ScikitGrid'],
       yes_scale
     )
     mat2 <- results_list[['results_matrix']]
@@ -201,7 +188,7 @@ for (prefix in platforms){
       # 1. Prep: look up if in hallmark mappings table
       n_hallmarks <- c()
       pooled_hallmarks <- c()
-
+      symbols <- c()
       if (prefix == 'N:GEXP'){
         for (feature in ftnames_order){
           # 1. Preprocess - to gene symbol
@@ -212,6 +199,8 @@ for (prefix in platforms){
           # Multiple Hallmarks
           n_hallmarks <- c(n_hallmarks, length(halls))
           pooled_hallmarks <- c(pooled_hallmarks, halls)
+          # TODO dev for symbol reporting on ht
+          symbols <- c(symbols, GENE)
         }
       } else if (prefix == 'N:METH' || prefix == 'B:MUTA' || prefix == 'I:CNVR'){
         for (feature in ftnames_order){
@@ -226,21 +215,9 @@ for (prefix in platforms){
       } else if (prefix == 'N:MIR'){
         print('MIR fts will not be mapped to hallmarks')
       }
-
       # 2. Plot fig: How many hallmarks is a feature associated with?
-      tiff(
-        paste(
-          args$cancer,
-          '_bars_ft2hall_',
-          unlist(strsplit(prefix, ':'))[2],
-          '.tiff',
-          sep=''
-        ),
-        width = 2400,
-        height = 1200,
-        res = 200,
-        compression = "none"
-      )
+      image_name <- paste(args$cancer, '_bars_ft2hall_', unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
+      image_capture(image_name)
       df2 <- table(n_hallmarks) %>% as.data.frame()
       colnames(df2)<- c('nHallmarks', 'Freq')
       p <- ggplot(data=df2, aes(x=nHallmarks, y=Freq, fill='blue')) +
@@ -252,19 +229,8 @@ for (prefix in platforms){
       dev.off()
 
       # 3. Plot fig: What hallmarks are fts most often associated with?
-      tiff(
-        paste(
-          args$cancer,
-          '_bars_hall_',
-          unlist(strsplit(prefix, ':'))[2],
-          '.tiff',
-          sep=''
-        ),
-        width = 2400,
-        height = 1200,
-        res = 200,
-        compression = "none"
-      )
+      image_name <- paste(args$cancer, '_bars_hall_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
+      image_capture(image_name)
       df2 <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
       # If there are no hallmarks
       if (nrow(df2) == 0 ){
@@ -293,6 +259,25 @@ for (prefix in platforms){
         dev.off()
       }
 
+      ######
+      # Set up for PAM if BRCA
+      #####
+      # otherwise in_pam == NULL
+      # Mark if ft is in PAM50
+      if (args$cancer == 'BRCA'){
+        in_pam <- c()
+        for (i in seq(1, length(ftnames_order))){
+          f <- ftnames_order[i]
+          if (f %in% pam == TRUE){
+            in_pam <- c(in_pam, "+")
+          } else {
+            in_pam <- c(in_pam, '')
+          }
+        }
+      } else {
+        in_pam = NULL
+      }
+
 
       ######
       # Section 3: Heatmap with Hallmarks and Feature Importance (Top 5)
@@ -302,11 +287,11 @@ for (prefix in platforms){
       importance <- sort(importance, decreasing = TRUE)
       top_NES <- names(importance[1:5])
 
-      header_jadbio <- models['JADBIO']
-      header_cforest <- models['CForest']
       header_aklimate <- models['AKLIMATE']
       header_subscope <- models['SubSCOPE']
-      header_skgrid <- models['SKGrid']
+      header_cforest <- models['CloudForest']
+      header_jadbio <- models['JADBIO']
+      header_skgrid <- models['ScikitGrid']
 
       subtype_ha <- subtype_annotation
 
@@ -322,17 +307,17 @@ for (prefix in platforms){
       team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
 
       # 2. Create MinMax Values where appropriate
-      jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
-      cforest <- team_df %>% pull(header_cforest) %>% as.character()
       aklimate_minmax <- normalize_data(imp_aklimate, team_df)
       subscope <- team_df %>% pull(header_subscope) %>% as.character()
+      cforest <- team_df %>% pull(header_cforest) %>% as.character()
+      jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
       skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
       # Build annotation
       col_annot <- HeatmapAnnotation(
         # Names of Annot Bars
         annotation_label  = gt_render(
           c(
-            'Model Overlap', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid",
+            'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid",
             paste(top_NES[1], ' (n=',gene_set_size(top_NES[1]), ')', sep = ''),
             paste(top_NES[2], ' (n=',gene_set_size(top_NES[2]), ')', sep = ''),
             paste(top_NES[3], ' (n=',gene_set_size(top_NES[3]), ')', sep = ''),
@@ -352,10 +337,10 @@ for (prefix in platforms){
 
         # B. ft binary membership
         "AKLIMATE\nmin-max" = aklimate_minmax,
-        SubSCOPE = subscope,
-        CloudForest = cforest,
-        JADBio = jadbio,
-        SciKitGrid = skgrid,
+        "SubSCOPE" = subscope,
+        "Cloud Forest" = cforest,
+        "JADBio" = jadbio,
+        "SciKitGrid" = skgrid,
 
         annotation_name_rot = 0,
 
@@ -367,11 +352,11 @@ for (prefix in platforms){
         hallmark5 = vals_5_NES,
 
         col = list(
-          'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "cadetblue1")),
-          SubSCOPE =  c('0' = "#333333", '1' = "palegreen2"),
-          CloudForest =  c('0' = "#333333", '1' = "mediumpurple1"),
-          JADBio = c('0' = "#333333", '1' = "#D55B5B"),
-          SciKitGrid =  c('0' = "#333333", '1' = "#EFA9A9"),
+          'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
+          "SubSCOPE" =  c('0' = "#333333", '1' = "#AEFEB0"),
+          "Cloud Forest" =  c('0' = "#333333", '1' = "#BFBFFF"),
+          "JADBio" = c('0' = "#333333", '1' = "#FBBD91"),
+          "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF"),
           hallmark1 = c('0' = "#333333", '1' = "azure4"),
           hallmark2 = c('0' = "#333333", '1' = "azure4"),
           hallmark3 = c('0' = "#333333", '1' = "azure4"),
@@ -384,117 +369,36 @@ for (prefix in platforms){
         gap = unit(c(1,0,0,0,0,1,0,0,0,0), 'mm')
       )
 
-      # Plot
+      # prepare for plotting
       ht_rows <- nrow(mat2)
       ht_cols <- ncol(mat2)
       plat <- unlist(strsplit(prefix, ':'))[2]
-      #if z scores > add to heatmap legend
-      if ( prefix %in% yes_scale ){
-      # if ( plat == 'METH' || plat == 'GEXP' || plat == 'MIR' ){
-        main_ht_name = paste(plat, 'z-score', sep='\n')
-        fig <- Heatmap(
-          mat2, #each col will have mean 0, sd 1
-          # width = unit(10, 'cm'),
-          # height = unit(10, 'cm'),
-          name = main_ht_name,
-          cluster_rows = FALSE,
-          cluster_columns = FALSE,
-          show_row_names = FALSE,
-          show_column_names = FALSE,
-          column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
-          column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
-          row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-          row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
-          right_annotation = subtype_ha,
-          bottom_annotation = col_annot,
-          row_title_side = "right",
-          use_raster = TRUE,
-          na_col = 'white',
-          heatmap_legend_param = list(
-            title = main_ht_name
-          ),
-          col = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red'))
-        )
-      } else if (plat == 'MUTA'){
-        fig <- Heatmap(
-          mat2, #each col will have mean 0, sd 1
-          # width = unit(10, 'cm'),
-          # height = unit(10, 'cm'),
-          name = plat,
-          cluster_rows = FALSE,
-          cluster_columns = FALSE,
-          show_row_names = FALSE,
-          show_column_names = FALSE,
-          column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
-          column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
-          row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-          row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
-          right_annotation = subtype_ha,
-          bottom_annotation = col_annot,
-          row_title_side = "right",
-          use_raster = TRUE,
-          na_col = 'white',
-          col = structure(c('blue','red'), names = c(0, 1))
-        )
-      } else if (plat == 'METH'){
-        fig <- Heatmap(
-          mat2, #each col will have mean 0, sd 1
-          # width = unit(10, 'cm'),
-          # height = unit(10, 'cm'),
-          name = plat,
-          cluster_rows = FALSE,
-          cluster_columns = FALSE,
-          show_row_names = FALSE,
-          show_column_names = FALSE,
-          column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
-          column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
-          row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-          row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
-          right_annotation = subtype_ha,
-          bottom_annotation = col_annot,
-          row_title_side = "right",
-          use_raster = TRUE,
-          na_col = 'white',
-        )
-      } else if (plat == 'CNVR') {
-        fig <- Heatmap(
-          mat2, #each col will have mean 0, sd 1
-          # width = unit(10, 'cm'),
-          # height = unit(10, 'cm'),
-          name = plat,
-          cluster_rows = FALSE,
-          cluster_columns = FALSE,
-          show_row_names = FALSE,
-          show_column_names = FALSE,
-          column_title = paste('Selected Features (n=', ht_cols, ')', sep=''),
-          column_title_gp = gpar(fontsize = 11, fontface = 'bold'),
-          row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-          row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
-          right_annotation = subtype_ha,
-          bottom_annotation = col_annot,
-          row_title_side = "right",
-          use_raster = TRUE,
-          na_col = 'white',
-          col = structure(c('blue', 'white', 'red'), names = c(-1, 0, 1))
-        )
-      }
-      # Set up saving fig packet
-      tiff(
-        paste(
-          args$cancer,
-          '_heatmap_',
-          unlist(strsplit(prefix, ':'))[2],
-          '.tiff',
-          sep=''
-        ),
-        width = 2400,
-        height = 1200,
-        res = 200,
-        compression = "none"
-      )
-      draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
-      dev.off()
+      col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
 
+      # Create fig object
+      if ( prefix %in% yes_scale ){
+        main_ht_name = paste(plat, 'z-score', sep='\n')
+        if (prefix == 'N:MIR' ){
+          fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
+        } else if (prefix == 'N:GEXP') {
+          fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
+        }
+      } else if (plat == 'MUTA' || plat == 'METH' || plat == 'CNVR'){
+        fig <- get_main_heatmap(plat, plat, args$cancer)
+      }
+
+      # Set up saving fig packet
+      if (args$show_features == TRUE){
+        image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '_NAMES', '.tiff', sep='')
+        image_capture(image_name)
+        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+        dev.off()
+      } else {
+        image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
+        image_capture(image_name)
+        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+        dev.off()
+    }
       # Save tsv of heatmap data
       write.table(mat2, file =paste(args$cancer, '_matrix_heatmap_', unlist(strsplit(prefix, ':'))[2], '.tsv', sep = ''), sep='\t', row.names=TRUE, col.names = TRUE)
     } else {

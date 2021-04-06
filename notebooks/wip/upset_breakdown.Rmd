@@ -1,0 +1,31 @@
+---
+title: "Untitled"
+author: "Jordan Lee"
+date: "3/30/2021"
+output: html_document
+---
+
+```{r}
+f <- '../../data/figure_panel_b/BRCA_fts_by_TEAM.tsv'
+```
+
+```{r}
+suppressPackageStartupMessages(library('data.table'))
+suppressPackageStartupMessages(library('dplyr'))
+
+
+df <- fread(f) %>% as.data.frame()
+
+# All fts selected by at least 4 teams
+subset(df, Total ==4, select=featureID:Total)
+
+# Specific queries 1
+subset(df, AKLIMATE_BRCA_reduced_model_100_feature_set_BRCA==1 & fbedeBIC_BRCA==1, select=featureID:Total)
+
+
+# Specific queries 2
+subset(df, Total ==3, select=featureID:Total)
+
+```
+
+

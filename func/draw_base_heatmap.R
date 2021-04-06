@@ -45,6 +45,9 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     # Heatmap
     ht_rows <- nrow(mat)
     ht_cols <- ncol(mat)
+    plat <- unlist(strsplit(prefix, ':'))[2]
+    col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
+
     fig <- Heatmap(
       mat,
       name = 'first heatmap',
@@ -79,17 +82,17 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       filter(featureID %in% ftnames_order) %>%
       arrange(match(featureID, ftnames_order))
     # 2. Pull just the team of interest
-    jadbio <- team_df %>%
-      pull(header_jadbio) %>%
-      as.character()
-    cforest <- team_df %>%
-      pull(header_cforest) %>%
-      as.character()
     aklimate <- team_df %>%
       pull(header_aklimate) %>%
       as.character()
     subscope <- team_df %>%
       pull(header_subscope) %>%
+      as.character()
+    cforest <- team_df %>%
+      pull(header_cforest) %>%
+      as.character()
+    jadbio <- team_df %>%
+      pull(header_jadbio) %>%
       as.character()
     skgrid <- team_df %>%
       pull(header_skgrid) %>%
@@ -98,7 +101,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       # Names of Annot Bars
       annotation_label  = gt_render(
         c(
-          'Model Overlap', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SciKitGrid"
+          'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid"
         )
       ),
 
@@ -112,16 +115,16 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
       ),
       "AKLIMATE\nmin-max" = aklimate,
-      SubSCOPE = subscope,
-      JADBio = jadbio,
-      CloudForest = cforest,
-      SciKitGrid = skgrid,
+      "SubSCOPE" = subscope,
+      "JADBio" = jadbio,
+      "Cloud Forest" = cforest,
+      "SciKitGrid" = skgrid,
       col = list(
-        JADBio = c('0' = "#333333", '1' = "#D55B5B"),
-        CloudForest = c('0' = "#333333", '1' = "mediumpurple1"),
-        "AKLIMATE\nmin-max" = c('0' = "#333333", '1' = "cadetblue1"),
-        SubSCOPE = c('0' = "#333333", '1' = "palegreen2"),
-        SciKitGrid = c('0' = "#333333", '1' = "#EFA9A9")
+        "JADBio" = c('0' = "#333333", '1' = "#FBBD91"),
+        "Cloud Forest" = c('0' = "#333333", '1' = "#BFBFFF"),
+        "AKLIMATE\nmin-max" = c('0' = "#333333", '1' = "#BFFEFF"),
+        "SubSCOPE" = c('0' = "#333333", '1' = "#AEFEB0"),
+        "SciKitGrid" = c('0' = "#333333", '1' = "#FCC0BF")
       ),
       show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
       annotation_name_gp= gpar(fontsize = 8),
@@ -143,6 +146,8 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       # If only one feature set ht_rows/cols manually
       ht_rows <- length(mat2)
       ht_cols <- 1
+      plat <- unlist(strsplit(prefix, ':'))[2]
+      col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
 
       fig <- Heatmap(
         mat2,
@@ -156,7 +161,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         # column_order = ftnames_order, # NO ORDERING NEEDED
         show_row_names = FALSE,
         show_column_names = FALSE,
-        column_title = paste('Features (n=', ht_cols, ')', sep=''),
+        column_title = col_title,
         row_title = paste('Samples (n=', ht_rows, ')', sep=''),
         row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
         right_annotation = subtype_ha,
@@ -166,6 +171,9 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     } else {
       ht_rows <- nrow(mat2)
       ht_cols <- ncol(mat2)
+      plat <- unlist(strsplit(prefix, ':'))[2]
+      col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
+
       fig <- Heatmap(
         mat2,
         name = unlist(strsplit(prefix, ':'))[2],
@@ -178,7 +186,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         column_order = ftnames_order,
         show_row_names = FALSE,
         show_column_names = FALSE,
-        column_title = paste('Features (n=', ht_cols, ')', sep=''),
+        column_title = col_title,
         row_title = paste('Samples (n=', ht_rows, ')', sep=''),
         row_title_gp = gpar(fontsize = 11, fontface = 'bold'),
         right_annotation = subtype_ha,
