@@ -32,6 +32,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
   legend_colors <- list_legend[[plat]]
   legend_l_param <- list_l_param[[plat]]
 
+
   # Draw
   if (cancer == 'BRCA' && plat == 'GEXP'){
     fig <- Heatmap(
@@ -73,7 +74,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       use_raster = TRUE,
       na_col = 'white'
     )
-  } else if (is.null(legend_colors) == FALSE && is.null(list_l_param) == FALSE){
+  } else if (is.null(legend_l_param) == FALSE && is.null(legend_colors) == FALSE){
     fig <- Heatmap(
       mat2,
       name = ht_name,
