@@ -373,7 +373,7 @@ for (prefix in platforms){
       ht_rows <- nrow(mat2)
       ht_cols <- ncol(mat2)
       plat <- unlist(strsplit(prefix, ':'))[2]
-      col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
+      col_title = paste(title_info(plat), ' Features Selected by ≥ 2 Teams (n=', ht_cols, ')', sep='')
 
       # Create fig object
       if ( prefix %in% yes_scale ){
