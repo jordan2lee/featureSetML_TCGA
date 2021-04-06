@@ -56,6 +56,18 @@ get_colors <- function(df){
   return(color_codes)
 }
 
+get_colors_platform <- function(platform){
+  #' Input the data platform. Example string "GEXP"
+  #' Returns color code
+  colors <- list(
+    'MUTA' = '#00BFFF',
+    'CNVR' = '#00688b',
+    'METH' = '#43CD80',
+    'GEXP' = '#FFA500',
+    'MIR' = '#FF7F00'
+  )
+  return(colors[[platform]])
+}
 
 # get_platform_of_interest <- function(cancer){
 #     #' Define platform to use for hallmark heatmap

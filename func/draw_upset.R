@@ -64,7 +64,15 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
       ) +
       geom_text(aes(label=..count..), hjust = -0.25,  size=rel(3),stat='count') + # Set size cts
       expand_limits(y=max_ftsize) + # set max x value
-      scale_fill_manual(values=c('MUTA' = '#00BFFF', 'CNVR'='#00688b', 'METH'='#43CD80', 'GEXP'='#FFA500', 'MIR'='#FF7F00')) +
+      scale_fill_manual(
+        values=c(
+          'MUTA' = get_colors_platform('MUTA'),
+          'CNVR' = get_colors_platform('CNVR'),
+          'METH' = get_colors_platform('METH'),
+          'GEXP' = get_colors_platform('GEXP'),
+          'MIR' = get_colors_platform('MIR')
+        )
+      ) +
       theme(legend.position = "none") # no legend
     ),
     # Intersection matrix
@@ -83,9 +91,11 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
       )
       + scale_fill_manual(
         values=c(
-          'MUTA' = '#00BFFF', 'CNVR'='#00688b',
-          'METH'='#43CD80', 'GEXP'='#FFA500',
-          'MIR'='#FF7F00'
+          'MUTA' = get_colors_platform('MUTA'),
+          'CNVR' = get_colors_platform('CNVR'),
+          'METH' = get_colors_platform('METH'),
+          'GEXP' = get_colors_platform('GEXP'),
+          'MIR' = get_colors_platform('MIR')
         )
       )
       + coord_cartesian(ylim=c(0,ymax)) #manually adjust the y limits
