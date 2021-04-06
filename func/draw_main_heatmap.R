@@ -16,7 +16,7 @@ dev_bottom_annot <- function(k, in_pam){
   l1 <- list(
     'BRCA_GEXP' = HeatmapAnnotation(
       in_pam = anno_text(in_pam, gp = gpar(fontfamily = 'sans')),
-      annotation_width=unit(1, 'mm'),
+      # annotation_width=unit(1, 'mm'),
 
       annotation_label  = gt_render(
         c(
@@ -69,7 +69,7 @@ dev_bottom_annot <- function(k, in_pam){
       show_legend = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
       gp = gpar(fontsize = 1), # grid all col annot
       annotation_name_gp= gpar(fontsize = 8),
-      gap = unit(c(0,1,0,0,0,0,1,0,0,0,0), 'mm')
+      gap = unit(c(2,1,0,0,0,0,1,0,0,0,0), 'mm')
 
     )
   )
