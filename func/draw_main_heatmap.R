@@ -108,7 +108,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       show_row_names = FALSE,
       show_column_names = args$show_features,
       column_title = col_title,
-      column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+      column_title_gp = gpar(col = '#FFA500', fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
       row_title = paste('Samples (n=', ht_rows, ')', sep=''),
       row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
       right_annotation = subtype_ha,
