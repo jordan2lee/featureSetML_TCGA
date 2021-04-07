@@ -32,10 +32,17 @@ dev_bottom_annot <- function(k, in_pam){
       nTeams= anno_barplot(
         team_df$Total,
         bar_width=1,
-        gp = gpar(fill = 'darkgray', col = 'azure4'),
+        gp = gpar(
+          fill = 'darkgray',
+          col = 'azure4'
+        ),
         border = FALSE,
         rot = 45,
-        axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
+        axis_param = list(
+          side = "right",
+          facing='outside',
+          gp=gpar(fontsize=5)
+        ) #yaxis size
       ),
 
       # B. ft binary membership
@@ -67,8 +74,8 @@ dev_bottom_annot <- function(k, in_pam){
         hallmark5 = c('0' = "#333333", '1' = "azure4")
       ),
       show_legend = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
-      gp = gpar(fontsize = 1), # grid all col annot
-      annotation_name_gp= gpar(fontsize = 8),
+      # gp = gpar(fontsize = 1), # grid all col annot
+      annotation_name_gp= gpar(fontsize = get_gpar('annot_size')),
       gap = unit(c(2,1,0,0,0,0,1,0,0,0,0), 'mm')
 
     )
