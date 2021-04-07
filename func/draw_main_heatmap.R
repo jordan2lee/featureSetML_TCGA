@@ -74,7 +74,7 @@ dev_bottom_annot <- function(k, in_pam){
         hallmark5 = c('0' = "#333333", '1' = "azure4")
       ),
       show_legend = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
-      # gp = gpar(fontsize = 1), # grid all col annot
+      gp = gpar(fontsize = 1), # grid all col annot
       annotation_name_gp= gpar(fontsize = get_gpar('annot_size')),
       gap = unit(c(2,1,0,0,0,0,1,0,0,0,0), 'mm')
 
