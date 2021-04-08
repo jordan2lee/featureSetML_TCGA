@@ -60,7 +60,10 @@ dev_bottom_annot <- function(k, in_pam){
         axis_param = list(
           side = "right",
           facing='outside',
-          gp=gpar(fontsize=5)
+          gp=gpar(
+            fontsize=get_gpar('model_overlap_size'),
+            fontfamily = get_gpar('font_fam')
+          )
         ) #yaxis size
       ),
 
@@ -94,8 +97,11 @@ dev_bottom_annot <- function(k, in_pam){
       ),
       show_legend = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
       gp = gpar(fontsize = 1), # show gridlines, but font size doesn't impact border size
-      annotation_name_gp= gpar(fontsize = get_gpar('annot_size')),
-      gap = unit(c(2,1,0,0,0,0,1,0,0,0,0), 'mm')
+      annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
+      annotation_legend_param = list(
+        title_gp = gpar(col = 'red', fontfamily = get_gpar('font_fam')),
+        labels_gp = gpar(col = 'red', fontfamily = get_gpar('font_family'))),
+      gap = unit(c(2,2,0,0,0,0,1,0,0,0,0), 'mm')
 
     )
   )
@@ -114,10 +120,15 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     'MUTA' = structure(c('blue','red'), names = c(0, 1))
   )
   list_l_param <- list(
+    # TODO add font rules for all data types but update downstream to handle nonNULL
     'CNVR' = NULL,
     'MIR' = NULL,
     'METH' = NULL,
-    'GEXP' = list(title = ht_name),
+    'GEXP' = list(
+      title = ht_name,
+      title_gp = gpar(col = 'red', fontfamily = get_gpar('font_fam')),
+      labels_gp = gpar(col = 'red', fontfamily = get_gpar('font_family'))
+    ),
     'MUTA' = NULL
   )
   legend_colors <- list_legend[[plat]]
@@ -154,7 +165,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       na_col = 'white',
       col = legend_colors,
       heatmap_legend_param = legend_l_param,
-      top_annotation = get_top_annot(paste(cancer, plat, sep='_'))
+      top_annotation = get_top_annot(paste(cancer, plat, sep='_')),
     )
   } else if (is.null(legend_colors) == TRUE){
     # Standard ht

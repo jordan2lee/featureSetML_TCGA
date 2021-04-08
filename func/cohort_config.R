@@ -148,7 +148,8 @@ get_gpar <- function(key){
     'font_fam' = 'Times', #'sans',
     'axis_size' = 16,
     'minor_axis_size' = 5,
-    'annot_size' = 10,
+    'annot_size' = 12, # ht bottom annot
+    'model_overlap_size' = 9, # axis ticks
     'symbol_size' = 9,
     'pam_size' = 11
   )

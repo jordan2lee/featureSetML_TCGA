@@ -15,6 +15,10 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     col = list(
       Subtype = get_colors(df)
     ),
+    annotation_legend_param = list(
+      title_gp = gpar(col = 'red', fontfamily = get_gpar('font_fam')),
+      labels_gp = gpar(col = 'red', fontfamily = get_gpar('font_family'))
+    ),
     show_annotation_name = FALSE,
     simple_anno_size = unit(3, "mm") # width
   )
