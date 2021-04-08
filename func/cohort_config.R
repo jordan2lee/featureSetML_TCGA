@@ -147,7 +147,9 @@ get_gpar <- function(key){
     'font_fam' = 'sans',
     'axis_size' = 16,
     'minor_axis_size' = 5,
-    'annot_size' = 10
+    'annot_size' = 10,
+    'symbol_size' = 9,
+    'pam_size' = 11
   )
   return(l1[[key]])
 }

@@ -4,7 +4,19 @@ get_top_annot <- function(k, in_pam){
   #' and heatmap will plot without gene names shown
   l1 <- list(
     'BRCA_GEXP' = HeatmapAnnotation(
-      highlight_fts = anno_mark(at = c(4,6,12,17,28,31,37,38,43,49,54), labels = symbols[c(4,6,12,17,28,31,37,38,43,49,54)]),
+      highlight_fts = anno_mark(
+        at = c(4,6,12,17,28,31,37,38,43,49,54),
+        labels = symbols[c(4,6,12,17,28,31,37,38,43,49,54)],
+        labels_gp = gpar(
+          fontsize = get_gpar('symbol_size'),
+          fontfamily = get_gpar('font_fam'),
+          which = 'column',
+          link_gp = gpar(
+            fontsize = get_gpar('symbol_size'),
+            fontfamily = get_gpar('font_fam'),
+          )
+        )
+      ),
       # in_pam = anno_text(in_pam, gp = gpar(fontfamily = get_gpar('font_fam'))),
       annotation_width=unit(1, 'mm'))
   )
@@ -15,7 +27,14 @@ dev_bottom_annot <- function(k, in_pam){
   #' DEV
   l1 <- list(
     'BRCA_GEXP' = HeatmapAnnotation(
-      in_pam = anno_text(in_pam, gp = gpar(fontfamily = get_gpar('font_fam'))),
+      in_pam = anno_text(
+        in_pam,
+        gp = gpar(
+          fontface = 'bold',
+          fontsize = get_gpar('pam_size'),
+          fontfamily = get_gpar('font_fam')
+        )
+      ),
       # annotation_width=unit(1, 'mm'),
 
       annotation_label  = gt_render(
@@ -74,7 +93,7 @@ dev_bottom_annot <- function(k, in_pam){
         hallmark5 = c('0' = "#333333", '1' = "azure4")
       ),
       show_legend = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
-      gp = gpar(fontsize = 1), # grid all col annot
+      gp = gpar(fontsize = 1), # show gridlines, but font size doesn't impact border size
       annotation_name_gp= gpar(fontsize = get_gpar('annot_size')),
       gap = unit(c(2,1,0,0,0,0,1,0,0,0,0), 'mm')
 
