@@ -134,9 +134,18 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       show_row_names = FALSE,
       show_column_names = args$show_features,
       column_title = col_title,
-      column_title_gp = gpar(col = get_colors_platform(plat), fontface = 'bold', fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
+      column_title_gp = gpar(
+        col = get_colors_platform(plat),
+        fontface = 'bold',
+        fontfamily = get_gpar('font_fam'),
+        fontsize = get_gpar('axis_size')
+      ),
       row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-      row_title_gp = gpar(fontface = 'bold', fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
+      row_title_gp = gpar(
+        fontface = 'bold',
+        fontfamily = get_gpar('font_fam'),
+        fontsize = get_gpar('axis_size')
+      ),
       right_annotation = subtype_ha,
       # bottom_annotation = col_annot,
       bottom_annotation = dev_bottom_annot(paste(cancer, plat, sep='_'), in_pam),
