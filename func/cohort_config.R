@@ -145,9 +145,11 @@ title_info <- function(plat){
 get_gpar <- function(key){
   #' Input key and return value
   l1 <- list(
-    'font_fam' = 'Times', #'sans',
+    'font_fam' = 'sans',
     'axis_size' = 16,
     'minor_axis_size' = 5,
+    'legend_size_title'= 11,
+    'legend_size'= 9,
     'annot_size' = 12, # ht bottom annot
     'model_overlap_size' = 9, # axis ticks
     'symbol_size' = 9,

@@ -99,8 +99,8 @@ dev_bottom_annot <- function(k, in_pam){
       gp = gpar(fontsize = 1), # show gridlines, but font size doesn't impact border size
       annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
       annotation_legend_param = list(
-        title_gp = gpar(col = 'red', fontfamily = get_gpar('font_fam')),
-        labels_gp = gpar(col = 'red', fontfamily = get_gpar('font_family'))),
+        title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
+        labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))),
       gap = unit(c(2,2,0,0,0,0,1,0,0,0,0), 'mm')
 
     )
@@ -126,8 +126,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     'METH' = NULL,
     'GEXP' = list(
       title = ht_name,
-      title_gp = gpar(col = 'red', fontfamily = get_gpar('font_fam')),
-      labels_gp = gpar(col = 'red', fontfamily = get_gpar('font_family'))
+      title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
+      labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))
     ),
     'MUTA' = NULL
   )
