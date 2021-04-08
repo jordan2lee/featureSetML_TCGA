@@ -1,4 +1,4 @@
-get_top_annot <- function(k, in_pam){
+get_top_annot <- function(k){
   #' Gene indcies to show on heatmap
   #' If input cancer not in list then will return NULL
   #' and heatmap will plot without gene names shown
@@ -13,12 +13,12 @@ get_top_annot <- function(k, in_pam){
           which = 'column',
           link_gp = gpar(
             fontsize = get_gpar('symbol_size'),
-            fontfamily = get_gpar('font_fam'),
+            fontfamily = get_gpar('font_fam')
           )
         )
       ),
-      # in_pam = anno_text(in_pam, gp = gpar(fontfamily = get_gpar('font_fam'))),
-      annotation_width=unit(1, 'mm'))
+      annotation_width=unit(1, 'mm')
+    )
   )
   return(l1[[k]])
 }
@@ -145,7 +145,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       na_col = 'white',
       col = legend_colors,
       heatmap_legend_param = legend_l_param,
-      top_annotation = get_top_annot(paste(cancer, plat, sep='_'), in_pam)
+      top_annotation = get_top_annot(paste(cancer, plat, sep='_'))
     )
   } else if (is.null(legend_colors) == TRUE){
     # Standard ht

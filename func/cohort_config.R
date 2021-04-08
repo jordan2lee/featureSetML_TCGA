@@ -109,7 +109,8 @@ get_platforms_present <- function(cancer){
       cancer == 'THYM' |
       cancer == 'UCEC' |
       cancer == 'UVM' ){
-      platforms <- c('N:METH', 'I:CNVR', 'B:MUTA', 'N:GEXP', 'N:MIR')
+      platforms <- c('N:GEXP') # TODO del after dev
+      # platforms <- c('N:METH', 'I:CNVR', 'B:MUTA', 'N:GEXP', 'N:MIR')
     } else if ( cancer == 'KIRCKICH' | cancer == 'LGGGBM' | cancer == 'LIHCCHOL'){
       platforms <- c('B:MUTA', 'N:METH', 'N:GEXP', 'I:CNVR')
     }
@@ -144,7 +145,7 @@ title_info <- function(plat){
 get_gpar <- function(key){
   #' Input key and return value
   l1 <- list(
-    'font_fam' = 'sans',
+    'font_fam' = 'sans', #'sans',
     'axis_size' = 16,
     'minor_axis_size' = 5,
     'annot_size' = 10,
