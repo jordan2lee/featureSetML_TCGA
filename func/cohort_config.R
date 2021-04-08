@@ -145,7 +145,7 @@ title_info <- function(plat){
 get_gpar <- function(key){
   #' Input key and return value
   l1 <- list(
-    'font_fam' = 'sans', #'sans',
+    'font_fam' = 'Times', #'sans',
     'axis_size' = 16,
     'minor_axis_size' = 5,
     'annot_size' = 10,
