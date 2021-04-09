@@ -145,7 +145,9 @@ title_info <- function(plat){
 get_gpar <- function(key){
   #' Input key and return value
   l1 <- list(
+    'c' = 'black', # color
     'font_fam' = 'sans',
+    'font_fam_ggplot' = 'Times New Roman', #'Arial',
     'axis_size' = 16,
     'minor_axis_size' = 5,
     'legend_size_title'= 11,

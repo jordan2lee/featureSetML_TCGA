@@ -58,11 +58,29 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
       ) +
       ylab('Set Size') +
       theme(
-        axis.ticks.x=element_line(colour="darkgrey"),
+        axis.ticks.x=element_line(colour="red"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
+        text =element_text( # set size axis label
+          size=get_gpar('axis_size'),
+          family=get_gpar('font_fam_ggplot'),
+          colour = 'red'
+        ),
+        axis.text = element_text( # set size axis ticks
+          size=get_gpar('axis_size'),
+          family=get_gpar('font_fam_ggplot'),
+          colour='red'
+        )
       ) +
-      geom_text(aes(label=..count..), hjust = -0.25,  size=rel(3),stat='count') + # Set size cts
+      geom_text( # set size sub bar cts
+        aes(label=..count..),
+        size=get_gpar('minor_axis_size'),
+        family=get_gpar('font_fam_ggplot'),
+        colour = 'red',
+        hjust = -0.25,
+        size=rel(3),
+        stat='count'
+      ) +
       expand_limits(y=max_ftsize) + # set max x value
       scale_fill_manual(
         values=c(
@@ -83,9 +101,14 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
         outline_color = list(active = "white", inactive = "grey70")
       )
     ),
-  base_annotations=list(
+    base_annotations=list(
       'Feature Set Size'=intersection_size(
           counts=TRUE,
+          text =element_text( # feature set sub bar cts - TODO fix alignment of text
+            size=get_gpar('minor_axis_size'),
+            family=get_gpar('font_fam_ggplot'),
+            colour = 'red'
+          ),
           bar_number_threshold = 1,
           mapping=aes(fill=Platform)
       )
@@ -101,9 +124,19 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
       + coord_cartesian(ylim=c(0,ymax)) #manually adjust the y limits
       + theme(
         # axis.line.y = element_line(color="darkgrey", size=0.4),
-        axis.ticks.y=element_line(colour="darkgrey"),
+        axis.ticks.y=element_line(colour="red"),
         panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()
+        panel.grid.minor = element_blank(),
+        text =element_text( # feature set size axis label
+          size=get_gpar('axis_size'),
+          family=get_gpar('font_fam_ggplot'),
+          colour = 'red'
+        ),
+        axis.text = element_text( # feature size axis ticks
+          size=get_gpar('axis_size'),
+          family=get_gpar('font_fam_ggplot'),
+          colour='red'
+        )
       )
 
   ),
