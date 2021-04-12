@@ -31,6 +31,7 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     col_vals <- c(col_vals, shorten)
   }
   df_fts['Platform']<- factor(col_vals, levels = c('MUTA', 'CNVR', 'METH', 'GEXP', 'MIR'))
+
   # Create figure object
   upset_plot <- upset(
     # Main plot
@@ -78,7 +79,6 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
         family=get_gpar('font_fam_ggplot'),
         colour = 'red',
         hjust = -0.25,
-        size=rel(3),
         stat='count'
       ) +
       expand_limits(y=max_ftsize) + # set max x value
