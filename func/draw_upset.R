@@ -46,6 +46,17 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     sort_intersections_by = c('degree','cardinality'),
     # sort_intersections = 'descending',
     sort_sets =FALSE,
+    themes = upset_modify_themes(
+      list(
+        'intersections_matrix'=theme( # intersection matrix gpar
+          axis.text=element_text(
+            size=get_gpar('axis_size'),
+            family=get_gpar('font_fam_ggplot'),
+            colour = 'red'
+          )
+        )
+      )
+    ),
     # stripes = c('lightgrey', 'darkgrey'),
     # Set Size plot
     set_sizes=(
@@ -91,7 +102,7 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
           'MIR' = get_colors_platform('MIR')
         )
       ) +
-      theme(legend.position = "none") # no legend
+      theme(legend.position = "none") # no extra legend
     ),
     # Intersection matrix
     encode_sets = FALSE,
@@ -132,7 +143,7 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
           family=get_gpar('font_fam_ggplot'),
           colour = 'red'
         ),
-        axis.text = element_text( # feature size axis ticks
+        axis.text.y = element_text( # feature size axis ticks
           size=get_gpar('axis_size'),
           family=get_gpar('font_fam_ggplot'),
           colour='red'
