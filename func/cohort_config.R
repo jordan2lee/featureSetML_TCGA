@@ -147,7 +147,7 @@ get_gpar <- function(key){
   l1 <- list(
     'c' = 'black', # color
     'font_fam' = 'sans',
-    'font_fam_ggplot' = 'Times New Roman', #'Arial',
+    'font_fam_ggplot' = 'Arial',
     'main_title_size' = 18,
     'axis_size' = 16,
     'minor_axis_size' = 5,

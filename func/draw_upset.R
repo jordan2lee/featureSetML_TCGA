@@ -52,7 +52,7 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
           axis.text=element_text(
             size=get_gpar('axis_size'),
             family=get_gpar('font_fam_ggplot'),
-            colour = 'red'
+            colour = get_gpar('c')
           )
         )
       )
@@ -70,25 +70,25 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
       ) +
       ylab('Set Size') +
       theme(
-        axis.ticks.x=element_line(colour="red"),
+        axis.ticks.x=element_line(colour=get_gpar('c')),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         text =element_text( # set size axis label
           size=get_gpar('axis_size'),
           family=get_gpar('font_fam_ggplot'),
-          colour = 'red'
+          colour = get_gpar('c')
         ),
         axis.text = element_text( # set size axis ticks
           size=get_gpar('axis_size'),
           family=get_gpar('font_fam_ggplot'),
-          colour='red'
+          colour=get_gpar('c')
         )
       ) +
       geom_text( # set size sub bar cts
         aes(label=..count..),
         size=get_gpar('minor_axis_size'),
         family=get_gpar('font_fam_ggplot'),
-        colour = 'red',
+        colour = get_gpar('c'),
         hjust = -0.25,
         stat='count'
       ) +
@@ -118,7 +118,7 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
           text =element_text( # feature set sub bar cts - TODO fix alignment of text
             size=get_gpar('minor_axis_size'),
             family=get_gpar('font_fam_ggplot'),
-            colour = 'red'
+            colour = get_gpar('c')
           ),
           bar_number_threshold = 1,
           mapping=aes(fill=Platform)
@@ -135,18 +135,18 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
       + coord_cartesian(ylim=c(0,ymax)) #manually adjust the y limits
       + theme(
         # axis.line.y = element_line(color="darkgrey", size=0.4),
-        axis.ticks.y=element_line(colour="red"),
+        axis.ticks.y=element_line(colour=get_gpar('c')),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         text =element_text( # feature set size axis label
           size=get_gpar('axis_size'),
           family=get_gpar('font_fam_ggplot'),
-          colour = 'red'
+          colour = get_gpar('c')
         ),
         axis.text.y = element_text( # feature size axis ticks
           size=get_gpar('axis_size'),
           family=get_gpar('font_fam_ggplot'),
-          colour='red'
+          colour=get_gpar('c')
         )
       )
     )
@@ -154,7 +154,7 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
   labs(title = paste('Feature Overlap Between Top ', cancer, ' Models', sep = '')) +
   theme(
     plot.title = element_text(
-      colour = 'red',
+      colour = get_gpar('c'),
       size = get_gpar('main_title_size'),
       family = get_gpar('font_fam_ggplot')
     )
