@@ -122,8 +122,8 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
           ),
           bar_number_threshold = 1,
           mapping=aes(fill=Platform)
-      )
-      + scale_fill_manual(
+      ) +
+      scale_fill_manual(
         values=c(
           'MUTA' = get_colors_platform('MUTA'),
           'CNVR' = get_colors_platform('CNVR'),
@@ -131,9 +131,10 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
           'GEXP' = get_colors_platform('GEXP'),
           'MIR' = get_colors_platform('MIR')
         )
-      )
-      + coord_cartesian(ylim=c(0,ymax)) #manually adjust the y limits
-      + theme(
+      ) +
+      # manually adjust the y limits
+      coord_cartesian(ylim=c(0,ymax)) +
+      theme(
         # axis.line.y = element_line(color="darkgrey", size=0.4),
         axis.ticks.y=element_line(colour=get_gpar('c')),
         panel.grid.major = element_blank(),
