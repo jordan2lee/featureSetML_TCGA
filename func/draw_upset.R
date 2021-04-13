@@ -118,7 +118,8 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
           text =element_text( # feature set sub bar cts - TODO fix alignment of text
             size=get_gpar('minor_axis_size'),
             family=get_gpar('font_fam_ggplot'),
-            colour = get_gpar('c')
+            colour = get_gpar('c'),
+            vjust = -0.55
           ),
           bar_number_threshold = 1,
           mapping=aes(fill=Platform)
