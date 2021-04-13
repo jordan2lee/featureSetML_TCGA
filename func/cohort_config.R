@@ -148,6 +148,7 @@ get_gpar <- function(key){
     'c' = 'black', # color
     'font_fam' = 'sans',
     'font_fam_ggplot' = 'Times New Roman', #'Arial',
+    'main_title_size' = 18,
     'axis_size' = 16,
     'minor_axis_size' = 5,
     'legend_size_title'= 11,

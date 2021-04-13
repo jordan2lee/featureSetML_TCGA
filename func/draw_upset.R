@@ -149,9 +149,15 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
           colour='red'
         )
       )
-
-  ),
+    )
   ) +
-  ggtitle(paste('Feature Overlap Between Top ', cancer, ' Models', sep = ''))
+  labs(title = paste('Feature Overlap Between Top ', cancer, ' Models', sep = '')) +
+  theme(
+    plot.title = element_text(
+      colour = 'red',
+      size = get_gpar('main_title_size'),
+      family = get_gpar('font_fam_ggplot')
+    )
+  )
   return(upset_plot)
 }
