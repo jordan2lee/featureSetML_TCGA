@@ -109,8 +109,8 @@ get_platforms_present <- function(cancer){
       cancer == 'THYM' |
       cancer == 'UCEC' |
       cancer == 'UVM' ){
-      platforms <- c('N:GEXP') # TODO del after dev
-      # platforms <- c('N:METH', 'I:CNVR', 'B:MUTA', 'N:GEXP', 'N:MIR')
+      # platforms <- c('N:GEXP') # TODO del after dev
+      platforms <- c('N:METH', 'I:CNVR', 'B:MUTA', 'N:GEXP', 'N:MIR')
     } else if ( cancer == 'KIRCKICH' | cancer == 'LGGGBM' | cancer == 'LIHCCHOL'){
       platforms <- c('B:MUTA', 'N:METH', 'N:GEXP', 'I:CNVR')
     }
@@ -119,7 +119,7 @@ get_platforms_present <- function(cancer){
 
 get_ymax_upset <- function(cancer){
   l1 <- list(
-    'ACC' = 80, 'BLCA' = 70, 'BRCA' = 50,
+    'ACC' = 110, 'BLCA' = 70, 'BRCA' = 50,
     'CESC'= 60, 'COADREAD' = 70, 'ESCC' = 70,
     'GEA' = 70, 'HNSC' = 60, 'KIRP' = 70,
     'LGGGBM' = 70, 'LUAD' = 70, 'LUSC' = 60,

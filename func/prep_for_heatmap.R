@@ -6,7 +6,7 @@ model2team <- function(df){
   names_vector <- c()
   models <- colnames(df)[!colnames(df) %in% c('featureID', 'Total')]
   for (header in models){
-    if (grepl('gnosis', header, fixed=TRUE)){
+    if (grepl('jadbio', header, fixed=TRUE)){
       headers_vector <- c(headers_vector, header)
       names_vector <- c(names_vector, 'JADBIO')
     }
@@ -14,7 +14,7 @@ model2team <- function(df){
       headers_vector <- c(headers_vector, header)
       names_vector <- c(names_vector, 'CloudForest')
     }
-    else if (grepl('nn_jg', header, fixed=TRUE)){
+    else if (grepl('subSCOPE', header, fixed=TRUE)){
       headers_vector <- c(headers_vector, header)
       names_vector <- c(names_vector, 'SubSCOPE')
     }

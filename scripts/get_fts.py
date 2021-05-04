@@ -22,7 +22,8 @@ file_output = args.out
 filters = args.filters
 
 ############# Hardcoded Object
-groups = ['gnosis', 'CF|All', 'AKLIMATE', 'nn', ['rfe15', 'fbedeBIC']]
+# groups = ['gnosis', 'CF|All', 'AKLIMATE', 'nn', ['rfe15', 'fbedeBIC']]
+groups = ['jadbio', 'CF', 'AKLIMATE', 'subSCOPE', 'skgrid']
 #############
 
 performance_df = pd.read_csv(file_preds, sep = '\t', low_memory=False)
@@ -31,24 +32,15 @@ performance_df = pd.read_csv(file_preds, sep = '\t', low_memory=False)
 ct = 1
 best = []
 for group in groups:
-    # all models from that group for the 3 criteria
-    if type(group)== list:
-        subset = performance_df[performance_df['feature_list_method'].isin(['rfe15', 'fbedeBIC'])]
-        subset = subset[subset['cohort'] == cancer]
-        subset = subset[subset['performance_metric'] == pmetric].reset_index(drop=True)
-        if filters != 'none':
-            max_ft_size = int(filters)
-            subset = subset[subset['total_features'] <= max_ft_size].reset_index(drop=True)
-        subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
-    else:
-        print(group)
-        subset = performance_df[performance_df['feature_list_method'] == group]
-        subset = subset[subset['cohort'] == cancer]
-        subset = subset[subset['performance_metric'] == pmetric].reset_index(drop=True)
-        if filters != 'none':
-            max_ft_size = int(filters)
-            subset = subset[subset['total_features'] <= max_ft_size].reset_index(drop=True)
-        subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
+    print(group)
+    subset = performance_df[performance_df['feature_list_method'] == group]
+    subset = subset[subset['cohort'] == cancer]
+    subset = subset[subset['performance_metric'] == pmetric].reset_index(drop=True)
+    if filters != 'none':
+        max_ft_size = int(filters)
+        subset["total_features"] = pd.to_numeric(subset["total_features"])
+        subset = subset[subset['total_features'] <= max_ft_size].reset_index(drop=True)
+    subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
     # Grab the name of the model with highest MEAN performance metric
     # if found at least one model
     if subset.shape[0] > 0:
@@ -59,8 +51,8 @@ for group in groups:
 
     ##
     # Fix naming of CloudForest (to match ft file)
-    if "CF|" in ftID:
-        ftID='Top '.join(ftID.split('Top_'))
+    if "CF_" in ftID:
+        ftID='Top_'.join(ftID.split('Top '))
     ##
 
     best.append(ftID)
@@ -85,9 +77,12 @@ for i in range(0, len(best)):
     m = best[i]
     # Add to list models that actually exist
     if not m.startswith('NO_MODEL_MATCH'):
-        best_models_present.append(m)
+        if m.startswith('subSCOPE'):
+            best_models_present.append(m+'_'+cancer)
+        else:
+            best_models_present.append(m)
     else:
-        # if nn then add nn_jg to ensure uniq naming
+        # if subSCOPE then add nn_jg to ensure uniq naming
         if m == 'NO_MODEL_MATCH_nn':
             m = 'NO_MODEL_MATCH_nn_jg'
         # add it
