@@ -13,8 +13,8 @@ for tumor_cohort in ${StringArray[@]}; do
   # 1. Format feature lists of groups (best performing model)
   python scripts/get_fts.py \
       --tumor ${tumor_cohort} \
-      --file_fts src/classifier_metrics_20210430/collected_features_matrix.tsv \
-      --file_top src/classifier_metrics_20210430/top_performing_models_lte_100_features.tsv \
+      --file_fts src/classifier_metrics_20210504/collected_features_matrix.tsv \
+      --file_top src/classifier_metrics_20210504/top_performing_models_lte_100_features.tsv \
       --out data/figure_panel_a/best_models_${tumor_cohort}.tsv
   echo 'completed ft list formatting'
   #
@@ -30,9 +30,13 @@ for tumor_cohort in ${StringArray[@]}; do
   # 3. Create upset plots
   # Note that --headers must match order of --infile headers
   if [[ ${tumor_cohort} == 'SKCM' ]]; then
-      msize='80'
+      msize='25'
+  elif [[ ${tumor_cohort} == 'PAAD' ]]; then
+      msize='35'
   elif [[ ${tumor_cohort} == 'SARC' ]]; then
-      msize='55'
+      msize='75'
+  elif [[ ${tumor_cohort} == 'TGCT'  || ${tumor_cohort} == 'THCA' ]]; then
+      msize='65'
   else
       msize='110'
   fi

@@ -52,7 +52,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     plat <- unlist(strsplit(prefix, ':'))[2]
     col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
 
-    fig <- Heatmap(
+    suppressMessages(fig <- Heatmap(
       mat,
       name = 'first heatmap',
       cluster_rows = FALSE,
@@ -64,7 +64,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       column_title = paste('Selected Features (n=', ht_rows, ')', sep=''),
       row_title = paste('Samples (n=', ht_cols, ')', sep=''),
       right_annotation = subtype_ha
-    )
+    ))
     ####
     # Add team annotation bar
     ####
@@ -153,7 +153,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       plat <- unlist(strsplit(prefix, ':'))[2]
       col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
 
-      fig <- Heatmap(
+      suppressMessages(fig <- Heatmap(
         mat2,
         name = unlist(strsplit(prefix, ':'))[2],
         # width = unit(12, 'cm'),
@@ -171,14 +171,14 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         right_annotation = subtype_ha,
         bottom_annotation = team_list,
         na_col = 'white'
-      )
+      ))
     } else {
       ht_rows <- nrow(mat2)
       ht_cols <- ncol(mat2)
       plat <- unlist(strsplit(prefix, ':'))[2]
       col_title = paste(title_info(plat), ' Features Selected by ≥2 Teams (n=', ht_cols, ')', sep='')
 
-      fig <- Heatmap(
+      suppressMessages(fig <- Heatmap(
         mat2,
         name = unlist(strsplit(prefix, ':'))[2],
         # width = unit(12, 'cm'),
@@ -196,7 +196,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         right_annotation = subtype_ha,
         bottom_annotation = team_list,
         na_col = 'white'
-      )
+      ))
     }
     print(
       paste(
