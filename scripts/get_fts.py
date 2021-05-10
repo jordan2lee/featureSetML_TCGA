@@ -1,79 +1,44 @@
 #!/usr/bin/python
 
 import pandas as pd
+from collections import Counter
 import argparse
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='')
     parser.add_argument("-t", "--tumor", help ="cancer cohort", required=True, type=str)
-    parser.add_argument("-m", "--metric", help ="classification performance metric", required=True, type=str)
-    parser.add_argument("-fil", "--filters", help ="none or integer for feature set filter max size to be considered for best model", required=True, type=str)
-    parser.add_argument("-f1", "--file1_fts", help ="classification performance file with all groups", required=True, type=str)
-    parser.add_argument("-f2", "--file2_perform", help ="feature set file with all groups", required=True, type=str)
+    parser.add_argument("-f1", "--file_fts", help ="classification performance file with all groups", required=True, type=str)
+    parser.add_argument("-f2", "--file_top", help ="file path", required=True, type=str)
     parser.add_argument("-o", "--out", help ="output file", required=True, type=str)
     return parser.parse_args()
 
 args = get_arguments()
 cancer = args.tumor
-pmetric = args.metric
-file_fts = args.file1_fts
-file_preds = args.file2_perform
+file_fts = args.file_fts
 file_output = args.out
-filters = args.filters
+main = args.file_top
 
-############# Hardcoded Object
-groups = ['gnosis', 'CF|All', 'AKLIMATE', 'nn', ['rfe15', 'fbedeBIC']]
-#############
-
-performance_df = pd.read_csv(file_preds, sep = '\t', low_memory=False)
-
-# For a group: select best model
-ct = 1
-best = []
-for group in groups:
-    # all models from that group for the 3 criteria
-    if type(group)== list:
-        subset = performance_df[performance_df['feature_list_method'].isin(['rfe15', 'fbedeBIC'])]
-        subset = subset[subset['cohort'] == cancer]
-        subset = subset[subset['performance_metric'] == pmetric].reset_index(drop=True)
-        if filters != 'none':
-            max_ft_size = int(filters)
-            subset = subset[subset['total_features'] <= max_ft_size].reset_index(drop=True)
-        subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
-    else:
-        print(group)
-        subset = performance_df[performance_df['feature_list_method'] == group]
-        subset = subset[subset['cohort'] == cancer]
-        subset = subset[subset['performance_metric'] == pmetric].reset_index(drop=True)
-        if filters != 'none':
-            max_ft_size = int(filters)
-            subset = subset[subset['total_features'] <= max_ft_size].reset_index(drop=True)
-        subset = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)
-    # Grab the name of the model with highest MEAN performance metric
-    # if found at least one model
-    if subset.shape[0] > 0:
-        ftID = subset.sort_values(by='Mean', ascending=False).reset_index(drop=True)['featureID'][0]
-    #else no models fitting the above filters, need to finish
-    else:
-        ftID = 'NO_MODEL_MATCH_' + group
-
-    ##
-    # Fix naming of CloudForest (to match ft file)
-    if "CF|" in ftID:
-        ftID='Top '.join(ftID.split('Top_'))
-    ##
-
-    best.append(ftID)
-    print(ftID, ' selected as best model for group')
-
-
-assert len(best) == 5, 'best model not found for all 5 groups'
-
-
-# Subset feature matrix for only best model per team
+# Read in feature sets
 ft_df = pd.read_csv(file_fts, sep = '\t', index_col=0, low_memory=False)
 
-# likely want to refactor below to be more streamline and short #
+# Read in file
+df = pd.read_csv(main, sep='\t')
+df = df[['cohort','featureID', 'Mean', 'performance_metric', 'feature_list', 'feature_list_method']]
+
+# Pull and reformat top models
+s1 = df[df['cohort']==cancer].reset_index(drop=True)
+
+# If a team tie pick the first and record that there were ties
+best = list(s1['featureID'])
+# If intra-team ties, pick the first on
+if len(best) >5:
+    new_best = []
+    for t in set(s1['feature_list_method']):
+        model = s1[s1['feature_list_method']==t]['featureID'].values[0]
+        print(model)
+        new_best.append(model)
+    best = new_best
+assert len(best) == 5, 'Error: more than one model per team is ranked as best'
 
 # Handle instances where no model for a team found
 best_orders = dict()
@@ -85,9 +50,12 @@ for i in range(0, len(best)):
     m = best[i]
     # Add to list models that actually exist
     if not m.startswith('NO_MODEL_MATCH'):
-        best_models_present.append(m)
+        if m.startswith('subSCOPE'):
+            best_models_present.append(m+'_'+cancer)
+        else:
+            best_models_present.append(m)
     else:
-        # if nn then add nn_jg to ensure uniq naming
+        # if subSCOPE then add nn_jg to ensure uniq naming
         if m == 'NO_MODEL_MATCH_nn':
             m = 'NO_MODEL_MATCH_nn_jg'
         # add it

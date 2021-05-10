@@ -31,6 +31,7 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     col_vals <- c(col_vals, shorten)
   }
   df_fts['Platform']<- factor(col_vals, levels = c('MUTA', 'CNVR', 'METH', 'GEXP', 'MIR'))
+
   # Create figure object
   upset_plot <- upset(
     # Main plot
@@ -45,6 +46,17 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     sort_intersections_by = c('degree','cardinality'),
     # sort_intersections = 'descending',
     sort_sets =FALSE,
+    themes = upset_modify_themes(
+      list(
+        'intersections_matrix'=theme( # intersection matrix gpar
+          axis.text=element_text(
+            size=get_gpar('axis_size'),
+            family=get_gpar('font_fam_ggplot'),
+            colour = get_gpar('c')
+          )
+        )
+      )
+    ),
     # stripes = c('lightgrey', 'darkgrey'),
     # Set Size plot
     set_sizes=(
@@ -58,14 +70,39 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
       ) +
       ylab('Set Size') +
       theme(
-        axis.ticks.x=element_line(colour="darkgrey"),
+        axis.ticks.x=element_line(colour=get_gpar('c')),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
+        text =element_text( # set size axis label
+          size=get_gpar('axis_size'),
+          family=get_gpar('font_fam_ggplot'),
+          colour = get_gpar('c')
+        ),
+        axis.text = element_text( # set size axis ticks
+          size=get_gpar('axis_size'),
+          family=get_gpar('font_fam_ggplot'),
+          colour=get_gpar('c')
+        )
       ) +
-      geom_text(aes(label=..count..), hjust = -0.25,  size=rel(3),stat='count') + # Set size cts
+      geom_text( # set size sub bar cts
+        aes(label=..count..),
+        size=get_gpar('minor_axis_size'),
+        family=get_gpar('font_fam_ggplot'),
+        colour = get_gpar('c'),
+        hjust = -0.25,
+        stat='count'
+      ) +
       expand_limits(y=max_ftsize) + # set max x value
-      scale_fill_manual(values=c('MUTA' = '#00BFFF', 'CNVR'='#00688b', 'METH'='#43CD80', 'GEXP'='#FFA500', 'MIR'='#FF7F00')) +
-      theme(legend.position = "none") # no legend
+      scale_fill_manual(
+        values=c(
+          'MUTA' = get_colors_platform('MUTA'),
+          'CNVR' = get_colors_platform('CNVR'),
+          'METH' = get_colors_platform('METH'),
+          'GEXP' = get_colors_platform('GEXP'),
+          'MIR' = get_colors_platform('MIR')
+        )
+      ) +
+      theme(legend.position = "none") # no extra legend
     ),
     # Intersection matrix
     encode_sets = FALSE,
@@ -75,29 +112,54 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
         outline_color = list(active = "white", inactive = "grey70")
       )
     ),
-  base_annotations=list(
+    base_annotations=list(
       'Feature Set Size'=intersection_size(
           counts=TRUE,
+          text =element_text( # feature set sub bar cts - TODO fix alignment of text
+            size=get_gpar('minor_axis_size'),
+            family=get_gpar('font_fam_ggplot'),
+            colour = get_gpar('c'),
+            vjust = -0.55
+          ),
           bar_number_threshold = 1,
           mapping=aes(fill=Platform)
-      )
-      + scale_fill_manual(
+      ) +
+      scale_fill_manual(
         values=c(
-          'MUTA' = '#00BFFF', 'CNVR'='#00688b',
-          'METH'='#43CD80', 'GEXP'='#FFA500',
-          'MIR'='#FF7F00'
+          'MUTA' = get_colors_platform('MUTA'),
+          'CNVR' = get_colors_platform('CNVR'),
+          'METH' = get_colors_platform('METH'),
+          'GEXP' = get_colors_platform('GEXP'),
+          'MIR' = get_colors_platform('MIR')
+        )
+      ) +
+      # manually adjust the y limits
+      coord_cartesian(ylim=c(0,ymax)) +
+      theme(
+        # axis.line.y = element_line(color="darkgrey", size=0.4),
+        axis.ticks.y=element_line(colour=get_gpar('c')),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        text =element_text( # feature set size axis label
+          size=get_gpar('axis_size'),
+          family=get_gpar('font_fam_ggplot'),
+          colour = get_gpar('c')
+        ),
+        axis.text.y = element_text( # feature size axis ticks
+          size=get_gpar('axis_size'),
+          family=get_gpar('font_fam_ggplot'),
+          colour=get_gpar('c')
         )
       )
-      + coord_cartesian(ylim=c(0,ymax)) #manually adjust the y limits
-      + theme(
-        # axis.line.y = element_line(color="darkgrey", size=0.4),
-        axis.ticks.y=element_line(colour="darkgrey"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()
-      )
-
-  ),
+    )
   ) +
-  ggtitle(paste('Feature Overlap Between Top ', cancer, ' Models', sep = ''))
+  labs(title = paste('Feature Overlap Between Top ', cancer, ' Models', sep = '')) +
+  theme(
+    plot.title = element_text(
+      colour = get_gpar('c'),
+      size = get_gpar('main_title_size'),
+      family = get_gpar('font_fam_ggplot')
+    )
+  )
   return(upset_plot)
 }

@@ -88,3 +88,25 @@ The file records the data for:
 # brca_pam50_hits.tsv
 
 BK created on 12/3/20. takes list of PAM50 genes. convert these into the TCGA naming system for GEXP features ONLY (so that have list of the PAM50 gexp features as named in Theo's tarball)
+
+# classifier_metrics_20210430
+
+(syn25653984)
+
+Downloaded from Synapse on 5/3/21. This is the final combined results matrices. Created by Chris Wong. Contains model names with feature lists, feature importance scores, etc.
+
+This should be the final set of matrices for the manuscript
+
+# TMP_v12_20210228.tar.gz
+
+(syn25007874)
+
+Most recent tarball version. Downloaded on 5/3/21
+
+# classifier_metrics_20210504
+
+(syn25672419)
+
+most recent results matrix from chris
+
+Downloaded on 5/5/21

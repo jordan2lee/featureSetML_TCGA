@@ -1,12 +1,24 @@
-get_top_annot <- function(k, in_pam){
+get_top_annot <- function(k){
   #' Gene indcies to show on heatmap
   #' If input cancer not in list then will return NULL
   #' and heatmap will plot without gene names shown
   l1 <- list(
     'BRCA_GEXP' = HeatmapAnnotation(
-      highlight_fts = anno_mark(at = c(4,6,12,17,28,31,37,38,43,49,54), labels = symbols[c(4,6,12,17,28,31,37,38,43,49,54)]),
-      # in_pam = anno_text(in_pam, gp = gpar(fontfamily = 'sans')),
-      annotation_width=unit(1, 'mm'))
+      highlight_fts = anno_mark(
+        at = c(4,6,12,17,28,31,37,38,43,49,54),
+        labels = symbols[c(4,6,12,17,28,31,37,38,43,49,54)],
+        labels_gp = gpar(
+          fontsize = get_gpar('symbol_size'),
+          fontfamily = get_gpar('font_fam'),
+          which = 'column',
+          link_gp = gpar(
+            fontsize = get_gpar('symbol_size'),
+            fontfamily = get_gpar('font_fam')
+          )
+        )
+      ),
+      annotation_width=unit(1, 'mm')
+    )
   )
   return(l1[[k]])
 }
@@ -15,7 +27,14 @@ dev_bottom_annot <- function(k, in_pam){
   #' DEV
   l1 <- list(
     'BRCA_GEXP' = HeatmapAnnotation(
-      in_pam = anno_text(in_pam, gp = gpar(fontfamily = 'sans')),
+      in_pam = anno_text(
+        in_pam,
+        gp = gpar(
+          fontface = 'bold',
+          fontsize = get_gpar('pam_size'),
+          fontfamily = get_gpar('font_fam')
+        )
+      ),
       # annotation_width=unit(1, 'mm'),
 
       annotation_label  = gt_render(
@@ -32,10 +51,20 @@ dev_bottom_annot <- function(k, in_pam){
       nTeams= anno_barplot(
         team_df$Total,
         bar_width=1,
-        gp = gpar(fill = 'darkgray', col = 'azure4'),
+        gp = gpar(
+          fill = 'darkgray',
+          col = 'azure4'
+        ),
         border = FALSE,
         rot = 45,
-        axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
+        axis_param = list(
+          side = "right",
+          facing='outside',
+          gp=gpar(
+            fontsize=get_gpar('model_overlap_size'),
+            fontfamily = get_gpar('font_fam')
+          )
+        ) #yaxis size
       ),
 
       # B. ft binary membership
@@ -67,9 +96,12 @@ dev_bottom_annot <- function(k, in_pam){
         hallmark5 = c('0' = "#333333", '1' = "azure4")
       ),
       show_legend = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
-      gp = gpar(fontsize = 1), # grid all col annot
-      annotation_name_gp= gpar(fontsize = 8),
-      gap = unit(c(2,1,0,0,0,0,1,0,0,0,0), 'mm')
+      gp = gpar(fontsize = 1), # show gridlines, but font size doesn't impact border size
+      annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
+      annotation_legend_param = list(
+        title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
+        labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))),
+      gap = unit(c(2,2,0,0,0,0,1,0,0,0,0), 'mm')
 
     )
   )
@@ -88,10 +120,15 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     'MUTA' = structure(c('blue','red'), names = c(0, 1))
   )
   list_l_param <- list(
+    # TODO add font rules for all data types but update downstream to handle nonNULL
     'CNVR' = NULL,
     'MIR' = NULL,
     'METH' = NULL,
-    'GEXP' = list(title = ht_name),
+    'GEXP' = list(
+      title = ht_name,
+      title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
+      labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))
+    ),
     'MUTA' = NULL
   )
   legend_colors <- list_legend[[plat]]
@@ -108,9 +145,18 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       show_row_names = FALSE,
       show_column_names = args$show_features,
       column_title = col_title,
-      column_title_gp = gpar(col = '#FFA500', fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+      column_title_gp = gpar(
+        col = get_colors_platform(plat),
+        fontface = 'bold',
+        fontfamily = get_gpar('font_fam'),
+        fontsize = get_gpar('axis_size')
+      ),
       row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-      row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+      row_title_gp = gpar(
+        fontface = 'bold',
+        fontfamily = get_gpar('font_fam'),
+        fontsize = get_gpar('axis_size')
+      ),
       right_annotation = subtype_ha,
       # bottom_annotation = col_annot,
       bottom_annotation = dev_bottom_annot(paste(cancer, plat, sep='_'), in_pam),
@@ -119,7 +165,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       na_col = 'white',
       col = legend_colors,
       heatmap_legend_param = legend_l_param,
-      top_annotation = get_top_annot(paste(cancer, plat, sep='_'), in_pam)
+      top_annotation = get_top_annot(paste(cancer, plat, sep='_')),
     )
   } else if (is.null(legend_colors) == TRUE){
     # Standard ht
@@ -131,9 +177,9 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       show_row_names = FALSE,
       show_column_names = args$show_features,
       column_title = col_title,
-      column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+      column_title_gp = gpar(fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
       row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-      row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+      row_title_gp = gpar(fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
       right_annotation = subtype_ha,
       bottom_annotation = col_annot,
       row_title_side = "right",
@@ -149,9 +195,9 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       show_row_names = FALSE,
       show_column_names = args$show_features,
       column_title = col_title,
-      column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+      column_title_gp = gpar(fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
       row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-      row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+      row_title_gp = gpar(fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
       right_annotation = subtype_ha,
       bottom_annotation = col_annot,
       row_title_side = "right",
@@ -172,9 +218,9 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       show_row_names = FALSE,
       show_column_names = args$show_features,
       column_title = col_title,
-      column_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+      column_title_gp = gpar(fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
       row_title = paste('Samples (n=', ht_rows, ')', sep=''),
-      row_title_gp = gpar(fontfamily = 'sans', fontsize = 11, fontface = 'bold'),
+      row_title_gp = gpar(fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
       right_annotation = subtype_ha,
       bottom_annotation = col_annot,
       row_title_side = "right",

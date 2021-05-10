@@ -56,6 +56,18 @@ get_colors <- function(df){
   return(color_codes)
 }
 
+get_colors_platform <- function(platform){
+  #' Input the data platform. Example string "GEXP"
+  #' Returns color code
+  colors <- list(
+    'MUTA' = '#00BFFF',
+    'CNVR' = '#00688b',
+    'METH' = '#43CD80',
+    'GEXP' = '#FFA500',
+    'MIR' = '#FF7F00'
+  )
+  return(colors[[platform]])
+}
 
 # get_platform_of_interest <- function(cancer){
 #     #' Define platform to use for hallmark heatmap
@@ -97,6 +109,7 @@ get_platforms_present <- function(cancer){
       cancer == 'THYM' |
       cancer == 'UCEC' |
       cancer == 'UVM' ){
+      # platforms <- c('N:GEXP') # TODO del after dev
       platforms <- c('N:METH', 'I:CNVR', 'B:MUTA', 'N:GEXP', 'N:MIR')
     } else if ( cancer == 'KIRCKICH' | cancer == 'LGGGBM' | cancer == 'LIHCCHOL'){
       platforms <- c('B:MUTA', 'N:METH', 'N:GEXP', 'I:CNVR')
@@ -106,14 +119,14 @@ get_platforms_present <- function(cancer){
 
 get_ymax_upset <- function(cancer){
   l1 <- list(
-    'ACC' = 80, 'BLCA' = 70, 'BRCA' = 50,
-    'CESC'= 60, 'COADREAD' = 70, 'ESCC' = 70,
-    'GEA' = 70, 'HNSC' = 60, 'KIRP' = 70,
-    'LGGGBM' = 70, 'LUAD' = 70, 'LUSC' = 60,
-    'MESO' = 90, 'OV' = 80, 'PAAD' = 90,
-    'PCPG' = 60, 'PRAD' = 60, 'SARC' = 50,
-    'SKCM' = 70, 'TGCT' = 110, 'THCA' = 90,
-    'THYM' = 90, 'UVM' = 100
+    'ACC' = 110, 'BLCA' = 70, 'BRCA' = 70,
+    'CESC'= 60, 'COADREAD' = 50, 'ESCC' = 80,
+    'GEA' = 50, 'HNSC' = 60, 'KIRP' = 80,
+    'LGGGBM' = 60, 'LUAD' = 80, 'LUSC' = 60,
+    'MESO' = 90, 'OV' = 70, 'PAAD' = 30,
+    'PCPG' = 60, 'PRAD' = 80, 'SARC' = 70,
+    'SKCM' = 11.5, 'TGCT' = 70, 'THCA' = 70,
+    'THYM' = 90, 'UVM' = 90
   )
   return(l1[[cancer]])
 }
@@ -127,4 +140,23 @@ title_info <- function(plat){
     'MUTA' = 'Mutation Status'
   )
   return(l1[[plat]])
+}
+
+get_gpar <- function(key){
+  #' Input key and return value
+  l1 <- list(
+    'c' = 'black', # font color
+    'font_fam' = 'sans',
+    'font_fam_ggplot' = 'Arial',
+    'main_title_size' = 18,
+    'axis_size' = 16,
+    'minor_axis_size' = 5,
+    'legend_size_title'= 11,
+    'legend_size'= 9,
+    'annot_size' = 12, # ht bottom annot
+    'model_overlap_size' = 9, # axis ticks
+    'symbol_size' = 9,
+    'pam_size' = 11
+  )
+  return(l1[[key]])
 }
