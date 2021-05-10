@@ -9,7 +9,9 @@ the two features are ending up in the file because I concatenate CNV features ac
 
 # Messages below:
 
-Errors Pre-figure Building
+### Errors Pre-figure Building
+
+```
 LIHCCHOL
 jadbio
 jadbio_LIHCCHOL_MULTIDATATYPE_cumulative_feature_set24_LIHCCHOL  selected as best model for group
@@ -61,41 +63,43 @@ Traceback (most recent call last):
     raise KeyError("{} not in index".format(not_found))
 KeyError: "['N:CNVR::TBXA2R:6915:', 'N:CNVR::ZBTB7A:51341:', 'N:CNVR::MRPL54:116541:', 'N:CNVR::MIR637:693222:', 'N:CNVR::MAP2K2:5605:', 'I:CNVR::ORAOV1:220064:', 'N:CNVR::GNG7:2788:', 'I:CNVR::GLDC:2731:', 'N:CNVR::CREB3L3:84699:'] not in index"
 completed pulling group best and file cleaning
+```
 
-Errors During Heatmap Building
+### Errors During Heatmap Building
+
+```
 KIRCKICH
 Warning message:
-Ignoring unknown parameters: inherit.blank 
-Error in if (all(is.finite(continuous_range_coord)) && diff(continuous_range_coord) <  : 
+Ignoring unknown parameters: inherit.blank
+Error in if (all(is.finite(continuous_range_coord)) && diff(continuous_range_coord) <  :
   missing value where TRUE/FALSE needed
 Calls: <Anonymous> ... expand_limits_continuous -> expand_limits_continuous_trans
 Execution halted
 Warning message:
-Ignoring unknown parameters: inherit.blank 
-Error in if (all(is.finite(continuous_range_coord)) && diff(continuous_range_coord) <  : 
+Ignoring unknown parameters: inherit.blank
+Error in if (all(is.finite(continuous_range_coord)) && diff(continuous_range_coord) <  :
   missing value where TRUE/FALSE needed
 Calls: <Anonymous> ... expand_limits_continuous -> expand_limits_continuous_trans
 Execution halted
 mv: rename data/figure_panel_b/supplemental/*heatmap*.tiff to data/figure_panel_b/heatmaps/*heatmap*.tiff: No such file or directory
 LIHCCHOL
-Error in fread(paste("data/figure_panel_b/", args$cancer, "_fts_by_VALUE.tsv",  : 
+Error in fread(paste("data/figure_panel_b/", args$cancer, "_fts_by_VALUE.tsv",  :
   File 'data/figure_panel_b/LIHCCHOL_fts_by_VALUE.tsv' does not exist or is non-readable. getwd()=='/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA'
 Calls: %>% -> as.data.frame -> fread
 Execution halted
-Error in fread(paste("data/figure_panel_b/", args$cancer, "_fts_by_VALUE.tsv",  : 
+Error in fread(paste("data/figure_panel_b/", args$cancer, "_fts_by_VALUE.tsv",  :
   File 'data/figure_panel_b/LIHCCHOL_fts_by_VALUE.tsv' does not exist or is non-readable. getwd()=='/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA'
 Calls: %>% -> as.data.frame -> fread
 Execution halted
 mv: rename data/figure_panel_b/supplemental/*heatmap*.tiff to data/figure_panel_b/heatmaps/*heatmap*.tiff: No such file or directory
 UCEC
-Error in fread(paste("data/figure_panel_b/", args$cancer, "_fts_by_VALUE.tsv",  : 
+Error in fread(paste("data/figure_panel_b/", args$cancer, "_fts_by_VALUE.tsv",  :
   File 'data/figure_panel_b/UCEC_fts_by_VALUE.tsv' does not exist or is non-readable. getwd()=='/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA'
 Calls: %>% -> as.data.frame -> fread
 Execution halted
-Error in fread(paste("data/figure_panel_b/", args$cancer, "_fts_by_VALUE.tsv",  : 
+Error in fread(paste("data/figure_panel_b/", args$cancer, "_fts_by_VALUE.tsv",  :
   File 'data/figure_panel_b/UCEC_fts_by_VALUE.tsv' does not exist or is non-readable. getwd()=='/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA'
 Calls: %>% -> as.data.frame -> fread
 Execution halted
 mv: rename data/figure_panel_b/supplemental/*heatmap*.tiff to data/figure_panel_b/heatmaps/*heatmap*.tiff: No such file or directory
-
-
+```
