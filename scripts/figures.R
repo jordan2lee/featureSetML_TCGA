@@ -153,7 +153,7 @@ for (prefix in platforms){
     if (is.null(figure) == FALSE){
       image_name <- paste(args$cancer,'_heatmap_basic_',unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
       image_capture(image_name)
-      draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+      draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
       # print(figure)
       dev.off()
     }
@@ -377,26 +377,26 @@ for (prefix in platforms){
 
       # Create fig object
       if ( prefix %in% yes_scale ){
-        main_ht_name = paste(plat, 'z-score', sep='\n')
+        main_ht_name = paste(platform_display_text(plat), 'z-score', sep=' ')
         if (prefix == 'N:MIR' ){
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
         } else if (prefix == 'N:GEXP') {
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
         }
       } else if (plat == 'MUTA' || plat == 'METH' || plat == 'CNVR'){
-        fig <- get_main_heatmap(plat, plat, args$cancer)
+        fig <- get_main_heatmap(plat, platform_display_text(plat), args$cancer)
       }
 
       # Set up saving fig packet
       if (args$show_features == TRUE){
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '_NAMES', '.tiff', sep='')
         image_capture(image_name)
-        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
         dev.off()
       } else {
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
         image_capture(image_name)
-        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
         dev.off()
     }
       # Save tsv of heatmap data
