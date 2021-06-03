@@ -1,3 +1,9 @@
+color_pam <- function(membership_vector){
+  membership_vector[membership_vector == "" ] <- 'black'
+  membership_vector[membership_vector == "+" ] <- 'red'
+  return(membership_vector)
+}
+
 ft2gene_gexp <- function(names_vector){
   library(dplyr)
   # Convert full ft name to gene symbol ONLY
@@ -148,6 +154,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     colnames(mat2) <- ft2gene_gexp(colnames(mat2)) # full ft to gene symbol only
     print('#### FEATURES:')
     print(colnames(mat2))
+
+    symb_colors <- color_pam(in_pam)
     fig <- Heatmap(
       mat2,
       name = ht_name,
@@ -155,6 +163,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       cluster_columns = FALSE,
       show_row_names = FALSE,
       show_column_names = args$show_features,
+      column_names_gp = gpar(col = symb_colors),
       column_title = col_title,
       column_title_gp = gpar(
         col = get_colors_platform(plat),
