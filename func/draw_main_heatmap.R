@@ -41,14 +41,15 @@ dev_bottom_annot <- function(k, in_pam){
   #' DEV
   l1 <- list(
     'BRCA_GEXP' = HeatmapAnnotation(
-      in_pam = anno_text(
-        in_pam,
-        gp = gpar(
-          fontface = 'bold',
-          fontsize = get_gpar('pam_size'),
-          fontfamily = get_gpar('font_fam')
-        )
-      ),
+      # in_pam = anno_text(
+      #   in_pam,
+      #   gp = gpar(
+      #     fontface = 'bold',
+      #     fontsize = get_gpar('pam_size'),
+      #     fontfamily = get_gpar('font_fam')
+      #   )
+      # ),
+
       # annotation_width=unit(1, 'mm'),
 
       annotation_label  = gt_render(
