@@ -54,7 +54,7 @@ dev_bottom_annot <- function(k, in_pam){
 
       annotation_label  = gt_render(
         c(
-          '', 'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid",
+          'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid",
           paste(top_NES[1], ' (n=',gene_set_size(top_NES[1]), ')', sep = ''),
           paste(top_NES[2], ' (n=',gene_set_size(top_NES[2]), ')', sep = ''),
           paste(top_NES[3], ' (n=',gene_set_size(top_NES[3]), ')', sep = ''),
@@ -110,13 +110,13 @@ dev_bottom_annot <- function(k, in_pam){
         # hallmark4 = c('0' = "#333333", '1' = "azure4"),
         # hallmark5 = c('0' = "#333333", '1' = "azure4")
       ),
-      show_legend = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+      show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
       gp = gpar(fontsize = 1), # show gridlines, but font size doesn't impact border size
       annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
       annotation_legend_param = list(
         title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
         labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))),
-      gap = unit(c(2,2,0,0,0,0), 'mm')
+      gap = unit(c(2,0,0,0,0), 'mm')
 
     )
   )
