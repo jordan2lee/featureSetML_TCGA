@@ -295,12 +295,12 @@ for (prefix in platforms){
 
       subtype_ha <- subtype_annotation
 
-      # Hallmarks by Pathway NES score
-      vals_1_NES <- build_hallmark_vect(top_NES[1],ftnames_order, prefix)
-      vals_2_NES <- build_hallmark_vect(top_NES[2],ftnames_order, prefix)
-      vals_3_NES <- build_hallmark_vect(top_NES[3],ftnames_order, prefix)
-      vals_4_NES <- build_hallmark_vect(top_NES[4],ftnames_order, prefix)
-      vals_5_NES <- build_hallmark_vect(top_NES[5],ftnames_order, prefix)
+      # # Hallmarks by Pathway NES score
+      # vals_1_NES <- build_hallmark_vect(top_NES[1],ftnames_order, prefix)
+      # vals_2_NES <- build_hallmark_vect(top_NES[2],ftnames_order, prefix)
+      # vals_3_NES <- build_hallmark_vect(top_NES[3],ftnames_order, prefix)
+      # vals_4_NES <- build_hallmark_vect(top_NES[4],ftnames_order, prefix)
+      # vals_5_NES <- build_hallmark_vect(top_NES[5],ftnames_order, prefix)
 
       # Build annotation bars of teams feature sets.
       # 1A. df of all teams. match ft order in heatmap
@@ -344,12 +344,12 @@ for (prefix in platforms){
 
         annotation_name_rot = 0,
 
-        # C. Version 2: Hallmarks by NES
-        hallmark1 = vals_1_NES,
-        hallmark2 = vals_2_NES,
-        hallmark3 = vals_3_NES,
-        hallmark4 = vals_4_NES,
-        hallmark5 = vals_5_NES,
+        # # C. Version 2: Hallmarks by NES
+        # hallmark1 = vals_1_NES,
+        # hallmark2 = vals_2_NES,
+        # hallmark3 = vals_3_NES,
+        # hallmark4 = vals_4_NES,
+        # hallmark5 = vals_5_NES,
 
         col = list(
           'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
@@ -363,10 +363,10 @@ for (prefix in platforms){
           hallmark4 = c('0' = "#333333", '1' = "azure4"),
           hallmark5 = c('0' = "#333333", '1' = "azure4")
         ),
-        show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
+        show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
         gp = gpar(fontsize = 1), # grid all col annot
         annotation_name_gp= gpar(fontsize = 8),
-        gap = unit(c(1,0,0,0,0,1,0,0,0,0), 'mm')
+        gap = unit(c(1,0,0,0,0), 'mm')
       )
 
       # prepare for plotting

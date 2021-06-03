@@ -76,32 +76,32 @@ dev_bottom_annot <- function(k, in_pam){
 
       annotation_name_rot = 0,
 
-      # C. Version 2: Hallmarks by NES
-      hallmark1 = vals_1_NES,
-      hallmark2 = vals_2_NES,
-      hallmark3 = vals_3_NES,
-      hallmark4 = vals_4_NES,
-      hallmark5 = vals_5_NES,
+      # # C. Version 2: Hallmarks by NES
+      # hallmark1 = vals_1_NES,
+      # hallmark2 = vals_2_NES,
+      # hallmark3 = vals_3_NES,
+      # hallmark4 = vals_4_NES,
+      # hallmark5 = vals_5_NES,
 
       col = list(
         'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
         "SubSCOPE" =  c('0' = "#333333", '1' = "#AEFEB0"),
         "Cloud Forest" =  c('0' = "#333333", '1' = "#BFBFFF"),
         "JADBio" = c('0' = "#333333", '1' = "#FBBD91"),
-        "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF"),
-        hallmark1 = c('0' = "#333333", '1' = "azure4"),
-        hallmark2 = c('0' = "#333333", '1' = "azure4"),
-        hallmark3 = c('0' = "#333333", '1' = "azure4"),
-        hallmark4 = c('0' = "#333333", '1' = "azure4"),
-        hallmark5 = c('0' = "#333333", '1' = "azure4")
+        "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF")
+        # hallmark1 = c('0' = "#333333", '1' = "azure4"),
+        # hallmark2 = c('0' = "#333333", '1' = "azure4"),
+        # hallmark3 = c('0' = "#333333", '1' = "azure4"),
+        # hallmark4 = c('0' = "#333333", '1' = "azure4"),
+        # hallmark5 = c('0' = "#333333", '1' = "azure4")
       ),
-      show_legend = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
+      show_legend = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
       gp = gpar(fontsize = 1), # show gridlines, but font size doesn't impact border size
       annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
       annotation_legend_param = list(
         title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
         labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))),
-      gap = unit(c(2,2,0,0,0,0,1,0,0,0,0), 'mm')
+      gap = unit(c(2,2,0,0,0,0), 'mm')
 
     )
   )
@@ -134,7 +134,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
   legend_colors <- list_legend[[plat]]
   legend_l_param <- list_l_param[[plat]]
 
-
+  print('#### FEATURES:')
+  print(colnames(mat2))
   # Draw
   if (cancer == 'BRCA' && plat == 'GEXP'){
     fig <- Heatmap(
