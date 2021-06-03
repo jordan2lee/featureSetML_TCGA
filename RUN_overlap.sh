@@ -17,7 +17,7 @@ for tumor_cohort in ${StringArray[@]}; do
       --file_top src/classifier_metrics_20210514/top_performing_models_lte_100_features.tsv \
       --out data/figure_panel_a/best_models_${tumor_cohort}.tsv
   echo 'completed ft list formatting'
-  #
+
   # 2. Clean files and create 2 new files
   python scripts/pull_grp_best.py \
       --tumor ${tumor_cohort} \
