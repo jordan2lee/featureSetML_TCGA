@@ -116,6 +116,7 @@ dev_bottom_annot <- function(k, in_pam){
       annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
       annotation_legend_param = list(
         direction= 'horizontal',
+        title_position = "lefttop",  # legend title location
         legend_width = unit(4, "cm"),
         title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
         labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))),
@@ -141,9 +142,17 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     # TODO add font rules for all data types but update downstream to handle nonNULL
     'CNVR' = NULL,
     'MIR' = NULL,
-    'METH' = NULL,
+    'METH' = list(
+      direction= 'horizontal',
+      title_position = "lefttop",  # legend title location
+      legend_width = unit(4, "cm"),
+      title = ht_name,
+      title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
+      labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))
+    ),
     'GEXP' = list(
       direction= 'horizontal',
+      title_position = "lefttop", # legend title location
       legend_width = unit(4, "cm"),
       title = ht_name,
       title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),

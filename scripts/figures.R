@@ -391,12 +391,14 @@ for (prefix in platforms){
       if (args$show_features == TRUE){
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '_NAMES', '.tiff', sep='')
         image_capture(image_name)
-        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
+        # draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
+        draw(fig,merge_legend = TRUE, heatmap_legend_side = c('bottom'))
         dev.off()
       } else {
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
         image_capture(image_name)
-        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
+        # draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
+        draw(fig,merge_legend = TRUE,heatmap_legend_side = c('bottom'))
         dev.off()
     }
       # Save tsv of heatmap data
