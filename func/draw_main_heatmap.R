@@ -175,8 +175,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       use_raster = TRUE,
       na_col = 'white',
       col = legend_colors,
-      heatmap_legend_param = legend_l_param,
-      top_annotation = get_top_annot(paste(cancer, plat, sep='_')),
+      heatmap_legend_param = legend_l_param
     )
   } else if (plat == 'GEXP'){
     colnames(mat2) <- ft2gene_gexp(colnames(mat2)) # full ft to gene symbol only
