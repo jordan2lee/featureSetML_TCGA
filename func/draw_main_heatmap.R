@@ -1,3 +1,11 @@
+ft2gene_gexp <- function(names_vector){
+  library(dplyr)
+  # Convert full ft name to gene symbol ONLY
+  display_genes <- sapply(strsplit(names_vector, '::'), `[`,2)
+  display_genes <- sapply(strsplit(display_genes, ':'), `[`,1)
+  return(display_genes)
+}
+
 get_top_annot <- function(k){
   #' Gene indcies to show on heatmap
   #' If input cancer not in list then will return NULL
@@ -134,10 +142,12 @@ get_main_heatmap <- function(plat, ht_name, cancer){
   legend_colors <- list_legend[[plat]]
   legend_l_param <- list_l_param[[plat]]
 
-  print('#### FEATURES:')
-  print(colnames(mat2))
+
   # Draw
   if (cancer == 'BRCA' && plat == 'GEXP'){
+    colnames(mat2) <- ft2gene_gexp(colnames(mat2)) # full ft to gene symbol only
+    print('#### FEATURES:')
+    print(colnames(mat2))
     fig <- Heatmap(
       mat2,
       name = ht_name,
@@ -168,7 +178,31 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       heatmap_legend_param = legend_l_param,
       top_annotation = get_top_annot(paste(cancer, plat, sep='_')),
     )
+  } else if (plat == 'GEXP'){
+    colnames(mat2) <- ft2gene_gexp(colnames(mat2)) # full ft to gene symbol only
+    print('#### FEATURES:')
+    print(colnames(mat2))
+    # Standard ht
+    fig <- Heatmap(
+      mat2,
+      name = ht_name,
+      cluster_rows = FALSE,
+      cluster_columns = FALSE,
+      show_row_names = FALSE,
+      show_column_names = args$show_features,
+      column_title = col_title,
+      column_title_gp = gpar(fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
+      row_title = paste('Samples (n=', ht_rows, ')', sep=''),
+      row_title_gp = gpar(fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
+      right_annotation = subtype_ha,
+      bottom_annotation = col_annot,
+      row_title_side = "right",
+      use_raster = TRUE,
+      na_col = 'white'
+    )
   } else if (is.null(legend_colors) == TRUE){
+    print('#### FEATURES:')
+    print(colnames(mat2))
     # Standard ht
     fig <- Heatmap(
       mat2,
@@ -188,6 +222,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       na_col = 'white'
     )
   } else if (is.null(legend_l_param) == FALSE && is.null(legend_colors) == FALSE){
+    print('#### FEATURES:')
+    print(colnames(mat2))
     fig <- Heatmap(
       mat2,
       name = ht_name,
@@ -210,6 +246,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       heatmap_legend_param = legend_l_param
     )
   } else {
+    print('#### FEATURES:')
+    print(colnames(mat2))
     # Ht with col field
     fig <- Heatmap(
       mat2,
