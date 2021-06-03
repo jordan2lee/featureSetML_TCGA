@@ -7,6 +7,7 @@ color_pam <- function(membership_vector){
 ft2gene_gexp <- function(names_vector){
   library(dplyr)
   # Convert full ft name to gene symbol ONLY
+  names_vector <- names_vector %>% as.vector()
   display_genes <- sapply(strsplit(names_vector, '::'), `[`,2)
   display_genes <- sapply(strsplit(display_genes, ':'), `[`,1)
   return(display_genes)
@@ -188,7 +189,10 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       heatmap_legend_param = legend_l_param
     )
   } else if (plat == 'GEXP'){
-    colnames(mat2) <- ft2gene_gexp(colnames(mat2)) # full ft to gene symbol only
+    # temp fix to handle error for when only 1 ft (SKCM)
+    if (length(colnames(mat2)<1)){
+      colnames(mat2) <- ft2gene_gexp(colnames(mat2)) # full ft to gene symbol only
+    }
     print('#### FEATURES:')
     print(colnames(mat2))
     # Standard ht
