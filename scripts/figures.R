@@ -41,6 +41,25 @@ file_imp_aklimate <- paste(
   '_20200423_aklimate_ranked_feature_importance.tsv',
   sep=''
 )
+######################
+# # TODO update from BRCA hardcoded here
+file_imp_scikitgrid <- paste(
+  'data/ft_importances/TOP_skgrid_BRCA_fbedeBIC_perplatformALL_BRCA.tsv',
+  sep='\t'
+)
+file_imp_subscope <- paste(
+  'data/ft_importances/TOP_subSCOPE-GEXP_2021-04-21_bootstrapfeatures_BRCA_BRCA.tsv',
+  sep='\t'
+)
+file_imp_cf <- paste(
+  'data/ft_importances/TOP_CF_BRCA_All_Top_50_BRCA.tsv',
+  sep='\t'
+)
+file_imp_jadbio <- paste(
+  'data/ft_importances/TOP_jadbio_BRCA_GEXP_cumulative_feature_set25_BRCA.tsv',
+  sep='\t'
+)
+######################
 yes_scale <- c('N:GEXP','N:MIR') # which fts to scale
 
 ####
@@ -73,7 +92,18 @@ mappings <- fread(
 imp_aklimate <- fread(
   file_imp_aklimate
 ) %>% as.data.frame()
-
+imp_scikitgrid <- fread(
+  file_imp_scikitgrid
+) %>% as.data.frame()
+imp_subscope <- fread(
+  file_imp_subscope
+) %>% as.data.frame()
+imp_cf <- fread(
+  file_imp_cf
+) %>% as.data.frame()
+imp_jadbio <- fread(
+  file_imp_jadbio
+) %>% as.data.frame()
 # C. Load Mauro's hallmark ranks for all cancer cohorts
 load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
 
@@ -308,10 +338,14 @@ for (prefix in platforms){
 
       # 2. Create MinMax Values where appropriate
       aklimate_minmax <- normalize_data(imp_aklimate, team_df)
-      subscope <- team_df %>% pull(header_subscope) %>% as.character()
-      cforest <- team_df %>% pull(header_cforest) %>% as.character()
-      jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
-      skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
+      subscope <- normalize_data(imp_subscope, team_df)
+      cforest <- normalize_data(imp_cf, team_df)
+      jadbio <- normalize_data(imp_jadbio, team_df)
+      skgrid <- normalize_data(imp_scikitgrid, team_df)
+      # subscope <- team_df %>% pull(header_subscope) %>% as.character()
+      # cforest <- team_df %>% pull(header_cforest) %>% as.character()
+      # jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+
       # Build annotation
       col_annot <- HeatmapAnnotation(
         # Names of Annot Bars

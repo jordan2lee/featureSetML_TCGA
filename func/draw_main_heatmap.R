@@ -84,7 +84,7 @@ dev_bottom_annot <- function(k, in_pam){
       ),
 
       # B. ft binary membership
-      "AKLIMATE min-max" = aklimate_minmax,
+      "AKLIMATE" = aklimate_minmax,
       "SubSCOPE" = subscope,
       "Cloud Forest" = cforest,
       "JADBio" = jadbio,
@@ -100,18 +100,18 @@ dev_bottom_annot <- function(k, in_pam){
       # hallmark5 = vals_5_NES,
 
       col = list(
-        'AKLIMATE min-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
-        "SubSCOPE" =  c('0' = "#333333", '1' = "#AEFEB0"),
-        "Cloud Forest" =  c('0' = "#333333", '1' = "#BFBFFF"),
-        "JADBio" = c('0' = "#333333", '1' = "#FBBD91"),
-        "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF")
+        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
+        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#333333", "#7ea07e", "#AEFEB0")),
+        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#333333", "#858599", "#BFBFFF")),
+        "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#9d856c", "#FBBD91")),
+        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#333333", "#957575", "#FCC0BF"))
         # hallmark1 = c('0' = "#333333", '1' = "azure4"),
         # hallmark2 = c('0' = "#333333", '1' = "azure4"),
         # hallmark3 = c('0' = "#333333", '1' = "azure4"),
         # hallmark4 = c('0' = "#333333", '1' = "azure4"),
         # hallmark5 = c('0' = "#333333", '1' = "azure4")
       ),
-      show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+      show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
       gp = gpar(fontsize = 1), # show gridlines, but font size doesn't impact border size
       annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
       annotation_legend_param = list(
