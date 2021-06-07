@@ -42,17 +42,6 @@ dev_bottom_annot <- function(k, in_pam){
   #' DEV
   l1 <- list(
     'BRCA_GEXP' = HeatmapAnnotation(
-      # in_pam = anno_text(
-      #   in_pam,
-      #   gp = gpar(
-      #     fontface = 'bold',
-      #     fontsize = get_gpar('pam_size'),
-      #     fontfamily = get_gpar('font_fam')
-      #   )
-      # ),
-
-      # annotation_width=unit(1, 'mm'),
-
       annotation_label  = gt_render(
         c(
           'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid",
@@ -92,24 +81,13 @@ dev_bottom_annot <- function(k, in_pam){
 
       annotation_name_rot = 0,
 
-      # # C. Version 2: Hallmarks by NES
-      # hallmark1 = vals_1_NES,
-      # hallmark2 = vals_2_NES,
-      # hallmark3 = vals_3_NES,
-      # hallmark4 = vals_4_NES,
-      # hallmark5 = vals_5_NES,
-
       col = list(
         'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
         "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#333333", "#7ea07e", "#AEFEB0")),
         "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#333333", "#858599", "#BFBFFF")),
-        "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#9d856c", "#FBBD91")),
+        # "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#9d856c", "#FBBD91")),
+        "JADBio" = colorRamp2(c(0, 0.002, 1), c("orange", "#9d856c", "#FBBD91")),
         "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#333333", "#957575", "#FCC0BF"))
-        # hallmark1 = c('0' = "#333333", '1' = "azure4"),
-        # hallmark2 = c('0' = "#333333", '1' = "azure4"),
-        # hallmark3 = c('0' = "#333333", '1' = "azure4"),
-        # hallmark4 = c('0' = "#333333", '1' = "azure4"),
-        # hallmark5 = c('0' = "#333333", '1' = "azure4")
       ),
       na_col = "white", # color of NA in bottom annot
       show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
