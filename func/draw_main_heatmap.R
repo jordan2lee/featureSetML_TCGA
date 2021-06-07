@@ -1,28 +1,3 @@
-get_top_annot <- function(k){
-  #' Gene indcies to show on heatmap
-  #' If input cancer not in list then will return NULL
-  #' and heatmap will plot without gene names shown
-  l1 <- list(
-    'BRCA_GEXP' = HeatmapAnnotation(
-      highlight_fts = anno_mark(
-        at = c(4,6,12,17,28,31,37,38,43,49,54),
-        labels = symbols[c(4,6,12,17,28,31,37,38,43,49,54)],
-        labels_gp = gpar(
-          fontsize = get_gpar('symbol_size'),
-          fontfamily = get_gpar('font_fam'),
-          which = 'column',
-          link_gp = gpar(
-            fontsize = get_gpar('symbol_size'),
-            fontfamily = get_gpar('font_fam')
-          )
-        )
-      ),
-      annotation_width=unit(1, 'mm')
-    )
-  )
-  return(l1[[k]])
-}
-
 dev_bottom_annot <- function(k, in_pam){
   #' DEV
   l1 <- list(

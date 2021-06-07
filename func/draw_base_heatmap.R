@@ -1,4 +1,3 @@
-
 get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid, to_scale_types){
   #' Create base heatmap - no hallmark info. For exploratory purposes
   ######
