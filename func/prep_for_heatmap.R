@@ -59,8 +59,9 @@ normalize_data <- function(df, team_df){
       mm <- subset_df[subset_df$'features'==pooled_ft,]$minmax_vals
       minmax_norm <- c(minmax_norm, mm)
       test_ft_order <- c(test_ft_order, pooled_ft)
+    # else if not present than mark with NA
     } else {
-      minmax_norm <- c(minmax_norm, 0)
+      minmax_norm <- c(minmax_norm, NA)
       test_ft_order <- c(test_ft_order, pooled_ft)
     }
   }

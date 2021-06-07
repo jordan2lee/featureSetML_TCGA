@@ -30,7 +30,12 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
     shorten <- unlist(strsplit(ft, ':'))[2]
     col_vals <- c(col_vals, shorten)
   }
-  df_fts['Platform']<- factor(col_vals, levels = c('MUTA', 'CNVR', 'METH', 'GEXP', 'MIR'))
+  col_vals <- gsub('CNVR', 'CN', col_vals)
+  col_vals <- gsub('GEXP', 'mRNA', col_vals)
+  col_vals <- gsub('MIR', 'miR', col_vals)
+  col_vals <- gsub('METH', 'DNA Methylation', col_vals)
+  col_vals <- gsub('MUTA', 'MUT', col_vals)
+  df_fts['Platform']<- factor(col_vals, levels = c('MUT', 'CN', 'DNA Methylation', 'mRNA', 'miR'))
 
   # Create figure object
   upset_plot <- upset(
@@ -95,11 +100,11 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
       expand_limits(y=max_ftsize) + # set max x value
       scale_fill_manual(
         values=c(
-          'MUTA' = get_colors_platform('MUTA'),
-          'CNVR' = get_colors_platform('CNVR'),
-          'METH' = get_colors_platform('METH'),
-          'GEXP' = get_colors_platform('GEXP'),
-          'MIR' = get_colors_platform('MIR')
+          'MUT' = get_colors_platform('MUTA'),
+          'CN' = get_colors_platform('CNVR'),
+          'DNA Methylation' = get_colors_platform('METH'),
+          'mRNA' = get_colors_platform('GEXP'),
+          'miR' = get_colors_platform('MIR')
         )
       ) +
       theme(legend.position = "none") # no extra legend
@@ -126,11 +131,11 @@ get_upset <- function(cancer, model_headers, max_ftsize, ymax){
       ) +
       scale_fill_manual(
         values=c(
-          'MUTA' = get_colors_platform('MUTA'),
-          'CNVR' = get_colors_platform('CNVR'),
-          'METH' = get_colors_platform('METH'),
-          'GEXP' = get_colors_platform('GEXP'),
-          'MIR' = get_colors_platform('MIR')
+          'MUT' = get_colors_platform('MUTA'),
+          'CN' = get_colors_platform('CNVR'),
+          'DNA Methylation' = get_colors_platform('METH'),
+          'mRNA' = get_colors_platform('GEXP'),
+          'miR' = get_colors_platform('MIR')
         )
       ) +
       # manually adjust the y limits

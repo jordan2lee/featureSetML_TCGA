@@ -17,7 +17,9 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     ),
     annotation_legend_param = list(
       title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
-      labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))
+      labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam')),
+      nrow = 1, # legend rotated into one row
+      title_position = "lefttop"  # legend title location
     ),
     show_annotation_name = FALSE,
     simple_anno_size = unit(3, "mm") # width

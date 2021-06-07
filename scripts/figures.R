@@ -41,6 +41,25 @@ file_imp_aklimate <- paste(
   '_20200423_aklimate_ranked_feature_importance.tsv',
   sep=''
 )
+######################
+# # TODO update from BRCA hardcoded here
+file_imp_scikitgrid <- paste(
+  'data/ft_importances/TOP_skgrid_BRCA_fbedeBIC_perplatformALL_BRCA.tsv',
+  sep='\t'
+)
+file_imp_subscope <- paste(
+  'data/ft_importances/TOP_subSCOPE-GEXP_2021-04-21_bootstrapfeatures_BRCA_BRCA.tsv',
+  sep='\t'
+)
+file_imp_cf <- paste(
+  'data/ft_importances/TOP_CF_BRCA_All_Top_50_BRCA.tsv',
+  sep='\t'
+)
+file_imp_jadbio <- paste(
+  'data/ft_importances/TOP_jadbio_BRCA_GEXP_cumulative_feature_set25_BRCA.tsv',
+  sep='\t'
+)
+######################
 yes_scale <- c('N:GEXP','N:MIR') # which fts to scale
 
 ####
@@ -73,7 +92,18 @@ mappings <- fread(
 imp_aklimate <- fread(
   file_imp_aklimate
 ) %>% as.data.frame()
-
+imp_scikitgrid <- fread(
+  file_imp_scikitgrid
+) %>% as.data.frame()
+imp_subscope <- fread(
+  file_imp_subscope
+) %>% as.data.frame()
+imp_cf <- fread(
+  file_imp_cf
+) %>% as.data.frame()
+imp_jadbio <- fread(
+  file_imp_jadbio
+) %>% as.data.frame()
 # C. Load Mauro's hallmark ranks for all cancer cohorts
 load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
 
@@ -153,7 +183,7 @@ for (prefix in platforms){
     if (is.null(figure) == FALSE){
       image_name <- paste(args$cancer,'_heatmap_basic_',unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
       image_capture(image_name)
-      draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+      draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
       # print(figure)
       dev.off()
     }
@@ -295,12 +325,12 @@ for (prefix in platforms){
 
       subtype_ha <- subtype_annotation
 
-      # Hallmarks by Pathway NES score
-      vals_1_NES <- build_hallmark_vect(top_NES[1],ftnames_order, prefix)
-      vals_2_NES <- build_hallmark_vect(top_NES[2],ftnames_order, prefix)
-      vals_3_NES <- build_hallmark_vect(top_NES[3],ftnames_order, prefix)
-      vals_4_NES <- build_hallmark_vect(top_NES[4],ftnames_order, prefix)
-      vals_5_NES <- build_hallmark_vect(top_NES[5],ftnames_order, prefix)
+      # # Hallmarks by Pathway NES score
+      # vals_1_NES <- build_hallmark_vect(top_NES[1],ftnames_order, prefix)
+      # vals_2_NES <- build_hallmark_vect(top_NES[2],ftnames_order, prefix)
+      # vals_3_NES <- build_hallmark_vect(top_NES[3],ftnames_order, prefix)
+      # vals_4_NES <- build_hallmark_vect(top_NES[4],ftnames_order, prefix)
+      # vals_5_NES <- build_hallmark_vect(top_NES[5],ftnames_order, prefix)
 
       # Build annotation bars of teams feature sets.
       # 1A. df of all teams. match ft order in heatmap
@@ -308,10 +338,14 @@ for (prefix in platforms){
 
       # 2. Create MinMax Values where appropriate
       aklimate_minmax <- normalize_data(imp_aklimate, team_df)
-      subscope <- team_df %>% pull(header_subscope) %>% as.character()
-      cforest <- team_df %>% pull(header_cforest) %>% as.character()
-      jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
-      skgrid <- team_df %>% pull(header_skgrid) %>% as.character()
+      subscope <- normalize_data(imp_subscope, team_df)
+      cforest <- normalize_data(imp_cf, team_df)
+      jadbio <- normalize_data(imp_jadbio, team_df)
+      skgrid <- normalize_data(imp_scikitgrid, team_df)
+      # subscope <- team_df %>% pull(header_subscope) %>% as.character()
+      # cforest <- team_df %>% pull(header_cforest) %>% as.character()
+      # jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
+
       # Build annotation
       col_annot <- HeatmapAnnotation(
         # Names of Annot Bars
@@ -344,12 +378,12 @@ for (prefix in platforms){
 
         annotation_name_rot = 0,
 
-        # C. Version 2: Hallmarks by NES
-        hallmark1 = vals_1_NES,
-        hallmark2 = vals_2_NES,
-        hallmark3 = vals_3_NES,
-        hallmark4 = vals_4_NES,
-        hallmark5 = vals_5_NES,
+        # # C. Version 2: Hallmarks by NES
+        # hallmark1 = vals_1_NES,
+        # hallmark2 = vals_2_NES,
+        # hallmark3 = vals_3_NES,
+        # hallmark4 = vals_4_NES,
+        # hallmark5 = vals_5_NES,
 
         col = list(
           'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
@@ -363,10 +397,10 @@ for (prefix in platforms){
           hallmark4 = c('0' = "#333333", '1' = "azure4"),
           hallmark5 = c('0' = "#333333", '1' = "azure4")
         ),
-        show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
+        show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
         gp = gpar(fontsize = 1), # grid all col annot
         annotation_name_gp= gpar(fontsize = 8),
-        gap = unit(c(1,0,0,0,0,1,0,0,0,0), 'mm')
+        gap = unit(c(1,0,0,0,0), 'mm')
       )
 
       # prepare for plotting
@@ -377,26 +411,28 @@ for (prefix in platforms){
 
       # Create fig object
       if ( prefix %in% yes_scale ){
-        main_ht_name = paste(plat, 'z-score', sep='\n')
+        main_ht_name = paste(platform_display_text(plat), 'z-score', sep=' ')
         if (prefix == 'N:MIR' ){
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
         } else if (prefix == 'N:GEXP') {
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
         }
       } else if (plat == 'MUTA' || plat == 'METH' || plat == 'CNVR'){
-        fig <- get_main_heatmap(plat, plat, args$cancer)
+        fig <- get_main_heatmap(plat, platform_display_text(plat), args$cancer)
       }
 
       # Set up saving fig packet
       if (args$show_features == TRUE){
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '_NAMES', '.tiff', sep='')
         image_capture(image_name)
-        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+        # draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
+        draw(fig,merge_legend = TRUE, heatmap_legend_side = c('bottom'))
         dev.off()
       } else {
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
         image_capture(image_name)
-        draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('right'))
+        # draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
+        draw(fig,merge_legend = TRUE,heatmap_legend_side = c('bottom'))
         dev.off()
     }
       # Save tsv of heatmap data

@@ -13,11 +13,11 @@ for tumor_cohort in ${StringArray[@]}; do
   # 1. Format feature lists of groups (best performing model)
   python scripts/get_fts.py \
       --tumor ${tumor_cohort} \
-      --file_fts src/classifier_metrics_20210504/collected_features_matrix.tsv \
-      --file_top src/classifier_metrics_20210504/top_performing_models_lte_100_features.tsv \
+      --file_fts src/classifier_metrics_20210514/collected_features_matrix.tsv \
+      --file_top src/classifier_metrics_20210514/top_performing_models_lte_100_features.tsv \
       --out data/figure_panel_a/best_models_${tumor_cohort}.tsv
   echo 'completed ft list formatting'
-  #
+
   # 2. Clean files and create 2 new files
   python scripts/pull_grp_best.py \
       --tumor ${tumor_cohort} \
