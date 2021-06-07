@@ -111,6 +111,7 @@ dev_bottom_annot <- function(k, in_pam){
         # hallmark4 = c('0' = "#333333", '1' = "azure4"),
         # hallmark5 = c('0' = "#333333", '1' = "azure4")
       ),
+      na_col = "white", # color of NA in bottom annot
       show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
       gp = gpar(fontsize = 1), # show gridlines, but font size doesn't impact border size
       annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
