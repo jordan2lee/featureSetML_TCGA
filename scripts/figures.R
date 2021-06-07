@@ -327,8 +327,6 @@ for (prefix in platforms){
       subscope <- normalize_data(imp_subscope, team_df)
       cforest <- normalize_data(imp_cf, team_df)
       jadbio <- normalize_data(imp_jadbio, team_df)
-      write.table(imp_jadbio, file ='/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/data/TEST_imp_jadbio.tsv', sep='\t', row.names=FALSE, col.names = TRUE)
-      write.table(jadbio, file ='/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/data/TEST_jadbio.tsv', sep='\t', row.names=TRUE, col.names = TRUE)
       skgrid <- normalize_data(imp_scikitgrid, team_df)
 
       # Build annotation
