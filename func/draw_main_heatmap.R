@@ -1,18 +1,3 @@
-color_pam <- function(membership_vector){
-  membership_vector[membership_vector == "" ] <- 'black'
-  membership_vector[membership_vector == "+" ] <- 'red'
-  return(membership_vector)
-}
-
-ft2gene_gexp <- function(names_vector){
-  library(dplyr)
-  # Convert full ft name to gene symbol ONLY
-  names_vector <- names_vector %>% as.vector()
-  display_genes <- sapply(strsplit(names_vector, '::'), `[`,2)
-  display_genes <- sapply(strsplit(display_genes, ':'), `[`,1)
-  return(display_genes)
-}
-
 get_top_annot <- function(k){
   #' Gene indcies to show on heatmap
   #' If input cancer not in list then will return NULL
@@ -44,12 +29,7 @@ dev_bottom_annot <- function(k, in_pam){
     'BRCA_GEXP' = HeatmapAnnotation(
       annotation_label  = gt_render(
         c(
-          'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid",
-          paste(top_NES[1], ' (n=',gene_set_size(top_NES[1]), ')', sep = ''),
-          paste(top_NES[2], ' (n=',gene_set_size(top_NES[2]), ')', sep = ''),
-          paste(top_NES[3], ' (n=',gene_set_size(top_NES[3]), ')', sep = ''),
-          paste(top_NES[4], ' (n=',gene_set_size(top_NES[4]), ')', sep = ''),
-          paste(top_NES[5], ' (n=',gene_set_size(top_NES[5]), ')', sep = '')
+          'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid"
         )
       ),
       # A. N teams selected

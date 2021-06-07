@@ -22,6 +22,7 @@ source('func/draw_base_heatmap.R')
 source('func/draw_upset.R')
 source('func/save_fig.R')
 source('func/draw_main_heatmap.R')
+source('func/build_ht_func.R')
 parser <- ArgumentParser()
 parser$add_argument('-min', '--min_n_team_overlap', type='character', help='min number of teams to show overlaps on all heatmaps')
 parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
@@ -125,9 +126,6 @@ print('completed upset plot - mode distinct')
 #####
 # Set up
 #####
-# # Define platform for hallmark heatmap
-# platform_of_interest <- get_platform_of_interest(args$cancer)
-
 # Build list of data types present
 platforms <- get_platforms_present(args$cancer)
 
@@ -154,7 +152,7 @@ models <- model2team(df_fts)
 # Set up saving fig packet
 for (prefix in platforms){
 
-  # Create only base heatmap without hallmarks for miRNA - due to symbols not in hallmark db
+  # Create only base heatmap for miRNA
   if (prefix == 'N:MIR'){
     print(paste('WORKING ON:', prefix, sep=' '))
     # A. Base Heatmap
@@ -302,13 +300,8 @@ for (prefix in platforms){
 
 
       ######
-      # Section 3: Heatmap with Hallmarks and Feature Importance (Top 5)
+      # Section 3: Heatmap with Feature Importance (Top 5)
       ######
-      # Find top hallmarks from Pathway NES score
-      importance <- Hallmark.nes.space[,args$cancer]
-      importance <- sort(importance, decreasing = TRUE)
-      top_NES <- names(importance[1:5])
-
       header_aklimate <- models['AKLIMATE']
       header_subscope <- models['SubSCOPE']
       header_cforest <- models['CloudForest']
@@ -335,12 +328,7 @@ for (prefix in platforms){
         # Names of Annot Bars
         annotation_label  = gt_render(
           c(
-            'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid",
-            paste(top_NES[1], ' (n=',gene_set_size(top_NES[1]), ')', sep = ''),
-            paste(top_NES[2], ' (n=',gene_set_size(top_NES[2]), ')', sep = ''),
-            paste(top_NES[3], ' (n=',gene_set_size(top_NES[3]), ')', sep = ''),
-            paste(top_NES[4], ' (n=',gene_set_size(top_NES[4]), ')', sep = ''),
-            paste(top_NES[5], ' (n=',gene_set_size(top_NES[5]), ')', sep = '')
+            'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid"
           )
         ),
         # A. N teams selected
