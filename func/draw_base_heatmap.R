@@ -1,35 +1,17 @@
-get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid, to_scale_types){
+get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid, to_scale_types, df, Labels){
   #' Create base heatmap - no hallmark info. For exploratory purposes
   ######
   # Preprocess
   #####
-  # A. Order by subtype
-  df_transform <- df %>% arrange(Labels)
-  # B. Column annotation
-  s_matrix <- pull(df_transform, Labels) %>% as.vector()
-  s_matrix <- sapply(strsplit(s_matrix, '_'), "[", 2) %>% as.matrix()
-  subtype_ha <- rowAnnotation(
-    Subtype = s_matrix,
-    na_col = 'grey',
-    col = list(
-      Subtype = get_colors(df)
-    ),
-    annotation_legend_param = list(
-      title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
-      labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam')),
-      nrow = 1, # legend rotated into one row
-      title_position = "lefttop"  # legend title location
-    ),
-    show_annotation_name = FALSE,
-    simple_anno_size = unit(3, "mm") # width
-  )
-  # C. Select data type
-  df_transform <- df_transform %>%
-    select(-Labels) %>%
-    select(-all_of(cancer)) %>%
-    select(starts_with(prefix))
-  if (ncol(df_transform) != 0){
+  # A. Order by subtype and Column annotation
+  annot_out <- row_annot_cleanup_1(df, Labels)
 
+  # Get heatmap annot object
+  subtype_ha <- row_annot_obj(annot_out[['subtype_ordered_annotat_matrix']], df)
+
+  # C. Select data type
+  df_transform <- row_cleanup_2(annot_out[['subtype_ordered_matrix']], Labels, cancer)
+  if (ncol(df_transform) != 0){
     mat <- df_transform %>%
       as.matrix() %>%
       t()

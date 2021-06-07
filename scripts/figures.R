@@ -24,6 +24,7 @@ source('func/save_fig.R')
 source('func/draw_main_heatmap.R')
 source('func/build_ht_func.R')
 source('func/ht_col_annot.R')
+source('func/ht_row_annot.R')
 source('func/ht_legend.R')
 source('func/draw_ht_brca.R')
 parser <- ArgumentParser()
@@ -167,7 +168,9 @@ for (prefix in platforms){
       models['AKLIMATE'],
       models['SubSCOPE'],
       models['ScikitGrid'],
-      yes_scale
+      yes_scale,
+      df,
+      Labels
     )
     # Save figure and exit
     figure <- results_list[['figure']]
@@ -193,7 +196,9 @@ for (prefix in platforms){
       models['AKLIMATE'],
       models['SubSCOPE'],
       models['ScikitGrid'],
-      yes_scale
+      yes_scale,
+      df,
+      Labels
     )
     mat2 <- results_list[['results_matrix']]
     ftnames_order <- results_list[['results_ft_order']]
@@ -322,8 +327,6 @@ for (prefix in platforms){
       subscope <- normalize_data(imp_subscope, team_df)
       cforest <- normalize_data(imp_cf, team_df)
       jadbio <- normalize_data(imp_jadbio, team_df)
-      write.table(imp_jadbio, file ='/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/data/TEST_imp_jadbio.tsv', sep='\t', row.names=FALSE, col.names = TRUE)
-      write.table(jadbio, file ='/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/data/TEST_jadbio.tsv', sep='\t', row.names=TRUE, col.names = TRUE)
       skgrid <- normalize_data(imp_scikitgrid, team_df)
 
       # Build annotation
