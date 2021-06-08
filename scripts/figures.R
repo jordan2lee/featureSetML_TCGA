@@ -49,19 +49,19 @@ file_imp_aklimate <- paste(
 ######################
 # # TODO update from BRCA hardcoded here
 file_imp_scikitgrid <- paste(
-  'data/ft_importances/TOP_skgrid_BRCA_fbedeBIC_perplatformALL_BRCA.tsv',
+  'data/top_model_importances/TOP_skgrid_BRCA_fbedeBIC_perplatformALL_BRCA.tsv',
   sep='\t'
 )
 file_imp_subscope <- paste(
-  'data/ft_importances/TOP_subSCOPE-GEXP_2021-04-21_bootstrapfeatures_BRCA_BRCA.tsv',
+  'data/top_model_importances/TOP_subSCOPE-GEXP_2021-04-21_bootstrapfeatures_BRCA_BRCA.tsv',
   sep='\t'
 )
 file_imp_cf <- paste(
-  'data/ft_importances/TOP_CF_BRCA_All_Top_50_BRCA.tsv',
+  'data/top_model_importances/TOP_CF_BRCA_All_Top_50_BRCA.tsv',
   sep='\t'
 )
 file_imp_jadbio <- paste(
-  'data/ft_importances/TOP_jadbio_BRCA_GEXP_cumulative_feature_set25_BRCA.tsv',
+  'data/top_model_importances/TOP_jadbio_BRCA_GEXP_cumulative_feature_set25_BRCA.tsv',
   sep='\t'
 )
 ######################
