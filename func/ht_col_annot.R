@@ -40,8 +40,7 @@ dev_bottom_annot <- function(k, in_pam){
         'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
         "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#333333", "#7ea07e", "#AEFEB0")),
         "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#333333", "#858599", "#BFBFFF")),
-        # "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#9d856c", "#FBBD91")),
-        "JADBio" = colorRamp2(c(0, 0.002, 1), c("orange", "#9d856c", "#FBBD91")),
+        "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#e1b589", "#FBBD91")),
         "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#333333", "#957575", "#FCC0BF"))
       ),
       na_col = "white", # color of NA in bottom annot
