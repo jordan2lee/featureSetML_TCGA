@@ -46,8 +46,7 @@ file_imp_aklimate <- paste(
   '_20200423_aklimate_ranked_feature_importance.tsv',
   sep=''
 )
-######################
-# # TODO update from BRCA hardcoded here
+
 file_imp_scikitgrid <- paste(
   'data/top_model_importances/TOP', args$cancer, 'SKGRID.tsv',
   sep='_'
@@ -64,7 +63,7 @@ file_imp_jadbio <- paste(
   'data/top_model_importances/TOP', args$cancer, 'JADBIO.tsv',
   sep='_'
 )
-######################
+
 yes_scale <- c('N:GEXP','N:MIR') # which fts to scale
 
 ####
