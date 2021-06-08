@@ -49,20 +49,20 @@ file_imp_aklimate <- paste(
 ######################
 # # TODO update from BRCA hardcoded here
 file_imp_scikitgrid <- paste(
-  'data/top_model_importances/TOP_skgrid_BRCA_fbedeBIC_perplatformALL_BRCA.tsv',
-  sep='\t'
+  'data/top_model_importances/TOP', args$cancer, 'SKGRID.tsv',
+  sep='_'
 )
 file_imp_subscope <- paste(
-  'data/top_model_importances/TOP_subSCOPE-GEXP_2021-04-21_bootstrapfeatures_BRCA_BRCA.tsv',
-  sep='\t'
+  'data/top_model_importances/TOP', args$cancer, 'SUBSCOPE.tsv',
+  sep='_'
 )
 file_imp_cf <- paste(
-  'data/top_model_importances/TOP_CF_BRCA_All_Top_50_BRCA.tsv',
-  sep='\t'
+  'data/top_model_importances/TOP', args$cancer, 'CF.tsv',
+  sep='_'
 )
 file_imp_jadbio <- paste(
-  'data/top_model_importances/TOP_jadbio_BRCA_GEXP_cumulative_feature_set25_BRCA.tsv',
-  sep='\t'
+  'data/top_model_importances/TOP', args$cancer, 'JADBIO.tsv',
+  sep='_'
 )
 ######################
 yes_scale <- c('N:GEXP','N:MIR') # which fts to scale
