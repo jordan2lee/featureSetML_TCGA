@@ -29,3 +29,18 @@ data/ft_importances/
 
 # Scripts
 scripts/feature_list_with_performance_with_subtype_names_20200828-CW.py
+
+# temp 6/8/21 for branching
+.Rhistory
+data/TEST_df.tsv
+data/TEST_imp_jadbio.tsv
+data/TEST_imp_scikitgrid.tsv
+data/TEST_jadbio.tsv
+data/TEST_skgrid_impt.tsv
+data/TEST_team_df.tsv
+notebooks/wip/NEW notebook version of get fts.ipynb
+notebooks/wip/NEW point to feature list in chris file?.ipynb
+notebooks/wip/compile_model_names_extra.ipynb
+notebooks/wip/n_best_models.txt
+notebooks/wip/sanity_check_chris_top_models.ipynb
+notebooks/wip/wip-ft-importance.ipynb
