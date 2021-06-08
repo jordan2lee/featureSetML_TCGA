@@ -383,6 +383,7 @@ for (prefix in platforms){
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
         }
       } else if (plat == 'MUTA' || plat == 'METH' || plat == 'CNVR'){
+        main_ht_name = platform_display_text(plat)
         fig <- get_main_heatmap(plat, platform_display_text(plat), args$cancer)
       }
 

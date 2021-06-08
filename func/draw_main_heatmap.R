@@ -7,7 +7,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
   # Draw
   if (cancer == 'BRCA' && plat == 'GEXP'){
     # Quick abbrev of feature gene symbols
-    colnames(mat2) <- ft2gene_gexp(colnames(mat2))
+    colnames(mat2) <- ft2gene_gexp(colnames(mat2), plat)
     # Logging
     print('#### FEATURES:')
     print(colnames(mat2))
@@ -22,10 +22,34 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       ht_combined_legend(plat, main_ht_name),
       color_pam(in_pam)
     )
+  } else if (cancer == 'LGGGBM' && plat == 'METH'){
+    # Quick abbrev of feature gene symbols
+    colnames(mat2) <- ft2gene_gexp(colnames(mat2), plat)
+    # Logging
+    print('#### FEATURES:')
+    print(colnames(mat2))
+    # Standard ht
+    fig <- Heatmap(
+      mat2,
+      name = ht_name,
+      cluster_rows = FALSE,
+      cluster_columns = FALSE,
+      show_row_names = FALSE,
+      show_column_names = args$show_features,
+      column_title = col_title,
+      column_title_gp = gpar(fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
+      row_title = paste('Samples (n=', ht_rows, ')', sep=''),
+      row_title_gp = gpar(fontfamily = get_gpar('font_fam'), fontsize = get_gpar('axis_size')),
+      right_annotation = subtype_ha,
+      bottom_annotation = col_annot,
+      row_title_side = "right",
+      use_raster = TRUE,
+      na_col = 'white'
+    )
   } else if (plat == 'GEXP'){
     # temp fix to handle error for when only 1 ft (SKCM)
     if (length(colnames(mat2)<1)){
-      colnames(mat2) <- ft2gene_gexp(colnames(mat2)) # full ft to gene symbol only
+      colnames(mat2) <- ft2gene_gexp(colnames(mat2), plat) # full ft to gene symbol only
     }
     print('#### FEATURES:')
     print(colnames(mat2))
