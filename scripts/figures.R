@@ -16,12 +16,17 @@ suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(circlize))
 suppressPackageStartupMessages(library(docstring))
 suppressPackageStartupMessages(library(argparse))
-source('func/cohort_config.R')
+source('func/config_analysis.R')
 source('func/prep_for_heatmap.R')
 source('func/draw_base_heatmap.R')
 source('func/draw_upset.R')
 source('func/save_fig.R')
 source('func/draw_main_heatmap.R')
+source('func/build_ht_func.R')
+source('func/ht_col_annot.R')
+source('func/ht_row_annot.R')
+source('func/ht_legend.R')
+source('func/draw_ht_brca.R')
 parser <- ArgumentParser()
 parser$add_argument('-min', '--min_n_team_overlap', type='character', help='min number of teams to show overlaps on all heatmaps')
 parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
@@ -104,13 +109,12 @@ imp_cf <- fread(
 imp_jadbio <- fread(
   file_imp_jadbio
 ) %>% as.data.frame()
-# C. Load Mauro's hallmark ranks for all cancer cohorts
-load(file='src/mauro_files/Hallmark_nes_space_20210212.RData')
 
 # D. PAM50 for breast cancer
 f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/brca_pam50_hits.tsv'
 pam <- fread(f) %>% as.data.frame(row.names=1)
 pam <- pam %>% select(-V1) %>% colnames()
+
 
 ###### PART 1: UPSET PLOT ######
 upset_fig <- get_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
@@ -122,20 +126,10 @@ dev.off()
 print('completed upset plot - mode distinct')
 
 
-
-
-
-
-
-
-
 ###### PART 2: HEATMAP #########
 #####
 # Set up
 #####
-# # Define platform for hallmark heatmap
-# platform_of_interest <- get_platform_of_interest(args$cancer)
-
 # Build list of data types present
 platforms <- get_platforms_present(args$cancer)
 
@@ -162,7 +156,7 @@ models <- model2team(df_fts)
 # Set up saving fig packet
 for (prefix in platforms){
 
-  # Create only base heatmap without hallmarks for miRNA - due to symbols not in hallmark db
+  # Create only base heatmap for miRNA
   if (prefix == 'N:MIR'){
     print(paste('WORKING ON:', prefix, sep=' '))
     # A. Base Heatmap
@@ -174,7 +168,9 @@ for (prefix in platforms){
       models['AKLIMATE'],
       models['SubSCOPE'],
       models['ScikitGrid'],
-      yes_scale
+      yes_scale,
+      df,
+      Labels
     )
     # Save figure and exit
     figure <- results_list[['figure']]
@@ -200,7 +196,9 @@ for (prefix in platforms){
       models['AKLIMATE'],
       models['SubSCOPE'],
       models['ScikitGrid'],
-      yes_scale
+      yes_scale,
+      df,
+      Labels
     )
     mat2 <- results_list[['results_matrix']]
     ftnames_order <- results_list[['results_ft_order']]
@@ -310,13 +308,8 @@ for (prefix in platforms){
 
 
       ######
-      # Section 3: Heatmap with Hallmarks and Feature Importance (Top 5)
+      # Section 3: Heatmap with Feature Importance (Top 5)
       ######
-      # Find top hallmarks from Pathway NES score
-      importance <- Hallmark.nes.space[,args$cancer]
-      importance <- sort(importance, decreasing = TRUE)
-      top_NES <- names(importance[1:5])
-
       header_aklimate <- models['AKLIMATE']
       header_subscope <- models['SubSCOPE']
       header_cforest <- models['CloudForest']
@@ -324,13 +317,6 @@ for (prefix in platforms){
       header_skgrid <- models['ScikitGrid']
 
       subtype_ha <- subtype_annotation
-
-      # # Hallmarks by Pathway NES score
-      # vals_1_NES <- build_hallmark_vect(top_NES[1],ftnames_order, prefix)
-      # vals_2_NES <- build_hallmark_vect(top_NES[2],ftnames_order, prefix)
-      # vals_3_NES <- build_hallmark_vect(top_NES[3],ftnames_order, prefix)
-      # vals_4_NES <- build_hallmark_vect(top_NES[4],ftnames_order, prefix)
-      # vals_5_NES <- build_hallmark_vect(top_NES[5],ftnames_order, prefix)
 
       # Build annotation bars of teams feature sets.
       # 1A. df of all teams. match ft order in heatmap
@@ -342,21 +328,13 @@ for (prefix in platforms){
       cforest <- normalize_data(imp_cf, team_df)
       jadbio <- normalize_data(imp_jadbio, team_df)
       skgrid <- normalize_data(imp_scikitgrid, team_df)
-      # subscope <- team_df %>% pull(header_subscope) %>% as.character()
-      # cforest <- team_df %>% pull(header_cforest) %>% as.character()
-      # jadbio <- team_df %>% pull(header_jadbio) %>% as.character()
 
       # Build annotation
       col_annot <- HeatmapAnnotation(
         # Names of Annot Bars
         annotation_label  = gt_render(
           c(
-            'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid",
-            paste(top_NES[1], ' (n=',gene_set_size(top_NES[1]), ')', sep = ''),
-            paste(top_NES[2], ' (n=',gene_set_size(top_NES[2]), ')', sep = ''),
-            paste(top_NES[3], ' (n=',gene_set_size(top_NES[3]), ')', sep = ''),
-            paste(top_NES[4], ' (n=',gene_set_size(top_NES[4]), ')', sep = ''),
-            paste(top_NES[5], ' (n=',gene_set_size(top_NES[5]), ')', sep = '')
+            'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid"
           )
         ),
         # A. N teams selected
@@ -378,24 +356,12 @@ for (prefix in platforms){
 
         annotation_name_rot = 0,
 
-        # # C. Version 2: Hallmarks by NES
-        # hallmark1 = vals_1_NES,
-        # hallmark2 = vals_2_NES,
-        # hallmark3 = vals_3_NES,
-        # hallmark4 = vals_4_NES,
-        # hallmark5 = vals_5_NES,
-
         col = list(
           'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
           "SubSCOPE" =  c('0' = "#333333", '1' = "#AEFEB0"),
           "Cloud Forest" =  c('0' = "#333333", '1' = "#BFBFFF"),
           "JADBio" = c('0' = "#333333", '1' = "#FBBD91"),
-          "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF"),
-          hallmark1 = c('0' = "#333333", '1' = "azure4"),
-          hallmark2 = c('0' = "#333333", '1' = "azure4"),
-          hallmark3 = c('0' = "#333333", '1' = "azure4"),
-          hallmark4 = c('0' = "#333333", '1' = "azure4"),
-          hallmark5 = c('0' = "#333333", '1' = "azure4")
+          "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF")
         ),
         show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
         gp = gpar(fontsize = 1), # grid all col annot
@@ -425,14 +391,12 @@ for (prefix in platforms){
       if (args$show_features == TRUE){
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '_NAMES', '.tiff', sep='')
         image_capture(image_name)
-        # draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
-        draw(fig,merge_legend = TRUE, heatmap_legend_side = c('bottom'))
+        draw(fig,merge_legend = TRUE, heatmap_legend_side = c('bottom')) # opt add: legend_grouping ='original'
         dev.off()
       } else {
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
         image_capture(image_name)
-        # draw(fig,merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
-        draw(fig,merge_legend = TRUE,heatmap_legend_side = c('bottom'))
+        draw(fig,merge_legend = TRUE,heatmap_legend_side = c('bottom')) # opt add: legend_grouping ='original'
         dev.off()
     }
       # Save tsv of heatmap data

@@ -69,55 +69,41 @@ get_colors_platform <- function(platform){
   return(colors[[platform]])
 }
 
-# get_platform_of_interest <- function(cancer){
-#     #' Define platform to use for hallmark heatmap
-#     #' Typically platform that subtypes are largely defined by
-#     if (cancer == 'BRCA'){
-#       platform_of_interest <- 'N:GEXP'
-#     } else if (cancer == 'LGGGBM'){
-#       platform_of_interest <- 'N:METH'
-#     } else if (cancer == 'GEA'){
-#       platform_of_interest <- 'N:METH'
-#     }
-#     return(platform_of_interest)
-# }
-
-
 get_platforms_present <- function(cancer){
-    # All 5 platforms
-    if (
-      cancer == 'ACC' |
-      cancer == 'BLCA' |
-      cancer == 'BRCA' |
-      cancer == 'CESC' |
-      cancer == 'COADREAD' |
-      cancer == 'ESCC' |
-      cancer == 'GEA' |
-      cancer == 'HNSC' |
-      cancer == 'KIRP'|
-      cancer == 'LUAD' |
-      cancer == 'LUSC' |
-      cancer == 'MESO' |
-      cancer == 'OV' |
-      cancer == 'PAAD' |
-      cancer == 'PCPG' |
-      cancer == 'PRAD' |
-      cancer == 'SARC' |
-      cancer == 'SKCM' |
-      cancer == 'TGCT' |
-      cancer == 'THCA' |
-      cancer == 'THYM' |
-      cancer == 'UCEC' |
-      cancer == 'UVM' ){
-      # platforms <- c('N:GEXP') # TODO del after dev
-      platforms <- c('N:METH', 'I:CNVR', 'B:MUTA', 'N:GEXP', 'N:MIR')
-    } else if ( cancer == 'KIRCKICH' | cancer == 'LGGGBM' | cancer == 'LIHCCHOL'){
-      platforms <- c('B:MUTA', 'N:METH', 'N:GEXP', 'I:CNVR')
-    }
-    return(platforms)
+  #' Specifies which platforms present for each cancer type
+  if (
+    cancer == 'ACC' |
+    cancer == 'BLCA' |
+    cancer == 'BRCA' |
+    cancer == 'CESC' |
+    cancer == 'COADREAD' |
+    cancer == 'ESCC' |
+    cancer == 'GEA' |
+    cancer == 'HNSC' |
+    cancer == 'KIRP'|
+    cancer == 'LUAD' |
+    cancer == 'LUSC' |
+    cancer == 'MESO' |
+    cancer == 'OV' |
+    cancer == 'PAAD' |
+    cancer == 'PCPG' |
+    cancer == 'PRAD' |
+    cancer == 'SARC' |
+    cancer == 'SKCM' |
+    cancer == 'TGCT' |
+    cancer == 'THCA' |
+    cancer == 'THYM' |
+    cancer == 'UCEC' |
+    cancer == 'UVM' ){
+    platforms <- c('N:METH', 'I:CNVR', 'B:MUTA', 'N:GEXP', 'N:MIR')
+  } else if ( cancer == 'KIRCKICH' | cancer == 'LGGGBM' | cancer == 'LIHCCHOL'){
+    platforms <- c('B:MUTA', 'N:METH', 'N:GEXP', 'I:CNVR')
+  }
+  return(platforms)
 }
 
 get_ymax_upset <- function(cancer){
+  #' Max y value for upset plot
   l1 <- list(
     'ACC' = 110, 'BLCA' = 70, 'BRCA' = 70,
     'CESC'= 60, 'COADREAD' = 50, 'ESCC' = 80,
@@ -132,6 +118,7 @@ get_ymax_upset <- function(cancer){
 }
 
 title_info <- function(plat){
+  #' Display name of platform for figures
   l1 <- list(
     'GEXP' = 'Gene Expression',
     'MIR' = 'miRNA',
@@ -168,6 +155,17 @@ platform_display_text <- function(platform){
     'CNVR' = 'CN',
     'METH' = 'DNA Methylation',
     'MIR' = 'miR'
+  )
+  return(l1[[platform]])
+}
+
+ht_matrix_colors <- function(platform){
+  l1 <- list(
+    'CNVR' = structure(c('blue', 'white', 'red'), names = c(-1, 0, 1)),
+    'MIR' = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red')),
+    'METH' = NULL,
+    'GEXP' = colorRamp2(c(-2, 0, 2), c('blue', 'white', 'red')),
+    'MUTA' = structure(c('blue','red'), names = c(0, 1))
   )
   return(l1[[platform]])
 }
