@@ -16,17 +16,16 @@ suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(circlize))
 suppressPackageStartupMessages(library(docstring))
 suppressPackageStartupMessages(library(argparse))
-source('func/config_analysis.R')
-source('func/prep_for_heatmap.R')
-source('func/draw_base_heatmap.R')
-source('func/draw_upset.R')
-source('func/save_fig.R')
-source('func/draw_main_heatmap.R')
-source('func/build_ht_func.R')
-source('func/ht_col_annot.R')
-source('func/ht_row_annot.R')
-source('func/ht_legend.R')
-source('func/draw_ht_brca.R')
+sourceRecursive <- function(path) {
+  #' Input dir and will source all files and subdirs within it
+  dirs <- list.dirs(path, recursive = FALSE)
+  files <- list.files(path, pattern = "^.*[Rr]$", include.dirs = FALSE, full.names = TRUE)
+  for (f in files)
+    source(f)
+  for (d in dirs)
+    sourceRecursive(d)
+}
+sourceRecursive("./func")
 parser <- ArgumentParser()
 parser$add_argument('-min', '--min_n_team_overlap', type='character', help='min number of teams to show overlaps on all heatmaps')
 parser$add_argument("-c", "--cancer", type='character', help='cancer cohort, all capitalized')
@@ -46,25 +45,24 @@ file_imp_aklimate <- paste(
   '_20200423_aklimate_ranked_feature_importance.tsv',
   sep=''
 )
-######################
-# # TODO update from BRCA hardcoded here
+
 file_imp_scikitgrid <- paste(
-  'data/ft_importances/TOP_skgrid_BRCA_fbedeBIC_perplatformALL_BRCA.tsv',
-  sep='\t'
+  'data/top_model_importances/TOP', args$cancer, 'SKGRID.tsv',
+  sep='_'
 )
 file_imp_subscope <- paste(
-  'data/ft_importances/TOP_subSCOPE-GEXP_2021-04-21_bootstrapfeatures_BRCA_BRCA.tsv',
-  sep='\t'
+  'data/top_model_importances/TOP', args$cancer, 'SUBSCOPE.tsv',
+  sep='_'
 )
 file_imp_cf <- paste(
-  'data/ft_importances/TOP_CF_BRCA_All_Top_50_BRCA.tsv',
-  sep='\t'
+  'data/top_model_importances/TOP', args$cancer, 'CF.tsv',
+  sep='_'
 )
 file_imp_jadbio <- paste(
-  'data/ft_importances/TOP_jadbio_BRCA_GEXP_cumulative_feature_set25_BRCA.tsv',
-  sep='\t'
+  'data/top_model_importances/TOP', args$cancer, 'JADBIO.tsv',
+  sep='_'
 )
-######################
+
 yes_scale <- c('N:GEXP','N:MIR') # which fts to scale
 
 ####
@@ -117,7 +115,7 @@ pam <- pam %>% select(-V1) %>% colnames()
 
 
 ###### PART 1: UPSET PLOT ######
-upset_fig <- get_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
+upset_fig <- draw_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
 setwd(args$outdir_upset)
 image_name <- paste('upsetplot_', args$cancer, '.tiff', sep='')
 image_capture(image_name)
@@ -341,14 +339,24 @@ for (prefix in platforms){
         nTeams= anno_barplot(
           team_df$Total,
           bar_width=1,
-          gp = gpar(fill = 'darkgray', col = 'azure4'),
+          gp = gpar(
+            fill = 'darkgray',
+            col = 'azure4'
+          ),
           border = FALSE,
           rot = 45,
-          axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
+          axis_param = list(
+            side = "right",
+            facing='outside',
+            gp=gpar(
+            fontsize=get_gpar('model_overlap_size'),
+            fontfamily = get_gpar('font_fam')
+            )
+          ) #yaxis size
         ),
 
         # B. ft binary membership
-        "AKLIMATE\nmin-max" = aklimate_minmax,
+        "AKLIMATE" = aklimate_minmax,
         "SubSCOPE" = subscope,
         "Cloud Forest" = cforest,
         "JADBio" = jadbio,
@@ -357,16 +365,23 @@ for (prefix in platforms){
         annotation_name_rot = 0,
 
         col = list(
-          'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
-          "SubSCOPE" =  c('0' = "#333333", '1' = "#AEFEB0"),
-          "Cloud Forest" =  c('0' = "#333333", '1' = "#BFBFFF"),
-          "JADBio" = c('0' = "#333333", '1' = "#FBBD91"),
-          "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF")
+        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
+        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#333333", "#7ea07e", "#AEFEB0")),
+        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#333333", "#858599", "#BFBFFF")),
+        "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#e1b589", "#FBBD91")),
+        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#333333", "#957575", "#FCC0BF"))
         ),
-        show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+        na_col = "white", # color of NA in bottom annot
+        show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
         gp = gpar(fontsize = 1), # grid all col annot
-        annotation_name_gp= gpar(fontsize = 8),
-        gap = unit(c(1,0,0,0,0), 'mm')
+        annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
+        annotation_legend_param = list(
+          direction= 'horizontal',
+          title_position = "lefttop",  # legend title location
+          legend_width = unit(4, "cm"),
+          title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
+          labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))),
+        gap = unit(c(2,0,0,0,0), 'mm')
       )
 
       # prepare for plotting
@@ -384,6 +399,7 @@ for (prefix in platforms){
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
         }
       } else if (plat == 'MUTA' || plat == 'METH' || plat == 'CNVR'){
+        main_ht_name = platform_display_text(plat)
         fig <- get_main_heatmap(plat, platform_display_text(plat), args$cancer)
       }
 

@@ -6,7 +6,9 @@ timestamp() {
 }
 timestamp
 
-declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LGGGBM' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'SKCM' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
+# Which cohorts? All 26 or 4 main?
+# declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LGGGBM' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'SKCM' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
+declare -a StringArray=('BRCA' 'LGGGBM' 'COADREAD' 'SKCM')
 
 for tumor_cohort in ${StringArray[@]}; do
   echo $tumor_cohort
@@ -42,14 +44,6 @@ for tumor_cohort in ${StringArray[@]}; do
   fi
 
   # 4. Create upset and heatmap. once without and once with ft names displayed on ht
-  Rscript scripts/figures.R \
-      --cancer ${tumor_cohort} \
-      --min_n_team_overlap 2 \
-      --max_ftsize ${msize} \
-      --outdir_upset data/figure_panel_a \
-      --outdir_ht ../figure_panel_b \
-      --input_team_display ScikitGrid,JADBIO,CloudForest,SubSCOPE,AKLIMATE
-
   Rscript scripts/figures.R \
       --show_features \
       --cancer ${tumor_cohort} \
