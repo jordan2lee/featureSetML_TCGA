@@ -4,7 +4,8 @@ platform_display_text <- function(platform){
     'GEXP' = 'mRNA',
     'CNVR' = 'CN',
     'METH' = 'DNA Methylation',
-    'MIR' = 'miR'
+    'MIR' = 'miR',
+    'MUTA' = 'Mutation'
   )
   return(l1[[platform]])
 }
