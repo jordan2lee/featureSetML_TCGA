@@ -1,6 +1,7 @@
 ht_combined_legend <- function(platform, ht_name){
+  #' Get Complex Heatmap legend params for main platforms for paper
+  #' These platforms are GEXP, MUTA, and METH
   l1 <- list(
-    # TODO add font rules for all data types but update downstream to handle nonNULL
     'CNVR' = NULL,
     'MIR' = NULL,
     'standard' = list(
@@ -18,7 +19,6 @@ ht_combined_legend <- function(platform, ht_name){
       title = ht_name,
       title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
       labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))
-      # col = structure(c('blue','red'), names = c(0, 1))
     )
   )
   if (platform == 'GEXP' || platform == 'METH'){
