@@ -5,7 +5,7 @@ title_info <- function(plat){
     'MIR' = 'miRNA',
     'METH' = 'Methylation',
     'CNVR' = 'Copy Number Variation',
-    'MUTA' = 'Mutation Status'
+    'MUTA' = 'Mutation'
   )
   return(l1[[plat]])
 }
