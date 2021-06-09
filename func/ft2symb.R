@@ -9,5 +9,11 @@ ft2symb <- function(names_vector, platform){
   } else if (platform == 'METH'){
       display_genes <- sapply(strsplit(names_vector, ':'), `[`,4)
     return(display_genes)
+  } else if (platform == 'MUTA'){
+      display_genes <- sapply(strsplit(names_vector, ':'), `[`,4)
+      display_gene_details <- sapply(strsplit(names_vector, ':'), `[`,5)
+      display_gene_type <- sapply(strsplit(names_vector, ':'), `[`,3)
+      name <- paste(display_genes, ' (',display_gene_type, ':', display_gene_details, ')', sep='')
+    return(name)
   }
 }
