@@ -12,7 +12,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     print('#### FEATURES:')
     print(colnames(mat2))
     # Create final heatmap
-    fig <- brca_gexp(
+    fig <- draw_ht_brca(
       cancer,
       plat,
       mat2,

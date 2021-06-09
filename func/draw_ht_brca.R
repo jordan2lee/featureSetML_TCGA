@@ -1,4 +1,4 @@
-brca_gexp <- function(
+draw_ht_brca <- function(
   cancer,
   platform,
   data_matrix,

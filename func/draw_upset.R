@@ -1,4 +1,4 @@
-get_upset <- function(cancer, model_headers, max_ftsize, ymax){
+draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
   suppressPackageStartupMessages(library(dplyr))
   suppressPackageStartupMessages(library(data.table))
   suppressPackageStartupMessages(library(ComplexUpset))
