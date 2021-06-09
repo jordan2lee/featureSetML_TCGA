@@ -329,6 +329,45 @@ for (prefix in platforms){
       skgrid <- normalize_data(imp_scikitgrid, team_df)
 
       # Build annotation
+      # TODO updating for lgggbm; need to test for other cancers
+      # col_annot <- HeatmapAnnotation(
+      #   # Names of Annot Bars
+      #   annotation_label  = gt_render(
+      #     c(
+      #       'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid"
+      #     )
+      #   ),
+      #   # A. N teams selected
+      #   nTeams= anno_barplot(
+      #     team_df$Total,
+      #     bar_width=1,
+      #     gp = gpar(fill = 'darkgray', col = 'azure4'),
+      #     border = FALSE,
+      #     rot = 45,
+      #     axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
+      #   ),
+      #
+      #   # B. ft binary membership
+      #   "AKLIMATE" = aklimate_minmax,
+      #   "SubSCOPE" = subscope,
+      #   "Cloud Forest" = cforest,
+      #   "JADBio" = jadbio,
+      #   "SciKitGrid" = skgrid,
+      #
+      #   annotation_name_rot = 0,
+      #
+      #   col = list(
+      #   'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
+      #   "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#333333", "#7ea07e", "#AEFEB0")),
+      #   "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#333333", "#858599", "#BFBFFF")),
+      #   "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#e1b589", "#FBBD91")),
+      #   "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#333333", "#957575", "#FCC0BF"))
+      #   ),
+      #   show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+      #   gp = gpar(fontsize = 1), # grid all col annot
+      #   annotation_name_gp= gpar(fontsize = 8),
+      #   gap = unit(c(1,0,0,0,0), 'mm')
+      # )
       col_annot <- HeatmapAnnotation(
         # Names of Annot Bars
         annotation_label  = gt_render(
@@ -340,14 +379,24 @@ for (prefix in platforms){
         nTeams= anno_barplot(
           team_df$Total,
           bar_width=1,
-          gp = gpar(fill = 'darkgray', col = 'azure4'),
+          gp = gpar(
+            fill = 'darkgray',
+            col = 'azure4'
+          ),
           border = FALSE,
           rot = 45,
-          axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
+          axis_param = list(
+            side = "right",
+            facing='outside',
+            gp=gpar(
+            fontsize=get_gpar('model_overlap_size'),
+            fontfamily = get_gpar('font_fam')
+            )
+          ) #yaxis size
         ),
 
         # B. ft binary membership
-        "AKLIMATE\nmin-max" = aklimate_minmax,
+        "AKLIMATE" = aklimate_minmax,
         "SubSCOPE" = subscope,
         "Cloud Forest" = cforest,
         "JADBio" = jadbio,
@@ -356,21 +405,23 @@ for (prefix in platforms){
         annotation_name_rot = 0,
 
         col = list(
-          # 'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
-          # "SubSCOPE" =  c('0' = "#333333", '1' = "#AEFEB0"),
-          # "Cloud Forest" =  c('0' = "#333333", '1' = "#BFBFFF"),
-          # "JADBio" = c('0' = "#333333", '1' = "#FBBD91"),
-          # "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF")
-        'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
+        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
         "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#333333", "#7ea07e", "#AEFEB0")),
         "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#333333", "#858599", "#BFBFFF")),
         "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#e1b589", "#FBBD91")),
         "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#333333", "#957575", "#FCC0BF"))
         ),
-        show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+        na_col = "white", # color of NA in bottom annot
+        show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
         gp = gpar(fontsize = 1), # grid all col annot
-        annotation_name_gp= gpar(fontsize = 8),
-        gap = unit(c(1,0,0,0,0), 'mm')
+        annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
+        annotation_legend_param = list(
+          direction= 'horizontal',
+          title_position = "lefttop",  # legend title location
+          legend_width = unit(4, "cm"),
+          title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
+          labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))),
+        gap = unit(c(2,0,0,0,0), 'mm')
       )
 
       # prepare for plotting

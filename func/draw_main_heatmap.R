@@ -43,7 +43,9 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       bottom_annotation = col_annot,
       row_title_side = "right",
       use_raster = TRUE,
-      na_col = 'white'
+      na_col = 'white',
+      heatmap_legend_param = ht_combined_legend(plat, main_ht_name) # legend params all
+
     )
   } else if (plat == 'GEXP'){
     # temp fix to handle error for when only 1 ft (SKCM)
