@@ -7,7 +7,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
   # Draw
   if (cancer == 'BRCA' && plat == 'GEXP'){
     # Quick abbrev of feature gene symbols
-    colnames(mat2) <- ft2gene_gexp(colnames(mat2), plat)
+    colnames(mat2) <- ft2symb(colnames(mat2), plat)
     # Logging
     print('#### FEATURES:')
     print(colnames(mat2))
@@ -24,7 +24,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     )
   } else if (cancer == 'LGGGBM' || cancer == 'COADREAD' && plat == 'METH'){
     # Quick abbrev of feature gene symbols
-    colnames(mat2) <- ft2gene_gexp(colnames(mat2), plat)
+    colnames(mat2) <- ft2symb(colnames(mat2), plat)
     # Logging
     print('#### FEATURES:')
     # print(colnames(mat2))
@@ -50,7 +50,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
   } else if (plat == 'GEXP'){
     # temp fix to handle error for when only 1 ft (SKCM)
     if (length(colnames(mat2)<1)){
-      colnames(mat2) <- ft2gene_gexp(colnames(mat2), plat) # full ft to gene symbol only
+      colnames(mat2) <- ft2symb(colnames(mat2), plat) # full ft to gene symbol only
     }
     print('#### FEATURES:')
     print(colnames(mat2))

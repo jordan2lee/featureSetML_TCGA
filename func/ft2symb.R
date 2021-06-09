@@ -1,4 +1,4 @@
-ft2gene_gexp <- function(names_vector, platform){
+ft2symb <- function(names_vector, platform){
   library(dplyr)
   # Convert full ft name to gene symbol ONLY
   names_vector <- names_vector %>% as.vector()
