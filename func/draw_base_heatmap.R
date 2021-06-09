@@ -84,6 +84,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
     skgrid <- team_df %>%
       pull(header_skgrid) %>%
       as.character()
+
     team_list <- HeatmapAnnotation(
       # Names of Annot Bars
       annotation_label  = gt_render(
@@ -101,7 +102,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         bar_width=1,
         axis_param = list(side = "right", facing='outside', gp=gpar(fontsize=5)) #yaxis size
       ),
-      "AKLIMATE\nmin-max" = aklimate,
+      "AKLIMATE" = aklimate,
       "SubSCOPE" = subscope,
       "JADBio" = jadbio,
       "Cloud Forest" = cforest,

@@ -356,11 +356,16 @@ for (prefix in platforms){
         annotation_name_rot = 0,
 
         col = list(
-          'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
-          "SubSCOPE" =  c('0' = "#333333", '1' = "#AEFEB0"),
-          "Cloud Forest" =  c('0' = "#333333", '1' = "#BFBFFF"),
-          "JADBio" = c('0' = "#333333", '1' = "#FBBD91"),
-          "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF")
+          # 'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
+          # "SubSCOPE" =  c('0' = "#333333", '1' = "#AEFEB0"),
+          # "Cloud Forest" =  c('0' = "#333333", '1' = "#BFBFFF"),
+          # "JADBio" = c('0' = "#333333", '1' = "#FBBD91"),
+          # "SciKitGrid" =  c('0' = "#333333", '1' = "#FCC0BF")
+        'AKLIMATE\nmin-max' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
+        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#333333", "#7ea07e", "#AEFEB0")),
+        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#333333", "#858599", "#BFBFFF")),
+        "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#e1b589", "#FBBD91")),
+        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#333333", "#957575", "#FCC0BF"))
         ),
         show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
         gp = gpar(fontsize = 1), # grid all col annot

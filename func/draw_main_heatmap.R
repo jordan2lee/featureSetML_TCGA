@@ -27,8 +27,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     colnames(mat2) <- ft2gene_gexp(colnames(mat2), plat)
     # Logging
     print('#### FEATURES:')
-    print(colnames(mat2))
-    # Standard ht
+    # print(colnames(mat2))
     fig <- Heatmap(
       mat2,
       name = ht_name,
