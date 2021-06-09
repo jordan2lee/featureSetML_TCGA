@@ -22,7 +22,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       ht_combined_legend(plat, main_ht_name),
       color_pam(in_pam)
     )
-  } else if (cancer == 'LGGGBM' && plat == 'METH'){
+  } else if (cancer == 'LGGGBM' || cancer == 'COADREAD' && plat == 'METH'){
     # Quick abbrev of feature gene symbols
     colnames(mat2) <- ft2gene_gexp(colnames(mat2), plat)
     # Logging
