@@ -12,7 +12,8 @@ get_gpar <- function(key){
     'annot_size' = 12, # ht bottom annot
     'model_overlap_size' = 9, # axis ticks
     'symbol_size' = 9,
-    'pam_size' = 11
+    'pam_size' = 11,
+    'small_size' = 1.5
   )
   return(l1[[key]])
 }

@@ -118,7 +118,7 @@ pam <- pam %>% select(-V1) %>% colnames()
 upset_fig <- draw_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
 setwd(args$outdir_upset)
 image_name <- paste('upsetplot_', args$cancer, '.tiff', sep='')
-image_capture(image_name)
+image_capture_upset(image_name)
 upset_fig
 dev.off()
 print('completed upset plot - mode distinct')
@@ -402,6 +402,11 @@ for (prefix in platforms){
         main_ht_name = platform_display_text(plat)
         fig <- get_main_heatmap(plat, platform_display_text(plat), args$cancer)
       }
+
+      ########### TESTING
+      # Purpose: see if can save different image size
+
+      ########### TESTING
 
       # Set up saving fig packet
       if (args$show_features == TRUE){
