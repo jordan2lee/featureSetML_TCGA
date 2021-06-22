@@ -58,10 +58,7 @@ file_imp_cf <- paste(
   'data/top_model_importances/TOP', args$cancer, 'CF.tsv',
   sep='_'
 )
-file_imp_jadbio <- paste(
-  'data/top_model_importances/TOP', args$cancer, 'JADBIO.tsv',
-  sep='_'
-)
+file_imp_jadbio <- jadbio_ft_file(args$cancer)
 
 yes_scale <- c('N:GEXP','N:MIR') # which fts to scale
 
@@ -107,6 +104,8 @@ imp_cf <- fread(
 imp_jadbio <- fread(
   file_imp_jadbio
 ) %>% as.data.frame()
+colnames(imp_jadbio)<- c('features'	,'importance')
+
 
 # D. PAM50 for breast cancer
 f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/brca_pam50_hits.tsv'
