@@ -76,6 +76,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
       ) +
       ylab('Set Size') +
       theme(
+        axis.ticks.length=unit(0.5, "mm"),
         axis.ticks.x=element_line(colour=get_gpar('c')),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -147,6 +148,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         legend.position = "none", # TODO dev. rm line entirely
         # axis.line.y = element_line(color="darkgrey", size=0.4),
         axis.ticks.y=element_line(colour=get_gpar('c')),
+        axis.ticks.length=unit(0.5, "mm"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         text =element_text(
