@@ -12,8 +12,8 @@ dev_bottom_annot <- function(k, in_pam){
         team_df$Total,
         bar_width=1,
         gp = gpar(
-          fill = 'darkgray',
-          col = 'azure4'
+          fill = 'black',
+          col = 'black'
         ),
         border = FALSE,
         rot = 45,

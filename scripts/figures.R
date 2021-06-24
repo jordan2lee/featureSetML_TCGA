@@ -320,11 +320,11 @@ for (prefix in platforms){
       team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
 
       # 2. Create MinMax Values where appropriate
-      aklimate_minmax <- normalize_data(imp_aklimate, team_df)
-      subscope <- normalize_data(imp_subscope, team_df)
-      cforest <- normalize_data(imp_cf, team_df)
-      jadbio <- normalize_data(imp_jadbio, team_df)
-      skgrid <- normalize_data(imp_scikitgrid, team_df)
+      aklimate_minmax <- normalize_data(imp_aklimate, team_df, header_aklimate)
+      subscope <- normalize_data(imp_subscope, team_df, header_subscope)
+      cforest <- normalize_data(imp_cf, team_df, header_cforest)
+      jadbio <- normalize_data(imp_jadbio, team_df, header_jadbio)
+      skgrid <- normalize_data(imp_scikitgrid, team_df, header_skgrid)
 
       # Build annotation
       col_annot <- HeatmapAnnotation(
@@ -339,8 +339,8 @@ for (prefix in platforms){
           team_df$Total,
           bar_width=1,
           gp = gpar(
-            fill = 'darkgray',
-            col = 'azure4'
+            fill = 'black',
+            col = 'black'
           ),
           border = FALSE,
           rot = 45,
@@ -364,13 +364,13 @@ for (prefix in platforms){
         annotation_name_rot = 0,
 
         col = list(
-        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
-        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#333333", "#7ea07e", "#AEFEB0")),
-        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#333333", "#858599", "#BFBFFF")),
-        "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#e1b589", "#FBBD91")),
-        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#333333", "#957575", "#FCC0BF"))
+        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#085250", "cadetblue4", "#BFFEFF")),
+        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#2A5F31", "#7ea07e", "#AEFEB0")),
+        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#45384B", "#858599", "#BFBFFF")),
+        "JADBio" = colorRamp2(c(0, 0.05, 1), c("#BB6F10", "#e1b589", "#FBBD91")),
+        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#70364B", "#957575", "#FCC0BF"))
         ),
-        na_col = "white", # color of NA in bottom annot
+        na_col = "snow2", # color of NA in bottom annot
         show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
         gp = gpar(fontsize = 1), # grid all col annot
         annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),

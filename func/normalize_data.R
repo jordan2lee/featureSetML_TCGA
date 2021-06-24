@@ -1,7 +1,8 @@
-normalize_data <- function(df, team_df){
+normalize_data <- function(df, team_df, model_name){
   #' Purpose: min-max normalization and order features to match heatmap
   #' Input df that contains columns c("features","importance")
   #' Input df of all teams
+  #' Input model name (must match header of team_df)
   #' Return vector of normalized values
   #' runs min max norm across all data types together
 
@@ -14,16 +15,26 @@ normalize_data <- function(df, team_df){
   minmax_norm <- c()
   test_ft_order <- c()
   all_features <- subset_df$features
-  for (pooled_ft in team_df$featureID){
-    if (pooled_ft %in% all_features){
-      mm <- subset_df[subset_df$'features'==pooled_ft,]$minmax_vals
+
+
+  # Grab featureIDs present in input model
+  fts <- team_df[,c('featureID',model_name)]
+
+
+  for ( i in seq(1, nrow(fts)) ){
+    member <- fts[i,model_name]
+    # if in set then add ft name and look up importance score
+    if (member == 1){
+      test_ft_order <- c(test_ft_order, fts$featureID[i])
+      mm <- subset_df[subset_df$'features'== fts$featureID[i],]$minmax_vals
       minmax_norm <- c(minmax_norm, mm)
-      test_ft_order <- c(test_ft_order, pooled_ft)
-    # else if not present than mark with NA
+
+    # if not in set then add ft name and add NA as importance score
     } else {
+      test_ft_order <- c(test_ft_order, fts$featureID[i])
       minmax_norm <- c(minmax_norm, NA)
-      test_ft_order <- c(test_ft_order, pooled_ft)
     }
+
   }
   return(minmax_norm)
 }
