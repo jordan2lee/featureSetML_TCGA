@@ -63,14 +63,14 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         )
       )
     ),
-    # stripes = c('lightgrey', 'darkgrey'),
+    stripes = 'white',
     # Set Size plot
     set_sizes=(
       upset_set_size(
         # Color set size plot
         geom=geom_bar(
             aes(fill=Platform, x=group),
-            width=.90
+            width=.75
         ),
         position = 'right',
       ) +
