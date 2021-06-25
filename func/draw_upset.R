@@ -47,7 +47,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
     name='',
     width_ratio= 0.3, #0.5
     height_ratio = 0.6, #0.75,
-    wrap=TRUE,
+    wrap=TRUE, # to have title over entire plot
     guides = 'over',
     sort_intersections_by = c('degree','cardinality'),
     # sort_intersections = 'descending',
@@ -113,6 +113,8 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         legend.position = "none"
       ) # no extra legend
     ),
+
+
     # Intersection matrix
     encode_sets = FALSE,
     matrix=(
@@ -121,6 +123,8 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         outline_color = list(active = "white", inactive = "grey70")
       )
     ),
+
+
     base_annotations=list(
       'Feature Set Size'=intersection_size(
           counts=TRUE,
@@ -163,8 +167,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         )
       )
     )
-  ) +
-  labs(title = paste('Feature Overlap Between Top ', cancer, ' Models', sep = '')) +
+  ) + ggtitle(paste('Feature Overlap Between Top ', cancer, ' Models', sep = '')) +
   theme(
     plot.title = element_text(
       colour = get_gpar('c'),
