@@ -46,3 +46,5 @@ notebooks/wip/sanity_check_chris_top_models.ipynb
 notebooks/wip/wip-ft-importance.ipynb
 
 data/top_model_importances/
+!src/modelID_performance2importance.json
+!src/modelID_performance2importance_ALLCOHORTS.json
