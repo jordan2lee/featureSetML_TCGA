@@ -156,7 +156,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         text =element_text(
-          size=get_gpar('minor_axis_size'), # label "Feature Set Size"
+          size=get_gpar('med_size'), # label "Feature Set Size"
           family=get_gpar('font_fam_ggplot'),
           colour = get_gpar('c')
         ),
@@ -167,12 +167,13 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         )
       )
     )
-  ) + ggtitle(paste('Feature Overlap Between Top ', cancer, ' Models', sep = '')) +
+  ) + ggtitle(paste(cancer, ' Top Model Feature Sets', sep = '')) +
   theme(
     plot.title = element_text(
       colour = get_gpar('c'),
       size = get_gpar('model_overlap_size'), # Entire plot title
-      family = get_gpar('font_fam_ggplot')
+      family = get_gpar('font_fam_ggplot'),
+      hjust= 0.045
     ),
   )
   return(upset_plot)
