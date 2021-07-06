@@ -15,6 +15,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
   col_order <- c(col_order, 'Total')
   df_fts <- df_fts %>% relocate(all_of(col_order))
   model_headers <- replace(model_headers, model_headers=='CloudForest', 'Cloud Forest')
+  model_headers <- replace(model_headers, model_headers=='JADBIO', 'JADBio')
   colnames(df_fts) <- c('featureID', model_headers, 'Total')
 
   # Move index col and rm non model cols
@@ -44,9 +45,9 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
     intersect = model_headers,
     mode = 'distinct',
     name='',
-    width_ratio= 0.5, #0.3,
-    height_ratio = 0.5, #0.75,
-    wrap=TRUE,
+    width_ratio= 0.3, #0.5
+    height_ratio = 0.6, #0.75,
+    wrap=TRUE, # to have title over entire plot
     guides = 'over',
     sort_intersections_by = c('degree','cardinality'),
     # sort_intersections = 'descending',
@@ -55,43 +56,44 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
       list(
         'intersections_matrix'=theme( # intersection matrix gpar
           axis.text=element_text(
-            size=get_gpar('axis_size'),
+            size=get_gpar('minor_axis_size'), # team row
             family=get_gpar('font_fam_ggplot'),
             colour = get_gpar('c')
           )
         )
       )
     ),
-    # stripes = c('lightgrey', 'darkgrey'),
+    stripes = 'white',
     # Set Size plot
     set_sizes=(
       upset_set_size(
         # Color set size plot
         geom=geom_bar(
             aes(fill=Platform, x=group),
-            width=.90
+            width=.75
         ),
         position = 'right',
       ) +
       ylab('Set Size') +
       theme(
+        axis.ticks.length=unit(0.5, "mm"),
         axis.ticks.x=element_line(colour=get_gpar('c')),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        text =element_text( # set size axis label
-          size=get_gpar('axis_size'),
+        text =element_text(
+          size=get_gpar('minor_axis_size'), # axis "Set Size"
           family=get_gpar('font_fam_ggplot'),
           colour = get_gpar('c')
         ),
         axis.text = element_text( # set size axis ticks
-          size=get_gpar('axis_size'),
+          size=get_gpar('minor_axis_size'),
           family=get_gpar('font_fam_ggplot'),
           colour=get_gpar('c')
         )
       ) +
       geom_text( # set size sub bar cts
         aes(label=..count..),
-        size=get_gpar('minor_axis_size'),
+        size=get_gpar('small_size'), #horizontal counts of set size
         family=get_gpar('font_fam_ggplot'),
         colour = get_gpar('c'),
         hjust = -0.25,
@@ -107,21 +109,27 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
           'miR' = get_colors_platform('MIR')
         )
       ) +
-      theme(legend.position = "none") # no extra legend
+      theme(
+        legend.position = "none"
+      ) # no extra legend
     ),
+
+
     # Intersection matrix
     encode_sets = FALSE,
     matrix=(
       intersection_matrix(
-        geom=geom_point(size = 1.75), # dot size
+        geom=geom_point(size = 1.2), # dot size
         outline_color = list(active = "white", inactive = "grey70")
       )
     ),
+
+
     base_annotations=list(
       'Feature Set Size'=intersection_size(
           counts=TRUE,
-          text =element_text( # feature set sub bar cts - TODO fix alignment of text
-            size=get_gpar('minor_axis_size'),
+          text =element_text( # feature set sub bar cts
+            size=get_gpar('small_size'), # ft set size total counts
             family=get_gpar('font_fam_ggplot'),
             colour = get_gpar('c'),
             vjust = -0.55
@@ -141,30 +149,32 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
       # manually adjust the y limits
       coord_cartesian(ylim=c(0,ymax)) +
       theme(
+        legend.position = "none", # TODO dev. rm line entirely
         # axis.line.y = element_line(color="darkgrey", size=0.4),
         axis.ticks.y=element_line(colour=get_gpar('c')),
+        axis.ticks.length=unit(0.5, "mm"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        text =element_text( # feature set size axis label
-          size=get_gpar('axis_size'),
+        text =element_text(
+          size=get_gpar('med_size'), # label "Feature Set Size"
           family=get_gpar('font_fam_ggplot'),
           colour = get_gpar('c')
         ),
-        axis.text.y = element_text( # feature size axis ticks
-          size=get_gpar('axis_size'),
+        axis.text.y = element_text(
+          size=get_gpar('minor_axis_size'), # axis label for Feature Set Size
           family=get_gpar('font_fam_ggplot'),
           colour=get_gpar('c')
         )
       )
     )
-  ) +
-  labs(title = paste('Feature Overlap Between Top ', cancer, ' Models', sep = '')) +
+  ) + ggtitle(paste(cancer, ' Top Model Feature Sets', sep = '')) +
   theme(
     plot.title = element_text(
       colour = get_gpar('c'),
-      size = get_gpar('main_title_size'),
-      family = get_gpar('font_fam_ggplot')
-    )
+      size = get_gpar('model_overlap_size'), # Entire plot title
+      family = get_gpar('font_fam_ggplot'),
+      hjust= 0.045
+    ),
   )
   return(upset_plot)
 }

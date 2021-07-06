@@ -29,7 +29,13 @@ for tumor_cohort in ${StringArray[@]}; do
       --out2 data/figure_panel_b/${tumor_cohort}_fts_by_VALUE.tsv
   echo 'completed pulling group best and file cleaning'
 
-  # 3. Create upset plots
+  # 3. Clean up feature importance file
+  python scripts/format_ft_imp.py \
+    --f_importance src/classifier_metrics_20210514/feature_importance.tsv \
+    --conversion_dictionary src/modelID_performance2importance.json \
+    --outdir data/top_model_importances
+
+  # 4. Create upset plots
   # Note that --headers must match order of --infile headers
   if [[ ${tumor_cohort} == 'SKCM' ]]; then
       msize='25'

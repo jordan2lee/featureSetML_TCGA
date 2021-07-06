@@ -58,10 +58,7 @@ file_imp_cf <- paste(
   'data/top_model_importances/TOP', args$cancer, 'CF.tsv',
   sep='_'
 )
-file_imp_jadbio <- paste(
-  'data/top_model_importances/TOP', args$cancer, 'JADBIO.tsv',
-  sep='_'
-)
+file_imp_jadbio <- jadbio_ft_file(args$cancer)
 
 yes_scale <- c('N:GEXP','N:MIR') # which fts to scale
 
@@ -107,6 +104,8 @@ imp_cf <- fread(
 imp_jadbio <- fread(
   file_imp_jadbio
 ) %>% as.data.frame()
+colnames(imp_jadbio)<- c('features'	,'importance')
+
 
 # D. PAM50 for breast cancer
 f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/brca_pam50_hits.tsv'
@@ -118,7 +117,7 @@ pam <- pam %>% select(-V1) %>% colnames()
 upset_fig <- draw_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
 setwd(args$outdir_upset)
 image_name <- paste('upsetplot_', args$cancer, '.tiff', sep='')
-image_capture(image_name)
+image_capture_upset(image_name)
 upset_fig
 dev.off()
 print('completed upset plot - mode distinct')
@@ -321,11 +320,11 @@ for (prefix in platforms){
       team_df<- df_fts %>% filter(featureID %in% ftnames_order) %>% arrange(match(featureID, ftnames_order))
 
       # 2. Create MinMax Values where appropriate
-      aklimate_minmax <- normalize_data(imp_aklimate, team_df)
-      subscope <- normalize_data(imp_subscope, team_df)
-      cforest <- normalize_data(imp_cf, team_df)
-      jadbio <- normalize_data(imp_jadbio, team_df)
-      skgrid <- normalize_data(imp_scikitgrid, team_df)
+      aklimate_minmax <- normalize_data(imp_aklimate, team_df, header_aklimate)
+      subscope <- normalize_data(imp_subscope, team_df, header_subscope)
+      cforest <- normalize_data(imp_cf, team_df, header_cforest)
+      jadbio <- normalize_data(imp_jadbio, team_df, header_jadbio)
+      skgrid <- normalize_data(imp_scikitgrid, team_df, header_skgrid)
 
       # Build annotation
       col_annot <- HeatmapAnnotation(
@@ -340,8 +339,8 @@ for (prefix in platforms){
           team_df$Total,
           bar_width=1,
           gp = gpar(
-            fill = 'darkgray',
-            col = 'azure4'
+            fill = 'black',
+            col = 'black'
           ),
           border = FALSE,
           rot = 45,
@@ -365,13 +364,13 @@ for (prefix in platforms){
         annotation_name_rot = 0,
 
         col = list(
-        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
-        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#333333", "#7ea07e", "#AEFEB0")),
-        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#333333", "#858599", "#BFBFFF")),
-        "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#e1b589", "#FBBD91")),
-        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#333333", "#957575", "#FCC0BF"))
+        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#085250", "cadetblue4", "#BFFEFF")),
+        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#2A5F31", "#7ea07e", "#AEFEB0")),
+        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#45384B", "#858599", "#BFBFFF")),
+        "JADBio" = colorRamp2(c(0, 0.05, 1), c("#BB6F10", "#e1b589", "#FBBD91")),
+        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#70364B", "#957575", "#FCC0BF"))
         ),
-        na_col = "white", # color of NA in bottom annot
+        na_col = "snow2", # color of NA in bottom annot
         show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
         gp = gpar(fontsize = 1), # grid all col annot
         annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
@@ -397,11 +396,18 @@ for (prefix in platforms){
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
         } else if (prefix == 'N:GEXP') {
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
+        } else {
+          print('ERROR. yes_scale obj contains unrecognized content')
         }
       } else if (plat == 'MUTA' || plat == 'METH' || plat == 'CNVR'){
         main_ht_name = platform_display_text(plat)
         fig <- get_main_heatmap(plat, platform_display_text(plat), args$cancer)
       }
+
+      ########### TESTING
+      # Purpose: see if can save different image size
+
+      ########### TESTING
 
       # Set up saving fig packet
       if (args$show_features == TRUE){

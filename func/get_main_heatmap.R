@@ -27,10 +27,12 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     colnames(mat2) <- ft2symb(colnames(mat2), plat)
     # Logging
     print('#### FEATURES:')
-    # print(colnames(mat2))
+    print(colnames(mat2))
     fig <- Heatmap(
       mat2,
       name = ht_name,
+      height = unit(5, 'cm'), # ht body
+      # width = unit(25, 'cm'), # ht body
       cluster_rows = FALSE,
       cluster_columns = FALSE,
       show_row_names = FALSE,

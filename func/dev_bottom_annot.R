@@ -12,8 +12,8 @@ dev_bottom_annot <- function(k, in_pam){
         team_df$Total,
         bar_width=1,
         gp = gpar(
-          fill = 'darkgray',
-          col = 'azure4'
+          fill = 'black',
+          col = 'black'
         ),
         border = FALSE,
         rot = 45,
@@ -37,13 +37,13 @@ dev_bottom_annot <- function(k, in_pam){
       annotation_name_rot = 0,
 
       col = list(
-        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#333333", "cadetblue4", "#BFFEFF")),
-        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#333333", "#7ea07e", "#AEFEB0")),
-        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#333333", "#858599", "#BFBFFF")),
-        "JADBio" = colorRamp2(c(0, 0.002, 1), c("#333333", "#e1b589", "#FBBD91")),
-        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#333333", "#957575", "#FCC0BF"))
+        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#085250", "cadetblue4", "#BFFEFF")),
+        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#2A5F31", "#7ea07e", "#AEFEB0")),
+        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#45384B", "#858599", "#BFBFFF")),
+        "JADBio" = colorRamp2(c(0, 0.05, 1), c("#BB6F10", "#e1b589", "#FBBD91")),
+        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#70364B", "#957575", "#FCC0BF"))
       ),
-      na_col = "white", # color of NA in bottom annot
+      na_col = "snow2", # color of NA in bottom annot
       show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
       gp = gpar(fontsize = 1), # show gridlines, but font size doesn't impact border size
       annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
