@@ -396,6 +396,8 @@ for (prefix in platforms){
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
         } else if (prefix == 'N:GEXP') {
           fig <- get_main_heatmap(plat, main_ht_name, args$cancer)
+        } else {
+          print('ERROR. yes_scale obj contains unrecognized content')
         }
       } else if (plat == 'MUTA' || plat == 'METH' || plat == 'CNVR'){
         main_ht_name = platform_display_text(plat)
