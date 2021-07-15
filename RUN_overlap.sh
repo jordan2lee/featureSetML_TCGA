@@ -15,8 +15,8 @@ for tumor_cohort in ${StringArray[@]}; do
   # 1. Format feature lists of groups (best performing model)
   python scripts/get_fts.py \
       --tumor ${tumor_cohort} \
-      --file_fts src/classifier_metrics_20210514/collected_features_matrix.tsv \
-      --file_top src/classifier_metrics_20210514/top_performing_models_lte_100_features.tsv \
+      --file_fts src/classifier_metrics_20210710/collected_features_matrix.tsv \
+      --file_top src/classifier_metrics_20210710/top_performing_models_lte_100_features.tsv \
       --out data/figure_panel_a/best_models_${tumor_cohort}.tsv
   echo 'completed ft list formatting'
 
@@ -31,7 +31,7 @@ for tumor_cohort in ${StringArray[@]}; do
 
   # 3. Clean up feature importance file
   python scripts/format_ft_imp.py \
-    --f_importance src/classifier_metrics_20210514/feature_importance.tsv \
+    --f_importance src/classifier_metrics_20210710/feature_importance.tsv \
     --conversion_dictionary src/modelID_performance2importance.json \
     --outdir data/top_model_importances
 
