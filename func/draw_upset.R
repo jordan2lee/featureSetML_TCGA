@@ -108,10 +108,10 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
           'mRNA' = get_colors_platform('GEXP'),
           'miR' = get_colors_platform('MIR')
         )
-      ) +
-      theme(
-        legend.position = "none"
-      ) # no extra legend
+      ) #+
+      # theme(
+      #   legend.position = "none"
+      # ) # no extra legend
     ),
 
 
