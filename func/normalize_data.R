@@ -8,7 +8,16 @@ normalize_data <- function(df, team_df, model_name){
 
   # Min max normalize importance scores
   subset_df <- df[,c('features', 'importance')]
-  minmax_vals <- mm_normal(subset_df$importance)
+  # Handle for JADBio flipped ft importance. small = most import and large = least
+  if (grepl('jadbio', model_name, fixed = TRUE)){
+    print('log transforming:')
+    print(model_name)
+    # neg log transform
+    vals <- -log10(subset_df$importance)
+  } else {
+    vals <- subset_df$importance
+  }
+  minmax_vals <- mm_normal(vals)
   subset_df <- cbind(subset_df, minmax_vals)
 
   # Map and order ft importances to pooled ft order
