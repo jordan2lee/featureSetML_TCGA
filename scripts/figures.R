@@ -364,11 +364,11 @@ for (prefix in platforms){
         annotation_name_rot = 0,
 
         col = list(
-        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#085250", "cadetblue4", "#BFFEFF")),
-        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#2A5F31", "#7ea07e", "#AEFEB0")),
-        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#45384B", "#858599", "#BFBFFF")),
-        "JADBio" = colorRamp2(c(0, 0.05, 1), c("#BB6F10", "#e1b589", "#FBBD91")),
-        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#70364B", "#957575", "#FCC0BF"))
+        'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#BFFEFF", "cadetblue4", "#085250")),
+        "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#AEFEB0", "#7ea07e", "#2A5F31")),
+        "Cloud Forest" =  colorRamp2(c(0, 0.002, 1), c("#BFBFFF", "#858599", "#45384B")),
+        "JADBio" = colorRamp2(c(0, 0.05, 1), c("#FBBD91", "#e1b589", "#BB6F10")),
+        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#FCC0BF", "#957575", "#70364B"))
         ),
         na_col = "snow2", # color of NA in bottom annot
         show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
