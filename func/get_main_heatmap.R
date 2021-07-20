@@ -20,7 +20,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       subtype_ha,
       ht_matrix_colors(plat),
       ht_combined_legend(plat, main_ht_name),
-      color_pam(in_pam)
+      color_ht_col_labels(in_pam)
     )
   } else if (cancer == 'LGGGBM' || cancer == 'COADREAD' && plat == 'METH'){
     # Quick abbrev of feature gene symbols
@@ -55,7 +55,9 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       row_title_side = "right",
       use_raster = TRUE,
       na_col = 'white',
-      heatmap_legend_param = ht_combined_legend(plat, main_ht_name) # legend params all
+      heatmap_legend_param = ht_combined_legend(plat, main_ht_name), # legend params all
+      column_names_gp = gpar(col = color_ht_col_labels(lit_support))
+
     )
   } else if (cancer == 'SKCM' && plat == 'MUTA'){
     # Quick abbrev of feature gene symbols

@@ -112,6 +112,11 @@ f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/brca_p
 pam <- fread(f) %>% as.data.frame(row.names=1)
 pam <- pam %>% select(-V1) %>% colnames()
 
+# Methlyation lit support
+f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/toshi_meth_lit_search/20210630_TMP_DNA_methylation_features_analysis_COAD.tsv'
+coad_lit <- fread(f) %>% as.data.frame(row.names=1)
+coad_lit <- coad_lit[,1:8] # if read in null cols
+names(coad_lit)[8] <- 'InLit'
 
 ###### PART 1: UPSET PLOT ######
 upset_fig <- draw_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
@@ -301,6 +306,36 @@ for (prefix in platforms){
         }
       } else {
         in_pam = NULL
+      }
+
+      ####
+      # Set up for meth if COADREAD OR LGGGBM
+      ####
+      # Mark if ft is in lit support
+      # Grab fts based on filter: present in at least 1 lit
+      coad_lit_ft <- coad_lit[coad_lit$InLit > 0,]$DNA_methylation_feature
+      if (args$cancer == 'COADREAD' && prefix == 'N:METH'){
+        print('##### HERE')
+        print(args$cancer)
+        print(prefix)
+        symbols <- ft2symb(ftnames_order, 'METH') # pull symb
+        lit_support <- c()
+        sanitycheck <- c()
+        for (i in seq(1, length(symbols))){
+          f <- symbols[i]
+          if (f %in% coad_lit_ft == TRUE){
+            lit_support <- c(lit_support, "+")
+            sanitycheck <- c(sanitycheck, f)
+          } else {
+            lit_support <- c(lit_support, '')
+            sanitycheck <- c(sanitycheck, f)
+          }
+        }
+        print(lit_support)
+        print(sanitycheck)
+        print('###### end here')
+      } else {
+        lit_support = NULL
       }
 
 
