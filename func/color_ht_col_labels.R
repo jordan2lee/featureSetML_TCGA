@@ -1,5 +1,5 @@
-color_pam <- function(membership_vector){
-  #' Color of feature column text to show PAM membership
+color_ht_col_labels <- function(membership_vector){
+  #' Color of feature font text for heatmap columns
   membership_vector[membership_vector == "" ] <- 'black'
   membership_vector[membership_vector == "+" ] <- 'red'
   return(membership_vector)

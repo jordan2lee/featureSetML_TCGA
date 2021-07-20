@@ -116,3 +116,16 @@ Downloaded on 5/5/21
 (syn25722573)
 
 the actual most recent
+
+# toshi_meth_lit_search/
+
+Dir contains files sent from Toshi and Peter. Contains info from literature search of relevant or "expected" biomarkers for these 2 cancers that were methylation derived. Use is for heatmap coloring of features (meta data). Received on 6/30/21
+
+Contains `20210630_TMP_DNA_methylation_features_analysis COAD.xlsx` and `20210630_TMP_DNA_methylation_features_analysis LGGGBM.xlsx`
+ that were converted to their tsv counterparts and replaced " " in names with _
+ thus contains:
+
+```
+20210630_TMP_DNA_methylation_features_analysis_COAD.tsv
+20210630_TMP_DNA_methylation_features_analysis_LGGGBM.tsv
+```
