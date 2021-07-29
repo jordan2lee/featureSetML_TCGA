@@ -112,7 +112,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
         "Cloud Forest" = c('0' = "#333333", '1' = "#BFBFFF"),
         "AKLIMATE\nmin-max" = c('0' = "#333333", '1' = "#BFFEFF"),
         "SubSCOPE" = c('0' = "#333333", '1' = "#AEFEB0"),
-        "SciKitGrid" = c('0' = "#333333", '1' = "#FCC0BF")
+        "SciKitGrid" = c('0' = "#333333", '1' = "#D23A71")
       ),
       show_legend = c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
       annotation_name_gp= gpar(fontsize = 8),
