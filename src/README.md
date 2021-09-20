@@ -129,3 +129,8 @@ Contains `20210630_TMP_DNA_methylation_features_analysis COAD.xlsx` and `2021063
 20210630_TMP_DNA_methylation_features_analysis_COAD.tsv
 20210630_TMP_DNA_methylation_features_analysis_LGGGBM.tsv
 ```
+# Cancer_Subtypes_for_TMP.xlsx
+
+Downloaded from project Google Drive
+
+Spreadsheet of TMP abbreviations for cancer subtypes and their more well known names (ex. BRCA_1 is Luminal A subtype)
