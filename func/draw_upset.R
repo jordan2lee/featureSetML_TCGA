@@ -167,7 +167,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         )
       )
     )
-  ) + ggtitle(paste(cancer, ' Top Model Feature Sets', sep = '')) +
+  ) + ggtitle(paste(update_cohort_name(cancer), ' Top Model Feature Sets', sep = '')) +
   theme(
     plot.title = element_text(
       colour = get_gpar('c'),

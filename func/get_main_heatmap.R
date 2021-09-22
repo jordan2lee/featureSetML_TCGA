@@ -31,7 +31,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     fig <- Heatmap(
       mat2,
       name = ht_name,
-      height = unit(5, 'cm'), # ht body
+      height = unit(4, 'cm'), # ht body
       # width = unit(25, 'cm'), # ht body
       cluster_rows = FALSE,
       cluster_columns = FALSE,
@@ -68,7 +68,7 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     fig <- Heatmap(
       mat2,
       name = ht_name,
-      height = unit(5, 'cm'), # ht body
+      height = unit(4, 'cm'), # ht body
       # width = unit(25, 'cm'), # ht body
       cluster_rows = FALSE,
       cluster_columns = FALSE,
