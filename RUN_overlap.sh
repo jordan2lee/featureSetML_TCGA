@@ -34,6 +34,7 @@ for tumor_cohort in ${StringArray[@]}; do
     --f_importance src/classifier_metrics_20210710/feature_importance.tsv \
     --conversion_dictionary src/modelID_performance2importance.json \
     --outdir data/top_model_importances
+  echo 'completed cleaning feature importance file'
 
   # 4. Create upset plots
   # Note that --headers must match order of --infile headers
