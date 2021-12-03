@@ -40,7 +40,11 @@ Create team conversion dictionaries for the labeling and matching of model name 
 Need to incorporate this script indo team overlap RUN_overlap.sh (needs to be ran after figure_panel_a/best_models.tsv are ran).
 
 ```
+# Create files per team
 python scripts/link_model_ftset.py
+
+# Combine files into one merged file
+python scripts/combine_links.py
 ```
 
 ## 3. [Exploratory] Prediction Performance Loss with Feature Set Size
