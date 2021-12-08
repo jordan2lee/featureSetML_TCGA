@@ -8,7 +8,7 @@ timestamp
 
 # Which cohorts? All 26 or 4 main?
 # declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LGGGBM' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'SKCM' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
-# declare -a StringArray=('BRCA' 'LGGGBM' 'COADREAD' 'SKCM')
+declare -a StringArray=('BRCA' 'LGGGBM' 'COADREAD' 'SKCM')
 
 for tumor_cohort in ${StringArray[@]}; do
   echo $tumor_cohort
@@ -63,7 +63,7 @@ for tumor_cohort in ${StringArray[@]}; do
   echo 'completed heatmap'
 
   # 5. Clean up workspace
-  # mv data/figure_panel_b/supplemental/*heatmap*.tiff data/figure_panel_b/heatmaps/
+  mv data/figure_panel_b/supplemental/*heatmap*.tiff data/figure_panel_b/heatmaps/
   echo ''
   echo ''
 done
