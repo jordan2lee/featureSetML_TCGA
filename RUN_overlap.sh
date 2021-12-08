@@ -7,9 +7,8 @@ timestamp() {
 timestamp
 
 # Which cohorts? All 26 or 4 main?
-declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LGGGBM' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'SKCM' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
+# declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LGGGBM' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'SKCM' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
 # declare -a StringArray=('BRCA' 'LGGGBM' 'COADREAD' 'SKCM')
-# FAILED: 'KIRCKICH' Error in if (all(is.finite(continuous_range_coord)) && diff(continuous_range_coord) <  :  missing value where TRUE/FALSE needed
 
 for tumor_cohort in ${StringArray[@]}; do
   echo $tumor_cohort
@@ -30,10 +29,11 @@ for tumor_cohort in ${StringArray[@]}; do
       --out2 data/figure_panel_b/${tumor_cohort}_fts_by_VALUE.tsv
   echo 'completed pulling group best and file cleaning'
 
+# TWO CANCERS HAD ISSUE WITH THIS STEP AND SO WILL BE EXCLUDED FOR NOW ONWARD (UCEC LIHCCHOL)
   # 3. Clean up feature importance file
   python scripts/format_ft_imp.py \
     --f_importance src/classifier_metrics_20210821/feature_importance.tsv \
-    --conversion_dictionary src/modelID_performance2importance.json \
+    --conversion_dictionary src/modelID_performance2importance_ALLCOHORTS.json \
     --outdir data/top_model_importances
   echo 'completed cleaning feature importance file'
 
