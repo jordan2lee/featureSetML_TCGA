@@ -33,6 +33,20 @@ bash RUN_to_synapse.sh
 
 Run feature sets through Sci-kit Grid classifiers. Combine prediction results with the results from other team members and download the merged feature set file and classifier performance file into `src/`
 
+## 3. Create team conversions
+
+Create team conversion dictionaries for the labeling and matching of model name and feature set. This is because some teams reported differently the naming convention of these two.
+
+Need to incorporate this script indo team overlap RUN_overlap.sh (needs to be ran after figure_panel_a/best_models.tsv are ran).
+
+```
+# Create files per team
+python scripts/link_model_ftset.py
+
+# Combine files into one merged file
+python scripts/combine_links.py
+```
+
 ## 3. [Exploratory] Prediction Performance Loss with Feature Set Size
 
 Last updated: 2/23/21
