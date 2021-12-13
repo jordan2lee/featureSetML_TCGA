@@ -21,6 +21,77 @@ main = args.file_top
 # Read in feature sets
 ft_df = pd.read_csv(file_fts, sep = '\t', index_col=0, low_memory=False)
 
+# Fix concat ft names (index)
+if 'N:METH:cg20568322:LMOD1:TssD7:NA_N:METH:cg07671858:SYNPO2L:TssD3203:Island_N:GEXP::HNF4A:3172:' in ft_df.index:
+    # Issue ft and the corrected split into multiple features
+    issue = 'N:METH:cg20568322:LMOD1:TssD7:NA_N:METH:cg07671858:SYNPO2L:TssD3203:Island_N:GEXP::HNF4A:3172:'
+    split_ft = ['N:METH:cg20568322:LMOD1:TssD7:NA','N:METH:cg07671858:SYNPO2L:TssD3203:Island','N:GEXP::HNF4A:3172:']
+
+    # Grab model column headers that have this feature present - ignoring 'total_number_of_lists' col
+    s2 = ft_df.loc[issue,]
+    in_models = []
+    for i in range(0, s2.shape[0]):
+        included = s2[i]
+        m = s2.index[i]
+        if included == '1' and m != 'total_number_of_lists':
+            in_models.append(m)
+
+    # Update df with single fts (conver 0 to 1)
+    for ft in split_ft:
+        for model in in_models:
+            ft_df.at[ft,model]='1'
+
+    # Drop issue ft
+    ft_df = ft_df.drop([issue])
+
+if 'N:METH:cg16128701:RP11-363E6.3:TssD233:Island_N:GEXP::ILF3:3609:' in ft_df.index:
+    # Issue ft and the corrected split into multiple features
+    issue = 'N:METH:cg16128701:RP11-363E6.3:TssD233:Island_N:GEXP::ILF3:3609:'
+    split_ft = ['N:METH:cg16128701:RP11-363E6.3:TssD233:Island', 'N:GEXP::ILF3:3609:']
+
+    # Grab model column headers that have this feature present - ignoring 'total_number_of_lists' col
+    s2 = ft_df.loc[issue,]
+    in_models = []
+    for i in range(0, s2.shape[0]):
+        included = s2[i]
+        m = s2.index[i]
+        if included == '1' and m != 'total_number_of_lists':
+            in_models.append(m)
+
+    # Update df with single fts (conver 0 to 1)
+    for ft in split_ft:
+        for model in in_models:
+            ft_df.at[ft,model]='1'
+
+    # Drop issue ft
+    ft_df = ft_df.drop([issue])
+
+
+if 'N:METH:cg04703174:KHDRBS2:TssD610:Shore_N:GEXP::SLC2A4RG:56731:' in ft_df.index:
+    # Issue ft and the corrected split into multiple features
+    issue = 'N:METH:cg04703174:KHDRBS2:TssD610:Shore_N:GEXP::SLC2A4RG:56731:'
+    split_ft = ['N:METH:cg04703174:KHDRBS2:TssD610:Shore','N:GEXP::SLC2A4RG:56731:']
+
+    # Grab model column headers that have this feature present - ignoring 'total_number_of_lists' col
+    s2 = ft_df.loc[issue,]
+    in_models = []
+    for i in range(0, s2.shape[0]):
+        included = s2[i]
+        m = s2.index[i]
+        if included == '1' and m != 'total_number_of_lists':
+            in_models.append(m)
+
+    # Update df with single fts (conver 0 to 1)
+    for ft in split_ft:
+        for model in in_models:
+            ft_df.at[ft,model]='1'
+
+    # Drop issue ft
+    ft_df = ft_df.drop([issue])
+
+
+
+
 # Read in file
 df = pd.read_csv(main, sep='\t')
 df = df[['cohort','featureID', 'Mean', 'performance_metric', 'feature_list', 'feature_list_method']]
