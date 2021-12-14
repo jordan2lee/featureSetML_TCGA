@@ -3,6 +3,8 @@
 import pandas as pd
 from collections import Counter
 import argparse
+from collections import Counter
+
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='')
@@ -114,6 +116,13 @@ if cancer == 'UCEC':
             ft_df.at[corrected_ft_name,model]='1'
         # Drop issue ft
         ft_df = ft_df.drop([issue])
+
+
+        # From these fixing there might be NaNs. so update NaN to '0'
+        ft_df.loc[corrected_ft_name,:] = ft_df.loc[corrected_ft_name,:].fillna('0')
+        # Get how many lists ft has appeared in and update row
+        nmodels = Counter(ft_df.loc[corrected_ft_name,:])['1']
+        ft_df.at[corrected_ft_name, 'total_number_of_lists']=nmodels
 
 
 ######
