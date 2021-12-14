@@ -8,7 +8,7 @@ get_ymax_upset <- function(cancer){
     'MESO' = 90, 'OV' = 70, 'PAAD' = 30,
     'PCPG' = 60, 'PRAD' = 80, 'SARC' = 70,
     'SKCM' = 11.5, 'TGCT' = 70, 'THCA' = 70,
-    'THYM' = 90, 'UVM' = 90
+    'THYM' = 90, 'UCEC' = 80, 'UVM' = 90
   )
   return(l1[[cancer]])
 }
