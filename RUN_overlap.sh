@@ -6,9 +6,9 @@ timestamp() {
 }
 timestamp
 
-# Which cohorts? All 26 or 4 main?
-# declare -a StringArray=('ACC' 'BLCA' 'BRCA' 'CESC' 'COADREAD' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LGGGBM' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'SKCM' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
+# Which cohorts? 4 main or remaining 24?
 declare -a StringArray=('BRCA' 'LGGGBM' 'COADREAD' 'SKCM')
+# declare -a StringArray=('ACC' 'BLCA' 'CESC' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
 
 for tumor_cohort in ${StringArray[@]}; do
   echo $tumor_cohort
