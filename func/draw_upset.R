@@ -167,11 +167,11 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         )
       )
     )
-  ) + ggtitle(paste(update_cohort_name(cancer), ' Top Model Feature Sets', sep = '')) +
+  ) + ggtitle(paste('Top model feature sets:', full_cohort_name(cancer), sep = ' ')) +
   theme(
     plot.title = element_text(
       colour = get_gpar('c'),
-      size = get_gpar('model_overlap_size'), # Entire plot title
+      size = get_gpar('model_overlap_size')-1, # Entire plot title
       family = get_gpar('font_fam_ggplot'),
       hjust= 0.045
     ),
