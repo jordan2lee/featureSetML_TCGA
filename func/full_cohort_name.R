@@ -8,7 +8,7 @@ full_cohort_name <- function(cancer){
     'ACC' = 'Adrenocortical carcinoma',
     'BLCA' = 'Bladder urothelial carcinoma',
     'CESC' = 'Cervical squamous cell carcinoma and endocervical adenocarcinoma',
-    'ESCC' = 'Esophageal carcinoma',
+    'ESCC' = 'Esophageal squamous',
     'GEA' = 'Gastroesophageal adenocarcinoma',
     'HNSC' = 'Head and neck squamous cell carcinoma',
     'KIRCKICH' = 'Kidney chromophobe and kidney renal clear cell carcinoma',
