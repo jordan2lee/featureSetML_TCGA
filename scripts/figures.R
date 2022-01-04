@@ -423,7 +423,7 @@ for (prefix in platforms){
         ),
         na_col = "white", # color of NA in bottom annot
         show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
-        gp = gpar(fontsize = 1), # grid all col annot
+        gp = gpar(fontsize = 1, col = "black"), # grid all col annot
         annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
         annotation_legend_param = list(
           direction= 'horizontal',

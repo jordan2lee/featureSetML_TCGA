@@ -45,7 +45,7 @@ dev_bottom_annot <- function(k, in_pam){
       ),
       na_col = "white", # color of NA in bottom annot
       show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
-      gp = gpar(fontsize = 1), # show gridlines, but font size doesn't impact border size
+      gp = gpar(fontsize = 1, col = "black"), # show gridlines, but font size doesn't impact border size
       annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
       annotation_legend_param = list(
         direction= 'horizontal',
