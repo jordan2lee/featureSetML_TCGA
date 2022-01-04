@@ -7,6 +7,7 @@
 .inst <- .packages %in% installed.packages()
 if(length(.packages[!.inst]) > 0) install.packages(.packages[!.inst], repos="http://cran.us.r-project.org")
 
+
 # these will need a and Yes prompts
 BiocManager::install("ComplexHeatmap")
 remotes::install_github("jokergoo/ComplexHeatmap")
