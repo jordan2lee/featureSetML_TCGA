@@ -14,8 +14,9 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
   }
   col_order <- c(col_order, 'Total')
   df_fts <- df_fts %>% relocate(all_of(col_order))
-  model_headers <- replace(model_headers, model_headers=='CloudForest', 'Cloud Forest')
+  model_headers <- replace(model_headers, model_headers=='CloudForest', 'CloudForest')
   model_headers <- replace(model_headers, model_headers=='JADBIO', 'JADBio')
+  model_headers <- replace(model_headers, model_headers=='ScikitGrid', 'SK Grid')
   colnames(df_fts) <- c('featureID', model_headers, 'Total')
 
   # Move index col and rm non model cols
@@ -31,12 +32,12 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
     shorten <- unlist(strsplit(ft, ':'))[2]
     col_vals <- c(col_vals, shorten)
   }
-  col_vals <- gsub('CNVR', 'CN', col_vals)
+  col_vals <- gsub('CNVR', 'Copy Number', col_vals)
   col_vals <- gsub('GEXP', 'mRNA', col_vals)
-  col_vals <- gsub('MIR', 'miR', col_vals)
+  col_vals <- gsub('MIR', 'MicroRNA', col_vals)
   col_vals <- gsub('METH', 'DNA Methylation', col_vals)
-  col_vals <- gsub('MUTA', 'MUT', col_vals)
-  df_fts['Platform']<- factor(col_vals, levels = c('MUT', 'CN', 'DNA Methylation', 'mRNA', 'miR'))
+  col_vals <- gsub('MUTA', 'Mutation', col_vals)
+  df_fts['Platform']<- factor(col_vals, levels = c('Mutation', 'Copy Number', 'DNA Methylation', 'mRNA', 'MicroRNA'))
 
   # Create figure object
   upset_plot <- upset(
@@ -102,11 +103,11 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
       expand_limits(y=max_ftsize) + # set max x value
       scale_fill_manual(
         values=c(
-          'MUT' = get_colors_platform('MUTA'),
-          'CN' = get_colors_platform('CNVR'),
+          'Mutation' = get_colors_platform('MUTA'),
+          'Copy Number' = get_colors_platform('CNVR'),
           'DNA Methylation' = get_colors_platform('METH'),
           'mRNA' = get_colors_platform('GEXP'),
-          'miR' = get_colors_platform('MIR')
+          'MicroRNA' = get_colors_platform('MIR')
         )
       ) +
       theme(
@@ -139,11 +140,11 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
       ) +
       scale_fill_manual(
         values=c(
-          'MUT' = get_colors_platform('MUTA'),
-          'CN' = get_colors_platform('CNVR'),
+          'Mutation' = get_colors_platform('MUTA'),
+          'Copy Number' = get_colors_platform('CNVR'),
           'DNA Methylation' = get_colors_platform('METH'),
           'mRNA' = get_colors_platform('GEXP'),
-          'miR' = get_colors_platform('MIR')
+          'MicroRNA' = get_colors_platform('MIR')
         )
       ) +
       # manually adjust the y limits
@@ -167,11 +168,11 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         )
       )
     )
-  ) + ggtitle(paste('Top model feature sets:', full_cohort_name(cancer), sep = ' ')) +
+  ) + ggtitle(paste(cancer, ' (', full_cohort_name(cancer), ') top model feature sets', sep = '')) +
   theme(
     plot.title = element_text(
       colour = get_gpar('c'),
-      size = get_gpar('model_overlap_size')-1, # Entire plot title
+      size = get_gpar('model_overlap_size')-1.25, # Entire plot title
       family = get_gpar('font_fam_ggplot'),
       hjust= 0.045
     ),

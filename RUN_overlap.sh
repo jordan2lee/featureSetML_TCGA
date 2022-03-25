@@ -6,7 +6,7 @@ timestamp() {
 }
 timestamp
 
-# Which cohorts? 4 main or remaining 24?
+# Which cohorts? 4 main or remaining 24? -- remaining 24 will have legends and no htmap, manually comment out these lines
 declare -a StringArray=('BRCA' 'LGGGBM' 'COADREAD' 'SKCM')
 # declare -a StringArray=('ACC' 'BLCA' 'CESC' 'ESCC' 'GEA' 'HNSC' 'KIRCKICH' 'KIRP' 'LIHCCHOL' 'LUAD' 'LUSC' 'MESO' 'OV' 'PAAD' 'PCPG' 'PRAD' 'SARC' 'TGCT' 'THCA' 'THYM' 'UCEC' 'UVM')
 
