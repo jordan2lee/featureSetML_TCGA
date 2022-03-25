@@ -4,7 +4,7 @@ dev_bottom_annot <- function(k, in_pam){
     'BRCA_GEXP' = HeatmapAnnotation(
       annotation_label  = gt_render(
         c(
-          'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid"
+          'Model Overlap', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SK Grid"
         )
       ),
       # A. N teams selected
@@ -30,18 +30,18 @@ dev_bottom_annot <- function(k, in_pam){
       # B. ft binary membership
       "AKLIMATE" = aklimate_minmax,
       "SubSCOPE" = subscope,
-      "Cloud Forest" = cforest,
+      "CloudForest" = cforest,
       "JADBio" = jadbio,
-      "SciKitGrid" = skgrid,
+      "SK Grid" = skgrid,
 
       annotation_name_rot = 0,
 
       col = list(
         'AKLIMATE' =  colorRamp2(c(0, 0.05, 1), c("#BFFEFF", "#1CBAB9", "#085250")),
         "SubSCOPE" = colorRamp2(c(0, 0.05, 1), c("#AEFEB0", "#0DBF59", "#054621")),
-        "Cloud Forest" =  colorRamp2(c(0, 0.05, 1), c("#BFBFFF", "#B2A0EC", "#5138A1")),
+        "CloudForest" =  colorRamp2(c(0, 0.05, 1), c("#BFBFFF", "#B2A0EC", "#5138A1")),
         "JADBio" = colorRamp2(c(0, 0.05, 1), c("#FBBD91", "#F8BE99", "#E57228")),
-        "SciKitGrid" =  colorRamp2(c(0, 0.05, 1), c("#FCC0BF", "#ED94B4", "#99355A"))
+        "SK Grid" =  colorRamp2(c(0, 0.05, 1), c("#FCC0BF", "#ED94B4", "#99355A"))
       ),
       na_col = "white", # color of NA in bottom annot
       show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
