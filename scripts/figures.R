@@ -113,12 +113,12 @@ pam <- fread(f) %>% as.data.frame(row.names=1)
 pam <- pam %>% select(-V1) %>% colnames()
 
 # Methlyation lit support
-f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/toshi_meth_lit_search/20210630_TMP_DNA_methylation_features_analysis_COAD.tsv'
+f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/toshi_meth_lit_search/20220425_TMP_DNA_methylation_features_analysis_COAD.tsv'
 coad_lit <- fread(f) %>% as.data.frame(row.names=1)
 coad_lit <- coad_lit[,1:8] # if read in null cols
 names(coad_lit)[8] <- 'InLit'
 
-f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/toshi_meth_lit_search/20210630_TMP_DNA_methylation_features_analysis_LGGGBM.tsv'
+f <- '/Users/leejor/Ellrott_Lab/02_ML/08_manuscript/featureSetML_TCGA/src/toshi_meth_lit_search/20220425_TMP_DNA_methylation_features_analysis_LGGGBM.tsv'
 lgggbm_lit <- fread(f) %>% as.data.frame(row.names=1)
 lgggbm_lit <- lgggbm_lit[,1:8] # if read in null cols
 names(lgggbm_lit)[8] <- 'InLit'
