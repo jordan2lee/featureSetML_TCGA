@@ -14,6 +14,15 @@ ft2symb <- function(names_vector, platform){
       display_gene_details <- sapply(strsplit(names_vector, ':'), `[`,5)
       display_gene_type <- sapply(strsplit(names_vector, ':'), `[`,3)
       name <- paste(display_genes, ' (',display_gene_type, ':', display_gene_details, ')', sep='')
-    return(name)
+      # clean up : character
+      final_names <- c()
+      for (g in name){
+        if ( endsWith(g, ':)') ){
+          final_names <- c(final_names, gsub(':','', g)  )
+        } else {
+          final_names <- c(final_names, g  )
+        }
+      }
+    return(final_names)
   }
 }
