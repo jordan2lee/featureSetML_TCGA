@@ -1,5 +1,6 @@
 full_cohort_name <- function(cancer){
-  #' Display name of cancer for figures.
+  #' Cancer display names
+  #' TCGA abbrev to full cancer type
   l1 <- list(
     'BRCA' = 'breast invasive carcinoma',
     'LGGGBM' = 'brain lower grade glioma and glioblastoma multiforme',

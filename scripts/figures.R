@@ -58,6 +58,17 @@ file_imp_cf <- paste(
   'data/top_model_importances/TOP', args$cancer, 'CF.tsv',
   sep='_'
 )
+
+jadbio_ft_file <- function(cancer){
+  #' Input cancer and output the file containing jadbio ft importances
+  jadbio_files <- list(
+    'LGGGBM' = 'src/jadbio_ft_importances_f1/LGGGBM_MULTIDATATYPE_markers_outcome_association_multisignature.csv',
+    'BRCA' = 'src/jadbio_ft_importances_f1/BRCA_GEXP_markers_outcome_association.csv',
+    'COADREAD' = 'src/jadbio_ft_importances_f1/COADREAD_MULTIDATATYPE_markers_outcome_association_multisignature.csv',
+    'SKCM' = 'src/jadbio_ft_importances_f1/SKCM_MUTA_markers_outcome_association.csv'
+  )
+  return(jadbio_files[[cancer]])
+}
 file_imp_jadbio <- jadbio_ft_file(args$cancer)
 
 yes_scale <- c('N:GEXP','N:MIR') # which fts to scale
@@ -185,7 +196,7 @@ for (prefix in platforms){
     # If not null fig then save
     if (is.null(figure) == FALSE){
       image_name <- paste(args$cancer,'_heatmap_basic_',unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
-      image_capture(image_name)
+      image_capture_ht(image_name)
       draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
       # print(figure)
       dev.off()
@@ -252,7 +263,7 @@ for (prefix in platforms){
       }
       # 2. Plot fig: How many hallmarks is a feature associated with?
       image_name <- paste(args$cancer, '_bars_ft2hall_', unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
-      image_capture(image_name)
+      image_capture_ht(image_name)
       df2 <- table(n_hallmarks) %>% as.data.frame()
       colnames(df2)<- c('nHallmarks', 'Freq')
       p <- ggplot(data=df2, aes(x=nHallmarks, y=Freq, fill='blue')) +
@@ -265,7 +276,7 @@ for (prefix in platforms){
 
       # 3. Plot fig: What hallmarks are fts most often associated with?
       image_name <- paste(args$cancer, '_bars_hall_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
-      image_capture(image_name)
+      image_capture_ht(image_name)
       df2 <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
       # If there are no hallmarks
       if (nrow(df2) == 0 ){
@@ -464,12 +475,12 @@ for (prefix in platforms){
       # Set up saving fig packet
       if (args$show_features == TRUE){
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '_NAMES', '.tiff', sep='')
-        image_capture(image_name)
+        image_capture_ht(image_name)
         draw(fig,merge_legend = TRUE, heatmap_legend_side = c('bottom')) # opt add: legend_grouping ='original'
         dev.off()
       } else {
         image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
-        image_capture(image_name)
+        image_capture_ht(image_name)
         draw(fig,merge_legend = TRUE,heatmap_legend_side = c('bottom')) # opt add: legend_grouping ='original'
         dev.off()
     }

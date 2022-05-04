@@ -14,7 +14,6 @@ subtype_common_name <- function(cancer, subtype_matrix, conversion_vector){
       '4' = 'MSI and CIMP High',
       '5' = 'MSI and non-CIMP High',
       '6' = 'MSS and CIMP high'#,
-      # '7' = 'HM SNV (POLE)' # TODO unclear if this subtype was excluded from my input data
     ),
     'LGGGBM' = c(
       '1' = 'G CIMP high',

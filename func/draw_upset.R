@@ -1,4 +1,5 @@
 draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
+  #' Create Upset Plots of Feature Overlaps and format
   suppressPackageStartupMessages(library(dplyr))
   suppressPackageStartupMessages(library(data.table))
   suppressPackageStartupMessages(library(ComplexUpset))

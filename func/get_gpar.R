@@ -1,5 +1,5 @@
 get_gpar <- function(key){
-  #' Input key and return value
+  #' Font properties used in figures
   l1 <- list(
     'c' = 'black', # font color
     'font_fam' = 'sans',

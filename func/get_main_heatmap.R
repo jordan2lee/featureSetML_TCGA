@@ -1,5 +1,7 @@
 get_main_heatmap <- function(plat, ht_name, cancer){
   #' Create main heatmap (non-miRNA heatmaps)
+  #' This heatmap is the output heatmap
+
   # Setup
   legend_colors <- ht_matrix_colors(plat)
   legend_l_param <- ht_combined_legend(plat, main_ht_name)
@@ -32,7 +34,6 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       mat2,
       name = ht_name,
       height = unit(4, 'cm'), # ht body
-      # width = unit(25, 'cm'), # ht body
       cluster_rows = FALSE,
       cluster_columns = FALSE,
       show_row_names = FALSE,
@@ -69,7 +70,6 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       mat2,
       name = ht_name,
       height = unit(4, 'cm'), # ht body
-      # width = unit(25, 'cm'), # ht body
       cluster_rows = FALSE,
       cluster_columns = FALSE,
       show_row_names = FALSE,
@@ -162,7 +162,6 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       na_col = 'white',
 
       col = legend_colors,
-      # top_annotation = legend_top,
       heatmap_legend_param = legend_l_param
     )
   } else {

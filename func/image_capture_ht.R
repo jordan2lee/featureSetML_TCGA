@@ -1,4 +1,4 @@
-image_capture <- function(image_name){
+image_capture_ht <- function(image_name){
   tiff(
     image_name,
     width = 2400,
