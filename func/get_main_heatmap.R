@@ -10,9 +10,9 @@ get_main_heatmap <- function(plat, ht_name, cancer){
   if (cancer == 'BRCA' && plat == 'GEXP'){
     # Quick abbrev of feature gene symbols
     colnames(mat2) <- ft2symb(colnames(mat2), plat)
-    # Logging
-    print('#### FEATURES:')
-    print(colnames(mat2))
+    # # Logging
+    # print('#### FEATURES:')
+    # print(colnames(mat2))
     # Create final heatmap
     fig <- draw_ht_brca(
       cancer,
@@ -27,9 +27,9 @@ get_main_heatmap <- function(plat, ht_name, cancer){
   } else if (cancer == 'LGGGBM' || cancer == 'COADREAD' && plat == 'METH'){
     # Quick abbrev of feature gene symbols
     colnames(mat2) <- ft2symb(colnames(mat2), plat)
-    # Logging
-    print('#### FEATURES:')
-    print(colnames(mat2))
+    # # Logging
+    # print('#### FEATURES:')
+    # print(colnames(mat2))
     fig <- Heatmap(
       mat2,
       name = ht_name,
@@ -63,8 +63,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
   } else if (cancer == 'SKCM' && plat == 'MUTA'){
     # Quick abbrev of feature gene symbols
     colnames(mat2) <- ft2symb(colnames(mat2), plat)
-    print('#### FEATURES:')
-    print(colnames(mat2))
+    # print('#### FEATURES:')
+    # print(colnames(mat2))
     # Ht with col field
     fig <- Heatmap(
       mat2,
@@ -100,8 +100,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     if (length(colnames(mat2)<1)){
       colnames(mat2) <- ft2symb(colnames(mat2), plat) # full ft to gene symbol only
     }
-    print('#### FEATURES:')
-    print(colnames(mat2))
+    # print('#### FEATURES:')
+    # print(colnames(mat2))
     # Standard ht
     fig <- Heatmap(
       mat2,
@@ -121,8 +121,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       na_col = 'white'
     )
   } else if (is.null(legend_colors) == TRUE){
-    print('#### FEATURES:')
-    print(colnames(mat2))
+    # print('#### FEATURES:')
+    # print(colnames(mat2))
     # Standard ht
     fig <- Heatmap(
       mat2,
@@ -142,8 +142,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       na_col = 'white'
     )
   } else if (is.null(legend_l_param) == FALSE && is.null(legend_colors) == FALSE){
-    print('#### FEATURES:')
-    print(colnames(mat2))
+    # print('#### FEATURES:')
+    # print(colnames(mat2))
     fig <- Heatmap(
       mat2,
       name = ht_name,
@@ -166,8 +166,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     )
   } else {
     # used this for skcm muta
-    print('#### FEATURES:')
-    print(colnames(mat2))
+    # print('#### FEATURES:')
+    # print(colnames(mat2))
     # Ht with col field
     fig <- Heatmap(
       mat2,
