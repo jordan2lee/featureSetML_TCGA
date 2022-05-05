@@ -1,4 +1,5 @@
 draw_ht_brca <- function(
+  #' Heatmap specifically for BRCA cancer cohort
   cancer,
   platform,
   data_matrix,
@@ -33,7 +34,7 @@ draw_ht_brca <- function(
     ),
     right_annotation = annot_subtype_object,
     # bottom_annotation = col_annot,
-    bottom_annotation = dev_bottom_annot(paste(cancer, platform, sep='_'), in_pam),
+    bottom_annotation = brca_bottom_annot(paste(cancer, platform, sep='_'), in_pam),
     row_title_side = "right",
     use_raster = TRUE,
     na_col = 'white',
