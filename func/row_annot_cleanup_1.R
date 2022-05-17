@@ -1,7 +1,9 @@
 row_annot_cleanup_1 <- function(df, Labels){
-  # A. Order by subtype
+  #' Clean up used in get_base_heatmap.R
+  #' Orders by subtype then column annotation updated
+  # Subtype
   df_transform <- df %>% arrange(Labels)
-  # B. Column annotation
+  # Column annotation
   s_matrix <- pull(df_transform, Labels) %>% as.vector()
   s_matrix <- sapply(strsplit(s_matrix, '_'), "[", 2) %>% as.matrix()
   return(

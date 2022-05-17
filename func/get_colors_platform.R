@@ -1,6 +1,5 @@
 get_colors_platform <- function(platform){
-  #' Input the data platform. Example string "GEXP"
-  #' Returns color code
+  #' Universal colors for each data platform. Used in figures
   colors <- list(
     'MUTA' = '#00BFFF',
     'CNVR' = '#00688b',

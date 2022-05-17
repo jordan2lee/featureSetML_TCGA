@@ -1,4 +1,5 @@
 image_capture_upset <- function(image_name){
+  #' Upset plot formating for saving as tiff
   tiff(
     image_name,
     width = 1000,

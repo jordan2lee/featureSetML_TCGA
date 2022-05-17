@@ -1,5 +1,6 @@
 get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, header_aklimate, header_subscope, header_skgrid, to_scale_types, df, Labels){
   #' Create base heatmap - no hallmark info. For exploratory purposes
+  #' The final heatmap will pull info from this one
   ######
   # Preprocess
   #####

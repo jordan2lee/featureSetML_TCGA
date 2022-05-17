@@ -1,5 +1,5 @@
 platform_display_text <- function(platform){
-  #input platform and convert to the text for figure display
+  #' Input platform and convert to the text for figure display
   l1 <- list(
     'GEXP' = 'mRNA',
     'CNVR' = 'CN',
