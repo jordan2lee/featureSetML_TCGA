@@ -168,9 +168,6 @@ df <- subset(df, select=cols_to_keep)
 setwd(paste(args$outdir_ht, '/supplemental/', sep=''))
 # Get models
 models <- model2team(df_fts)
-# print('##################')
-# print(models)
-# print('##################')
 # Set up saving fig packet
 for (prefix in platforms){
 
@@ -198,7 +195,6 @@ for (prefix in platforms){
       image_name <- paste(args$cancer,'_heatmap_basic_',unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
       image_capture_ht(image_name)
       draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
-      # print(figure)
       dev.off()
     }
     print('in mir loop DONE')
@@ -341,30 +337,6 @@ for (prefix in platforms){
         print(paste('literature support is: '))
         print(lit_support)
       }
-      # if (args$cancer == 'COADREAD' && prefix == 'N:METH'){
-      #   print('##### HERE')
-      #   print(args$cancer)
-      #   print(prefix)
-      #   symbols <- ft2symb(ftnames_order, 'METH') # pull symb
-      #   lit_support <- c()
-      #   sanitycheck <- c()
-      #   for (i in seq(1, length(symbols))){
-      #     f <- symbols[i]
-      #     if (f %in% coad_lit_ft == TRUE){
-      #       lit_support <- c(lit_support, "+")
-      #       sanitycheck <- c(sanitycheck, f)
-      #     } else {
-      #       lit_support <- c(lit_support, '')
-      #       sanitycheck <- c(sanitycheck, f)
-      #     }
-      #   }
-      #   print(lit_support)
-      #   print(sanitycheck)
-      #   print('###### end here')
-      # } else {
-      #   lit_support = NULL
-      # }
-
 
       ######
       # Section 3: Heatmap with Feature Importance (Top 5)
