@@ -1,4 +1,5 @@
-dev_bottom_annot <- function(k, in_pam){
+# dev_bottom_annot <- function(k, in_pam){
+brca_bottom_annot <- function(k, in_pam){
   #' DEV
   l1 <- list(
     'BRCA_GEXP' = HeatmapAnnotation(
