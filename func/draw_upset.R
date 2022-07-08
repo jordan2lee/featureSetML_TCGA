@@ -35,10 +35,10 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
   }
   col_vals <- gsub('CNVR', 'Copy Number', col_vals)
   col_vals <- gsub('GEXP', 'mRNA', col_vals)
-  col_vals <- gsub('MIR', 'MicroRNA', col_vals)
+  col_vals <- gsub('MIR', 'microRNA', col_vals)
   col_vals <- gsub('METH', 'DNA Methylation', col_vals)
   col_vals <- gsub('MUTA', 'Mutation', col_vals)
-  df_fts['Platform']<- factor(col_vals, levels = c('Mutation', 'Copy Number', 'DNA Methylation', 'mRNA', 'MicroRNA'))
+  df_fts['Platform']<- factor(col_vals, levels = c('Mutation', 'Copy Number', 'DNA Methylation', 'mRNA', 'microRNA'))
 
   # Create figure object
   upset_plot <- upset(
@@ -108,12 +108,12 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
           'Copy Number' = get_colors_platform('CNVR'),
           'DNA Methylation' = get_colors_platform('METH'),
           'mRNA' = get_colors_platform('GEXP'),
-          'MicroRNA' = get_colors_platform('MIR')
+          'microRNA' = get_colors_platform('MIR')
         )
-      ) +
-      theme(
-        legend.position = "none"
-      ) # no extra legend
+      ) #+
+      #theme(
+        #legend.position = "none"
+      #) # no extra legend
     ),
 
 
@@ -145,7 +145,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
           'Copy Number' = get_colors_platform('CNVR'),
           'DNA Methylation' = get_colors_platform('METH'),
           'mRNA' = get_colors_platform('GEXP'),
-          'MicroRNA' = get_colors_platform('MIR')
+          'microRNA' = get_colors_platform('MIR')
         )
       ) +
       # manually adjust the y limits
