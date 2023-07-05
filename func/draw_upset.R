@@ -20,6 +20,10 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
   model_headers <- replace(model_headers, model_headers=='ScikitGrid', 'SK Grid')
   colnames(df_fts) <- c('featureID', model_headers, 'Total')
 
+  # change order methods appear
+  model_headers <- c("SubSCOPE", "SK Grid", "JADBio", "CloudForest", "AKLIMATE" ) # reverse order of what will appear in fig
+  df_fts <- df_fts[c("featureID", "AKLIMATE", "CloudForest", "JADBio", "SK Grid", "SubSCOPE", "Total")]
+
   # Move index col and rm non model cols
   row.names(df_fts) <- df_fts$featureID
   df_fts <- df_fts[,!names(df_fts) %in% c('featureID', 'Total')]
@@ -52,8 +56,9 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
     wrap=TRUE, # to have title over entire plot
     guides = 'over',
     sort_intersections_by = c('degree','cardinality'),
+    sort_sets = FALSE,
     # sort_intersections = 'descending',
-    sort_sets =FALSE,
+    # sort_sets =TRUE, # sort by size of "set size" of methods 'descending'
     themes = upset_modify_themes(
       list(
         'intersections_matrix'=theme( # intersection matrix gpar
