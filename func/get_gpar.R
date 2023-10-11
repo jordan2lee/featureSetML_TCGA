@@ -6,15 +6,17 @@ get_gpar <- function(key){
     'font_fam_ggplot' = 'Helvetica',
     'main_title_size' = 18,
     'axis_size' = 16,
-    'minor_axis_size' = 11,
+    'minor_axis_size' = 14,
     'legend_size_title'= 11,
     'legend_size'= 9,
     'annot_size' = 12, # ht bottom annot
     'model_overlap_size' = 9, # axis ticks
     'symbol_size' = 9,
     'pam_size' = 11,
-    'small_size' = 3,
-    'med_size' = 15
+    'small_size' = 5,
+    'med_size' = 15,
+    'tick_width'=.75,
+    'upset_labeled_ticks'=17
   )
   return(l1[[key]])
 }

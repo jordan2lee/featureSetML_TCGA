@@ -84,16 +84,16 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
       ylab('Set Size') +
       theme(
         axis.ticks.length=unit(0.5, "mm"),
-        axis.ticks.x=element_line(colour=get_gpar('c')),
+        axis.ticks.x=element_line(colour=get_gpar('c'), size=get_gpar('tick_width')),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         text =element_text(
-          size=get_gpar('minor_axis_size'), # axis "Set Size"
+          size=get_gpar('upset_labeled_ticks')+1, # axis "Set Size"
           family=get_gpar('font_fam_ggplot'),
           colour = get_gpar('c')
         ),
         axis.text = element_text( # set size axis ticks
-          size=get_gpar('minor_axis_size'),
+          size=get_gpar('upset_labeled_ticks'),
           family=get_gpar('font_fam_ggplot'),
           colour=get_gpar('c')
         )
@@ -103,7 +103,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
         size=get_gpar('small_size'), #horizontal counts of set size
         family=get_gpar('font_fam_ggplot'),
         colour = get_gpar('c'),
-        hjust = -0.25,
+        hjust = -.1,
         stat='count'
       ) +
       expand_limits(y=max_ftsize) + # set max x value
@@ -139,7 +139,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
             size=get_gpar('small_size'), # ft set size total counts
             family=get_gpar('font_fam_ggplot'),
             colour = get_gpar('c'),
-            vjust = -0.55
+            vjust = -.25
           ),
           bar_number_threshold = 1,
           mapping=aes(fill=Platform)
@@ -158,17 +158,17 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
       theme(
         legend.position = "none", # TODO dev. rm line entirely
         # axis.line.y = element_line(color="darkgrey", size=0.4),
-        axis.ticks.y=element_line(colour=get_gpar('c')),
+        axis.ticks.y=element_line(colour=get_gpar('c'),size=get_gpar('tick_width')),
         axis.ticks.length=unit(0.5, "mm"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         text =element_text(
-          size=get_gpar('med_size'), # label "Feature Set Size"
+          size=get_gpar('upset_labeled_ticks')+1, # label "Feature Set Size"
           family=get_gpar('font_fam_ggplot'),
           colour = get_gpar('c')
         ),
         axis.text.y = element_text(
-          size=get_gpar('minor_axis_size'), # axis label for Feature Set Size
+          size=get_gpar('upset_labeled_ticks'), # axis label for Feature Set Size
           family=get_gpar('font_fam_ggplot'),
           colour=get_gpar('c')
         )
