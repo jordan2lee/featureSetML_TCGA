@@ -126,7 +126,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
     encode_sets = FALSE,
     matrix=(
       intersection_matrix(
-        geom=geom_point(size = 1.2), # dot size
+        geom=geom_point(size = 5), # dot size
         outline_color = list(active = "white", inactive = "grey70")
       )
     ),
@@ -178,7 +178,7 @@ draw_upset <- function(cancer, model_headers, max_ftsize, ymax){
   theme(
     plot.title = element_text(
       colour = get_gpar('c'),
-      size = get_gpar('model_overlap_size')-1.25, # Entire plot title
+      size = get_gpar('model_overlap_size')+8, # Entire plot title
       family = get_gpar('font_fam_ggplot'),
       hjust= 0.045
     ),
