@@ -16,6 +16,8 @@ suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(circlize))
 suppressPackageStartupMessages(library(docstring))
 suppressPackageStartupMessages(library(argparse))
+suppressPackageStartupMessages(library(Cairo))
+
 sourceRecursive <- function(path) {
   #' Input dir and will source all files and subdirs within it
   dirs <- list.dirs(path, recursive = FALSE)
@@ -134,10 +136,10 @@ lgggbm_lit <- fread(f) %>% as.data.frame(row.names=1)
 lgggbm_lit <- lgggbm_lit[,1:8] # if read in null cols
 names(lgggbm_lit)[8] <- 'InLit'
 
-###### PART 1: UPSET PLOT ######
+# ###### PART 1: UPSET PLOT ######
 upset_fig <- draw_upset(args$cancer, args$input_team_display, args$max_ftsize, get_ymax_upset(args$cancer))
 setwd(args$outdir_upset)
-image_name <- paste('upsetplot_', args$cancer, '.tiff', sep='')
+image_name <- paste('upsetplot_', args$cancer, '.pdf', sep='')
 image_capture_upset(image_name)
 upset_fig
 dev.off()
@@ -165,6 +167,8 @@ df <- subset(df, select=cols_to_keep)
 ##########
 # Section 1: Heatmaps for each data type
 ##########
+print(getwd())
+print(args$outdir_ht)
 setwd(paste(args$outdir_ht, '/supplemental/', sep=''))
 # Get models
 models <- model2team(df_fts)
@@ -192,7 +196,7 @@ for (prefix in platforms){
     print('in mir loop')
     # If not null fig then save
     if (is.null(figure) == FALSE){
-      image_name <- paste(args$cancer,'_heatmap_basic_',unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
+      image_name <- paste(args$cancer,'_heatmap_basic_',unlist(strsplit(prefix, ':'))[2],'.pdf',sep='')
       image_capture_ht(image_name)
       draw(figure, merge_legend = TRUE,legend_grouping ='original', heatmap_legend_side = c('bottom'))
       dev.off()
@@ -258,7 +262,7 @@ for (prefix in platforms){
         print('MIR fts will not be mapped to hallmarks')
       }
       # 2. Plot fig: How many hallmarks is a feature associated with?
-      image_name <- paste(args$cancer, '_bars_ft2hall_', unlist(strsplit(prefix, ':'))[2],'.tiff',sep='')
+      image_name <- paste(args$cancer, '_bars_ft2hall_', unlist(strsplit(prefix, ':'))[2],'.pdf',sep='')
       image_capture_ht(image_name)
       df2 <- table(n_hallmarks) %>% as.data.frame()
       colnames(df2)<- c('nHallmarks', 'Freq')
@@ -271,7 +275,7 @@ for (prefix in platforms){
       dev.off()
 
       # 3. Plot fig: What hallmarks are fts most often associated with?
-      image_name <- paste(args$cancer, '_bars_hall_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
+      image_name <- paste(args$cancer, '_bars_hall_', unlist(strsplit(prefix, ':'))[2], '.pdf', sep='')
       image_capture_ht(image_name)
       df2 <- sort(table(pooled_hallmarks), decreasing=T) %>% as.data.frame()
       # If there are no hallmarks
@@ -365,7 +369,7 @@ for (prefix in platforms){
         # Names of Annot Bars
         annotation_label  = gt_render(
           c(
-            'Model Overlap', 'AKLIMATE', "CloudForest", "JADBio", "SK Grid", "SubSCOPE"
+            'Model\nOverlap', 'AKLIMATE', "CloudForest", "JADBio", "SK Grid", "SubSCOPE"
           )
         ),
         # A. N teams selected
@@ -408,10 +412,11 @@ for (prefix in platforms){
         show_legend = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE),
         gp = gpar(fontsize = 1, col = "black"), # grid all col annot
         annotation_name_gp= gpar(fontsize = get_gpar('annot_size'), fontfamily = get_gpar('font_fam')),
+        # annotation_height = unit(3, "cm"), #### NEW HERE ###
         annotation_legend_param = list(
           direction= 'horizontal',
           title_position = "lefttop",  # legend title location
-          legend_width = unit(4, "cm"),
+          legend_width = unit(3, "cm"),#### NEW HERE ###
           title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
           labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))),
         gap = unit(c(2,0,0,0,0), 'mm')
@@ -421,7 +426,8 @@ for (prefix in platforms){
       ht_rows <- nrow(mat2)
       ht_cols <- ncol(mat2)
       plat <- unlist(strsplit(prefix, ':'))[2]
-      col_title = paste(title_info(plat), ' Core Feature Set Selected by ≥ 2 Methods (n=', ht_cols, ')', sep='')
+
+      col_title = paste(title_info(plat), ' Core Feature Set Selected by \U2265 2 Methods (n=', ht_cols, ')', sep='')
       # col_title = paste(update_cohort_name(args$cancer), ' ', title_info(plat), ' Features Selected by ≥ 2 Methods (n=', ht_cols, ')', sep='')
 
       # Create fig object
@@ -446,12 +452,12 @@ for (prefix in platforms){
 
       # Set up saving fig packet
       if (args$show_features == TRUE){
-        image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '_NAMES', '.tiff', sep='')
+        image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '_NAMES', '.pdf', sep='')
         image_capture_ht(image_name)
         draw(fig,merge_legend = TRUE, heatmap_legend_side = c('bottom')) # opt add: legend_grouping ='original'
         dev.off()
       } else {
-        image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '.tiff', sep='')
+        image_name <- paste(args$cancer, '_heatmap_', unlist(strsplit(prefix, ':'))[2], '.pdf', sep='')
         image_capture_ht(image_name)
         draw(fig,merge_legend = TRUE,heatmap_legend_side = c('bottom')) # opt add: legend_grouping ='original'
         dev.off()

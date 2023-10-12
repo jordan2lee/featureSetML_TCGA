@@ -90,7 +90,7 @@ get_base_heatmap <- function(prefix, cancer, header_jadbio, header_cforest, head
       # Names of Annot Bars
       annotation_label  = gt_render(
         c(
-          'Model Overlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid"
+          'Model\nOverlap', 'AKLIMATE', "SubSCOPE", "Cloud Forest", "JADBio", "SciKitGrid"
         )
       ),
 

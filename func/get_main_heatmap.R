@@ -33,7 +33,9 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     fig <- Heatmap(
       mat2,
       name = ht_name,
-      height = unit(4, 'cm'), # ht body
+      # height = unit(4, 'cm'), # ht body
+      heatmap_height = unit(5, "in"), #### NEW HERE ###
+      width = unit(11, "in"), #### NEW HERE ###
       cluster_rows = FALSE,
       cluster_columns = FALSE,
       show_row_names = FALSE,
@@ -49,7 +51,8 @@ get_main_heatmap <- function(plat, ht_name, cancer){
       row_title_gp = gpar(
         fontface = 'bold',
         fontfamily = get_gpar('font_fam'),
-        fontsize = get_gpar('axis_size')
+        fontsize = get_gpar('axis_size'),
+        vjust=50
       ),
       right_annotation = subtype_ha,
       bottom_annotation = col_annot,
@@ -69,7 +72,9 @@ get_main_heatmap <- function(plat, ht_name, cancer){
     fig <- Heatmap(
       mat2,
       name = ht_name,
-      height = unit(4, 'cm'), # ht body
+      # height = unit(4, 'cm'), # ht body
+      heatmap_height = unit(5, "in"), #### NEW HERE ###
+      width = unit(11, "in"), #### NEW HERE ###
       cluster_rows = FALSE,
       cluster_columns = FALSE,
       show_row_names = FALSE,

@@ -12,7 +12,9 @@ draw_ht_brca <- function(
   fig <- Heatmap(
     data_matrix,
     name = heatmap_name,
-    height = unit(4, 'cm'), # ht body
+    # height = unit(4, 'cm'), # ht body
+    heatmap_height = unit(5, "in"), #### NEW HERE ###
+    width = unit(11, "in"), #### NEW HERE ###
     # width = unit(25, 'cm'), # ht body
     cluster_rows = FALSE,
     cluster_columns = FALSE,

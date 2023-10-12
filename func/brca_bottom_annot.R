@@ -6,7 +6,7 @@ brca_bottom_annot <- function(k, in_pam){
       annotation_label  = gt_render(
         c(
           # 'Model Overlap', 'AKLIMATE', "SubSCOPE", "CloudForest", "JADBio", "SK Grid"
-          'Model Overlap', 'AKLIMATE', "CloudForest", "JADBio", "SK Grid", "SubSCOPE"
+          'Model\nOverlap', 'AKLIMATE', "CloudForest", "JADBio", "SK Grid", "SubSCOPE"
         )
       ),
       # A. N teams selected
@@ -52,7 +52,7 @@ brca_bottom_annot <- function(k, in_pam){
       annotation_legend_param = list(
         direction= 'horizontal',
         title_position = "lefttop",  # legend title location
-        legend_width = unit(4, "cm"),
+        legend_width = unit(3, "cm"),#### NEW HERE ###
         title_gp = gpar(fontsize = get_gpar('legend_size_title'), fontfamily = get_gpar('font_fam')),
         labels_gp = gpar(fontsize = get_gpar('legend_size'), fontfamily = get_gpar('font_fam'))),
       gap = unit(c(2,0,0,0,0), 'mm')

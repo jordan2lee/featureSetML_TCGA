@@ -1,9 +1,8 @@
 image_capture_ht <- function(image_name){
-  tiff(
+  cairo_pdf(
     image_name,
-    width = 2400,
-    height = 1200,
-    res = 200,
-    compression = "none"
+    width = 13,
+    height = 7,
+    bg = 'white',
   )
 }
